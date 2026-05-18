@@ -8,6 +8,32 @@ Bootstrap a new prototype in `src/playground/<name>/` with the sandbox architect
 
 Read [CLAUDE.md](../../CLAUDE.md) and [src/playground/README.md](../../src/playground/README.md) first — they define the sandbox architecture, scoping rules, and the resolution order for new UI (`@ss-blocks` first, then primitives, then ask).
 
+## Impeccable design fluency
+
+This command runs through Impeccable's design defaults. **Load these reference files in addition to the standard setup**:
+
+- `.claude/skills/impeccable/SKILL.md` — the index and routing logic
+- `.claude/skills/impeccable/reference/craft.md` — shape-then-build flow (matches our `/prototype` shape exactly)
+- `.claude/skills/impeccable/reference/typography.md`, `color-and-contrast.md`, `spatial-design.md` — the three baseline domain refs every prototype touches
+- `.claude/skills/impeccable/reference/product.md` (since prototypes are product surfaces, not brand surfaces)
+
+If the brief implies any of these specifically, additionally load:
+
+| Brief signal | Also load |
+| --- | --- |
+| "animations", "transitions", "motion", "scroll-driven" | `reference/motion-design.md` |
+| "form", "settings", "checkout", "auth flow" | `reference/interaction-design.md` + `reference/harden.md` |
+| "mobile", "responsive", "breakpoint" | `reference/responsive-design.md` |
+| "empty state", "onboarding", "first-run" | `reference/onboard.md` |
+| "copy", "microcopy", "error states", "labels" | `reference/ux-writing.md` + `reference/clarify.md` |
+
+Apply Impeccable's anti-pattern guidance throughout. Specifically refuse to:
+- Default to Inter, Arial, or system sans — Lia uses DM Sans (already wired)
+- Use pure black or pure white anywhere — always tint (already wired via oklch)
+- Nest cards inside cards
+- Use gray text on coloured backgrounds
+- Use bounce/elastic easing
+
 ## What to do
 
 1. **Parse the user's intent** from the slash-command argument:

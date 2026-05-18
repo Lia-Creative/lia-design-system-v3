@@ -8,6 +8,24 @@ You are reviewing a vibe-coding session in the Lia Design System v3 repo. The Pl
 
 Read [CLAUDE.md](../../CLAUDE.md) and [src/playground/README.md](../../src/playground/README.md) first. The propagation matrix, the sandbox architecture, and the "ask before creating components" rule define the rules of the game.
 
+## Impeccable lens
+
+Before triage, run an Impeccable critique-then-audit pass on the prototype. **Load these reference files**:
+
+- `.claude/skills/impeccable/reference/critique.md` — UX critique framework (hierarchy, clarity, emotional resonance)
+- `.claude/skills/impeccable/reference/audit.md` — technical quality (a11y, performance, responsive)
+- `.claude/skills/impeccable/reference/polish.md` — design-system alignment + shipping readiness
+- `.claude/skills/impeccable/reference/heuristics-scoring.md` — the rubric for scoring
+
+The critique + audit pass happens **before** the triage decisions. Findings inform what should backport vs. stay sandboxed:
+
+- A scoped token override that's better than the global default (per critique) → strong backport candidate
+- A forked primitive that has accessibility wins (per audit) → strong backport candidate
+- A scoped token override that's interesting but situational → keep sandboxed
+- Anti-pattern violations (Impeccable's 27 deterministic rules) → fix in the prototype OR backport the fix to the system if it's a systemic issue
+
+Report Impeccable findings as a separate section at the top of the review, before the per-change triage.
+
 ## What to do
 
 1. **Survey the changes** since the last clean state. Default to comparing against `origin/main`. If the user gives you a different base ref, use that.
