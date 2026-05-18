@@ -1,42 +1,75 @@
 # Playground
 
-This folder is for **prototype surfaces** — full screens, flows, and feature sketches that compose primitives from `src/components/ui/` into realistic Lia product UI. The playground is the *source* of prospective design-system changes: pattern emerges here, then gets backported to the system if it's worth keeping.
+A **true sandbox** for prototyping with the Lia design system. Every change you make in here — token tweaks, primitive edits, brand-new components — is scoped to one prototype. Nothing escapes to the rest of the system until you explicitly approve it at `/design-review`.
 
-## What goes here
+## Architecture — folder per prototype
 
-- Full-page mocks (musician profile, dashboard, EPK builder, etc.)
-- Multi-component compositions that exercise the design system in context
-- "What would this product feel like?" explorations
+```
+src/playground/<name>/
+├── index.stories.tsx     The story. Wraps content in <div className="playground-<name>">…</div>
+├── tokens.css            Scoped token overrides (.playground-<name> { --primary: …; })
+├── components/           Forked primitives + new components, prototype-local
+└── CHANGES.md            Running ledger of every change
+```
 
-## What does NOT go here
+Story title: `Playground/<Name>` (e.g. `Playground/Welcome`, `Playground/Musician Profile`).
 
-- New primitives — those live in `src/components/ui/`. If a prototype reveals a useful pattern, **propose backporting** (run `/design-review` after the session).
-- One-off styling — if it's only needed for a single prototype, keep the styles inline here. Don't promote it to the system.
+## How sandboxing works
 
-## Story title hierarchy
+### Token tweaks → scoped via CSS variable cascade
 
-Stories in this folder use the `Playground/<name>` title pattern, e.g.:
+`tokens.css` defines overrides under a scope class:
 
-- `Playground/Welcome`
-- `Playground/Musician Profile`
-- `Playground/EPK Builder`
+```css
+.playground-musician-profile {
+  --primary: oklch(0.7 0.3 30);  /* warmer brand */
+  --radius: 0.5rem;
+}
 
-## Per-prototype change ledger
+.dark .playground-musician-profile {
+  --primary: oklch(0.6 0.25 30);
+}
+```
 
-Each prototype should carry a `<name>.CHANGES.md` next to its `.stories.tsx`. Every change touched during a session gets a row, classified as:
+CSS variables cascade. Inside `.playground-musician-profile`, every Tailwind utility (`bg-primary`, `rounded-lg`, etc.) resolves to the override. Outside it, the defaults from `globals.css` apply. **No other prototype, story, or consumer is affected.**
 
-| Bucket | Scope | What it means |
-| --- | --- | --- |
-| **prototype-only** | This file only | Inline JSX/Tailwind, stays here |
-| **token-tweak** | System-wide | Edited `globals.css` — auto-flows to Figma via `pnpm tokens:sync` |
-| **primitive-edit** | System-wide | Modified `src/components/ui/<name>.tsx` — affects all consumers |
-| **primitive-new** | System-wide (additive) | New file in `src/components/ui/` — needs Code Connect mapping |
+### Primitive tweaks → fork into `./components/`
 
-The ledger is **not** a sandbox. Only `prototype-only` is genuinely scoped to one prototype. The other three classes have system-wide reach the moment you save — the ledger exists to surface that for `/design-review` triage.
+To modify a primitive for this prototype:
+
+1. Copy `src/components/ui/<name>.tsx` → `src/playground/<prototype>/components/<name>.tsx`
+2. Modify the copy freely.
+3. In `index.stories.tsx`, swap the import:
+   - `import { Button } from '@/components/ui/button'`
+   - → `import { Button } from './components/button'`
+
+The original primitive is untouched. Other prototypes and the production app see no change.
+
+### New components → live in `./components/`
+
+Brand-new components built for one prototype live in `./components/`. They're prototype-local until you promote them at `/design-review`.
+
+## At `/design-review`
+
+When you run `/design-review` from this repo, it walks every file in the prototype folder and asks you per change:
+
+| Change found | You decide |
+| --- | --- |
+| **Token override in `tokens.css`** | Backport (merge into `globals.css`, delete the override) · Keep sandboxed · Revert |
+| **Forked primitive in `./components/`** | Backport (diff against original, apply, delete the fork) · Keep sandboxed · Revert |
+| **New component in `./components/`** | Promote to `src/components/ui/` (with Code Connect mapping) · Keep sandboxed · Revert |
+| **Story / layout changes in `index.stories.tsx`** | Inherently prototype-only — no decision needed |
+
+Nothing reaches the rest of the system without explicit approval.
 
 ## Workflow
 
-1. **Vibe-code** the prototype here, composing primitives.
-2. **Push to main** — auto-deploys to storybook.lia.build alongside the primitives.
-3. **Review changes** with `/design-review` — triage each ledger row into: token change, primitive improvement, new primitive, or one-off (stays in prototype).
-4. **Propagate** approved changes to the design system + Figma per the propagation matrix in `CLAUDE.md`.
+1. **Scaffold** — run `/prototype <name>` (or paste the natural-language prompt) to bootstrap the folder.
+2. **Vibe-code** — go nuts. Edit tokens, fork primitives, build new components. The sandbox holds.
+3. **Push to main** — Storybook auto-deploys to `storybook.lia.build` in ~30s. Your scoped changes only show inside your prototype.
+4. **Review** — run `/design-review` when you want to triage what should propagate.
+5. **Propagate** — approved changes merge into the system + the CHANGES.md ledger records the outcome.
+
+## Why the sandbox matters
+
+The design system is a shared surface. A token tweak that's perfect for a musician profile prototype might be wrong for a dashboard prototype. Forking a Button to have a `loading` state for one prototype shouldn't ship to everyone immediately. The sandbox lets you explore confidently, then promote deliberately.

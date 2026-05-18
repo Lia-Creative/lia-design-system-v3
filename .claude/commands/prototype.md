@@ -1,0 +1,91 @@
+---
+description: Scaffold a new Playground prototype with true sandboxing
+---
+
+# /prototype — Start a sandboxed prototype
+
+Bootstrap a new prototype in `src/playground/<name>/` with the sandbox architecture wired up. The user's argument names what they want to build.
+
+Read [CLAUDE.md](../../CLAUDE.md) and [src/playground/README.md](../../src/playground/README.md) first — they define the sandbox architecture, scoping rules, and the resolution order for new UI (`@ss-blocks` first, then primitives, then ask).
+
+## What to do
+
+1. **Parse the user's intent** from the slash-command argument:
+   - Extract a **slug** (kebab-case, used as the folder name and scope class): e.g. `musician-profile`, `epk-builder`, `tour-dashboard`
+   - Extract a **display name** (Title Case, used in the Storybook title): e.g. `Musician Profile`, `EPK Builder`, `Tour Dashboard`
+   - Capture the **brief** (what should be on the page) — even if vague, write it down.
+
+2. **Confirm the slug + display name + brief** with the user before creating files. One short message, expecting "yes" or a correction.
+
+3. **Scaffold the folder**:
+
+   ```
+   src/playground/<slug>/
+   ├── index.stories.tsx     Storybook story. Wraps content in <div className="playground-<slug>">. Imports ./tokens.css.
+   ├── tokens.css            Empty scoped overrides under .playground-<slug>
+   ├── components/.gitkeep   Forked + new primitives go here
+   └── CHANGES.md            Ledger seeded with the prototype's creation row
+   ```
+
+   `index.stories.tsx` should:
+   - Use Storybook title `Playground/<Display Name>`
+   - Use `parameters: { layout: 'fullscreen' }`
+   - Wrap all content in `<div className="playground-<slug> ...">` so scoped tokens take effect
+   - Import `./tokens.css` near the top
+   - Compose existing primitives from `@/components/ui/` — DO NOT scratch-build UI
+   - If the brief implies a block-level pattern (hero, pricing, dashboard, testimonials, footer, feature grid, etc.), **install from `@ss-blocks` before building**: `pnpm dlx shadcn@latest add @ss-blocks/<block-name>`. Use the installed block as the structural base, then compose/swap primitives as needed.
+
+4. **Working rules during the session** (state these to the user once, then follow them):
+
+   - **For token tweaks**: edit `./tokens.css` only. Never `src/app/globals.css`. Override under `.playground-<slug>` (and `.dark .playground-<slug>` for dark mode).
+   - **For primitive tweaks**: ask the user first ("can I fork Button into this prototype's components/ to add X?"). On approval: copy `src/components/ui/<name>.tsx` → `./components/<name>.tsx`, modify, swap the import in `index.stories.tsx`. Never edit `src/components/ui/` directly.
+   - **For new primitives**: ask the user first. On approval: create the new component in `./components/<name>.tsx`. Never create directly in `src/components/ui/`.
+   - **For ledger updates**: append a row to `CHANGES.md` every time you make a change. Don't ask first — just do it. Use the bucket vocabulary from CHANGES.md (`structure`, `token-tweak`, `primitive-fork`, `primitive-new`).
+
+5. **Commit cadence**: small, semantic commits during the session. Push to main as you go — Vercel auto-deploys to `storybook.lia.build` in ~30s. The user can see progress live.
+
+6. **At session end** (or when the user says "review"): suggest running `/design-review` to triage what should backport vs stay sandboxed.
+
+## CHANGES.md seed template
+
+```md
+# <Display Name> — change ledger
+
+Sandbox scope class: `.playground-<slug>`
+Started: YYYY-MM-DD
+Brief: <one-line summary of what the prototype is exploring>
+
+## Ledger
+
+| When | Bucket | Change | Status |
+|------|--------|--------|--------|
+| YYYY-MM-DD | structure | Prototype scaffolded | live |
+
+## Buckets
+
+- **token-tweak** — scoped override in `./tokens.css`. Stays local until backport.
+- **primitive-fork** — copied a primitive from `src/components/ui/` into `./components/`. Stays local until backport.
+- **primitive-new** — new component file in `./components/`. Stays local until promotion.
+- **structure** — story/layout/copy changes to `index.stories.tsx`. Inherently prototype-only.
+```
+
+## Anti-patterns to refuse
+
+- **Editing `globals.css` directly during a prototype session.** It breaks the sandbox. Always go through `./tokens.css`.
+- **Editing `src/components/ui/<name>.tsx` directly during a prototype session.** Always fork first.
+- **Scratch-building UI when a Pro block exists.** Check shadcnstudio.com/blocks first; install via `@ss-blocks/<name>`.
+- **Skipping the ledger.** Every change gets a row. No exceptions.
+- **Creating files outside the prototype folder without asking.** The sandbox boundary IS the folder.
+
+## Example invocation
+
+```
+/prototype musician-profile A one-page artist site with hero, tour dates, music links, contact form
+```
+
+Should produce:
+- Slug: `musician-profile`
+- Display name: `Musician Profile`
+- Title: `Playground/Musician Profile`
+- Folder: `src/playground/musician-profile/`
+- Scope class: `.playground-musician-profile`

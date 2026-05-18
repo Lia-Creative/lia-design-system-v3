@@ -169,6 +169,33 @@ Per component: at minimum `StoryDefault`. Then variant matrices, sizes, disabled
 
 ---
 
+## Playground — the sandbox
+
+`src/playground/` holds prototype surfaces. Each prototype is a folder with **true sandboxing** — token tweaks, primitive forks, and new components live scoped to that one prototype until explicitly backported at `/design-review`. Nothing in the playground reaches the rest of the system without approval.
+
+Full architecture in [src/playground/README.md](src/playground/README.md). Two operational rules apply when working inside a prototype session:
+
+### Rule 1: Never bypass the sandbox
+
+During a `/prototype` session, you (the agent) **must not**:
+
+- Edit `src/app/globals.css` directly — token tweaks go in the prototype's `./tokens.css` under the `.playground-<slug>` scope class.
+- Edit any file in `src/components/ui/` directly — primitive tweaks go via a fork at `./components/<name>.tsx`, with the prototype's import path updated.
+- Create files in `src/components/ui/` for prototype-driven new components — new primitives live in `./components/` and only graduate to `src/components/ui/` at `/design-review`.
+
+If the user asks you to do any of the above, push back: "this'd bypass the sandbox — want me to scope it to the prototype first via `tokens.css` / a fork?"
+
+### Rule 2: Maintain the CHANGES.md ledger
+
+Every change made during a prototype session gets a row appended to `src/playground/<slug>/CHANGES.md`. Don't ask before updating the ledger — just do it. Use the bucket vocabulary defined in the ledger itself (`structure`, `token-tweak`, `primitive-fork`, `primitive-new`).
+
+### Slash commands
+
+- `/prototype <name> <brief>` — scaffold a new prototype with the sandbox wiring.
+- `/design-review` — triage everything in `src/playground/<name>/`: backport to system, keep sandboxed, or revert.
+
+---
+
 ## Figma Integration
 
 ### Tokens Studio Round-Trip

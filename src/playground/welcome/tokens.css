@@ -1,0 +1,29 @@
+/*
+ * Scoped token overrides for the Welcome prototype.
+ *
+ * Anything you define inside `.playground-welcome` only applies to elements
+ * within the prototype's wrapper div — not to other prototypes, not to the
+ * production app, not to anything else in Storybook.
+ *
+ * Examples:
+ *
+ *   .playground-welcome {
+ *     --primary: oklch(0.7 0.3 30);
+ *     --radius: 0.5rem;
+ *   }
+ *
+ *   .dark .playground-welcome {
+ *     --primary: oklch(0.6 0.25 30);
+ *   }
+ *
+ * Currently empty — Welcome uses the global defaults. Add overrides as you
+ * vibe-code. At /design-review you'll decide which to backport to globals.css.
+ */
+
+.playground-welcome {
+  /* light-mode token overrides go here */
+}
+
+.dark .playground-welcome {
+  /* dark-mode token overrides go here */
+}

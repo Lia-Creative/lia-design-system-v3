@@ -1,12 +1,12 @@
 ---
-description: Triage prototype changes — backport to design system, push to Figma, or keep local
+description: Triage sandboxed prototype changes — backport to system, keep local, or revert
 ---
 
-# /design-review — Triage prototype changes against the design system
+# /design-review — Triage Playground sandbox changes
 
-You are reviewing a vibe-coding session in the Lia Design System v3 repo. The goal is to look at everything that changed and decide how each change should be propagated.
+You are reviewing a vibe-coding session in the Lia Design System v3 repo. The Playground (`src/playground/<name>/`) is a **true sandbox** — token overrides, primitive forks, and new components live there scoped to one prototype. Your job is to walk every change and ask: backport to the system, keep sandboxed, or revert.
 
-Read [CLAUDE.md](../../CLAUDE.md) first — the propagation matrix and the "ask before creating components" rule define the rules of the game.
+Read [CLAUDE.md](../../CLAUDE.md) and [src/playground/README.md](../../src/playground/README.md) first. The propagation matrix, the sandbox architecture, and the "ask before creating components" rule define the rules of the game.
 
 ## What to do
 
@@ -18,52 +18,54 @@ Read [CLAUDE.md](../../CLAUDE.md) first — the propagation matrix and the "ask 
    git status --short
    ```
 
-2. **Classify every changed file** into one of these buckets. Be precise — names matter for the next step.
+2. **Identify the prototype** being reviewed. If the user named one, use it. If not, infer from `git diff` paths (`src/playground/<name>/`). If multiple prototypes have changes, ask which one to review first.
 
-   | Bucket | Path patterns | Meaning |
+3. **For each change in `src/playground/<name>/`, classify it:**
+
+   | Where the change is | Bucket | Default disposition |
    | --- | --- | --- |
-   | **token** | `src/app/globals.css`, `design/lia-tokens.tokens.json` | Theme value changes |
-   | **primitive-edit** | `src/components/ui/<existing>.tsx` | Existing primitive modified (variant added, layout tweaked, behaviour changed) |
-   | **primitive-new** | `src/components/ui/<new>.tsx` | New file in `components/ui/` — a brand-new primitive |
-   | **story** | `src/components/ui/*.stories.tsx` | Story updates (usually paired with primitive changes) |
-   | **prototype** | `src/playground/**` | Prototype surface work |
-   | **config** | `components.json`, `figma.config.json`, `.storybook/**`, `vercel.json`, `package.json`, `scripts/**` | System config |
-   | **docs** | `*.md`, `CLAUDE.md`, `README.md` | Documentation |
-   | **other** | anything else | Flag for individual review |
+   | `index.stories.tsx` (story/layout/copy) | **structure** | Stays in the prototype. No decision needed. |
+   | `tokens.css` (additions/edits) | **scoped-token** | Ask: backport to globals.css · keep sandboxed · revert |
+   | `components/<existing-primitive-name>.tsx` (forks of `src/components/ui/<same>.tsx`) | **forked-primitive** | Diff against the canonical primitive. Ask: backport diff · keep sandboxed · revert |
+   | `components/<new-name>.tsx` (no canonical equivalent) | **new-primitive** | Ask: promote to `src/components/ui/` · keep sandboxed · revert |
+   | `CHANGES.md` | **ledger** | Append the review outcome. Don't ask. |
 
-3. **For each bucket, present a triage proposal:**
+4. **For each bucket that needs a decision, present a triage proposal:**
 
-   - **token** → "Sync via `pnpm tokens:sync`? Token changes auto-flow to Figma via Tokens Studio after push."
-   - **primitive-edit** → Show the diff inline. Ask: "Backport to the design system (commit + push), or revert (was experimental)? If backport, what's the matching Figma update needed?"
-   - **primitive-new** → Show the new component. Ask the gate questions from CLAUDE.md: "Is this generally useful or one-off? If generally useful, do we have a matching Figma component? Should I scaffold a Code Connect mapping in `src/figma/` and add the node URL to `figma.config.json`?"
-   - **story** → Usually safe; verify it covers Default + the primary variants. Auto-approve unless something looks off.
-   - **prototype** → Usually safe — prototype changes stay here. Surface anything that smells like "this should be a primitive" for the user to confirm.
-   - **config** → Ask before propagating any system-level config change.
-   - **docs** → Usually safe; flag for the user only if it touches CLAUDE.md (governance change).
+   - **scoped-token** → Show each `--var` overridden. For each, ask: "Push this into `globals.css` (becomes the new system default)? Or keep it scoped to `.playground-<name>`?" On backport: update both `:root` and `.dark` blocks in `globals.css` to match, then delete the override line from `tokens.css`, then run `pnpm tokens:sync` so the JSON mirror + Figma round-trip catch up.
 
-4. **For Figma-side work** that the triage surfaces, default to *describing* what needs to happen rather than executing — Figma MCP component writes are unreliable per the April 24 learnings. For variable writes that DO work via MCP, offer to do them.
+   - **forked-primitive** → Diff the fork against `src/components/ui/<name>.tsx`. Show the user the meaningful changes (additions, removals). Ask: "Apply this diff to the canonical primitive (and delete the fork), or keep the fork?" On backport: apply diff to canonical, delete the fork from `./components/`, update the import in `index.stories.tsx` back to `@/components/ui/<name>`. Then surface the Figma follow-up — the canonical Figma component needs the matching variant/state update; offer to scaffold a Code Connect mapping note.
 
-5. **Summarise the session at the end** with a one-paragraph human-readable description of what changed and where it landed:
+   - **new-primitive** → Show the new component. Ask the CLAUDE.md gate questions: "Is this generally useful or one-off? If generally useful, what's the matching Figma component, and do we have a Code Connect mapping?" On promote: move the file from `./components/` to `src/components/ui/`, add a `.stories.tsx` if missing, propose a `src/figma/<name>.figma.tsx` mapping + a `figma.config.json` entry. Update the prototype's import path.
 
+5. **For changes outside `src/playground/<name>/`** (someone touched `src/app/globals.css`, `src/components/ui/`, config, etc. directly instead of via the sandbox), flag them prominently. The sandbox discipline only works if changes go through the playground. Ask: "These bypass the sandbox — was that intentional?" If accidental, offer to move them in.
+
+6. **Update the prototype's CHANGES.md** at the end of the review:
+   - Append a "Review YYYY-MM-DD" section
+   - List each decision: backported · kept · reverted
+   - Note any Figma follow-ups owed to the designer
+
+7. **For Figma-side work** that the triage surfaces, default to *describing* what needs to happen rather than executing. Figma MCP component writes are unreliable per the April 24 learnings. For variable writes that DO work via MCP, offer to do them.
+
+8. **Session summary** at the end (under 300 words):
    - Backported to the design system: …
-   - Kept in prototypes: …
+   - Kept sandboxed in `<prototype>`: …
+   - Reverted: …
    - Needs Figma follow-up: …
-   - Tokens synced + auto-flowing: …
 
    Offer to write this summary into `_meta/inbox/session-YYYY-MM-DD-design-review.md` in the user's personal vault (per their global CLAUDE.md convention).
 
 ## Anti-patterns to refuse
 
-- **Promoting one-offs to the system.** If a prototype-only style is being suggested for backport, push back: "this looks specific to the prototype's context — what's the general case it serves?"
-- **Adding primitives without asking.** Never auto-create components or new files in `src/components/ui/`. Always confirm with the user first per CLAUDE.md.
+- **Promoting one-offs to the system.** If a scoped token or fork is being suggested for backport, push back: "this looks specific to the prototype's context — what's the general case it serves?"
+- **Adding primitives without asking.** Never auto-create files in `src/components/ui/`. Always confirm with the user first per CLAUDE.md.
 - **Pushing component-level changes to Figma via MCP.** Variables work; layouts and variants don't. Surface those as "designer needs to update Figma manually" — don't pretend the MCP will do it.
+- **Letting changes outside the playground slip through unreviewed.** Direct edits to `src/components/ui/` or `globals.css` bypass the sandbox. Always flag.
 
 ## When you're done
 
 End with a concise next-actions list:
 
-- [ ] What I committed in this session (with commit SHAs)
+- [ ] Commits made during this review (with SHAs)
 - [ ] What the user needs to do in Figma
-- [ ] What is intentionally staying as a prototype-only divergence
-
-Keep the report under 300 words unless the diff is unusually large.
+- [ ] What's intentionally staying sandboxed in `<prototype>`

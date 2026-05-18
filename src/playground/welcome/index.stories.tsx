@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { ArrowRightIcon, PlusIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
+import './tokens.css'
+
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -43,7 +45,7 @@ function Welcome() {
   return (
     <TooltipProvider>
       <Toaster />
-      <div className="mx-auto flex max-w-3xl flex-col gap-12 p-8">
+      <div className="playground-welcome mx-auto flex max-w-3xl flex-col gap-12 p-8">
         <header className="flex items-center justify-between">
           <Logo className="h-8 w-auto" />
           <div className="flex items-center gap-2">
