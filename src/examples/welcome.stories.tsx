@@ -1,17 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import {
-  ArrowRightIcon,
-  CompassIcon,
-  HandshakeIcon,
-  PlusIcon,
-  SparklesIcon,
-} from 'lucide-react'
+import { ArrowRightIcon, PlusIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -32,6 +25,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Logo } from '@/components/ui/logo'
 import { Toaster } from '@/components/ui/sonner'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import {
   Tooltip,
   TooltipContent,
@@ -40,10 +34,10 @@ import {
 } from '@/components/ui/tooltip'
 
 /**
- * Welcome showcase — a single-page composition exercising every primitive in the
- * design system. Copy reflects the Lia Creative house-of-brands position: the
- * parent (Lia) builds tools, education, and spaces; Lia Music is the first
- * vertical. Source: Lia Vault `Company/Strategy/lia-1-pager-v2-2026-05-14.md`.
+ * Welcome showcase — single-page composition exercising every primitive.
+ * Copy reflects the Lia Creative parent brand position. Source:
+ * Lia Vault `Company/Strategy/lia-1-pager-v2-2026-05-14.md` +
+ * `Company/Strategy/vision-mission-values.md`.
  */
 function Welcome() {
   return (
@@ -70,20 +64,21 @@ function Welcome() {
               <PlusIcon data-icon="inline-start" />
               New
             </Button>
+            <ThemeToggle />
           </div>
         </header>
 
         <section className="flex flex-col gap-3">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Lia Music · the first vertical
+            Lia Creative
           </p>
           <h1 className="text-4xl leading-tight font-semibold tracking-tight">
-            Modular tools for independent musicians.
+            Build a more creative world.
           </h1>
           <p className="text-lg text-muted-foreground">
-            Tools, education, and spaces that help musicians get back to adventure.
-            Lia Music is the first vertical of Lia Creative — a creative company
-            building things that solve real problems and feel like gifts.
+            We empower people to create, through tools, education, and spaces.
+            A creative company building things that solve real problems and
+            feel like gifts.
           </p>
           <div className="mt-2 flex gap-2">
             <Button>
@@ -96,72 +91,54 @@ function Welcome() {
 
         <section className="flex flex-col gap-4">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            What we believe
+            Our values
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Tools should be gifts.</CardTitle>
+                <CardTitle>We are creative.</CardTitle>
                 <CardDescription>
-                  Deeply understand the person receiving them. It shows in every
-                  detail, or it doesn&apos;t.
+                  When reality shifts, so do we. First principles. Ideate always.
                 </CardDescription>
-                <CardAction>
-                  <SparklesIcon className="text-primary" />
-                </CardAction>
               </CardHeader>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Solve it, settle it, move on.</CardTitle>
+                <CardTitle>We are brave.</CardTitle>
                 <CardDescription>
-                  Once you learn a Lia tool, it doesn&apos;t change on you. No
-                  feature bloat. Trust is the value exchange.
+                  We back ourselves, and we show up unafraid.
                 </CardDescription>
-                <CardAction>
-                  <HandshakeIcon className="text-muted-foreground" />
-                </CardAction>
               </CardHeader>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Creativity is practical.</CardTitle>
+                <CardTitle>We are collaborative.</CardTitle>
                 <CardDescription>
-                  Not precious. Showing up, getting curious, making things,
-                  especially when your brain won&apos;t cooperate. We design for
-                  that posture.
+                  We listen and learn. From creators, from customers, from each
+                  other.
                 </CardDescription>
-                <CardAction>
-                  <CompassIcon className="text-muted-foreground" />
-                </CardAction>
               </CardHeader>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Hits, not noise.</CardTitle>
+                <CardTitle>We are practical.</CardTitle>
                 <CardDescription>
-                  Every product tested against the &ldquo;hell yeah&rdquo;
-                  reaction, not the &ldquo;yeah, interesting&rdquo; reaction.
+                  We provide solutions through action. Real problems, real
+                  products, real people.
                 </CardDescription>
-                <CardAction>
-                  <Tooltip>
-                    <TooltipTrigger
-                      render={
-                        <Button
-                          size="icon-sm"
-                          variant="ghost"
-                          aria-label="More"
-                        >
-                          <PlusIcon />
-                        </Button>
-                      }
-                    />
-                    <TooltipContent>From the 1-pager</TooltipContent>
-                  </Tooltip>
-                </CardAction>
+              </CardHeader>
+            </Card>
+
+            <Card className="sm:col-span-2">
+              <CardHeader>
+                <CardTitle>We build to last.</CardTitle>
+                <CardDescription>
+                  Care drives quality. Quality earns trust. Trust means we stick
+                  around.
+                </CardDescription>
               </CardHeader>
             </Card>
           </div>
@@ -169,15 +146,9 @@ function Welcome() {
 
         <section className="flex flex-col gap-4">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            How we work
+            Vision · Mission · Values
           </p>
           <Card>
-            <CardHeader>
-              <CardTitle>Vision · Mission · Values</CardTitle>
-              <CardDescription>
-                The shape of Lia Creative.
-              </CardDescription>
-            </CardHeader>
             <CardContent className="grid gap-4 px-4 sm:grid-cols-3">
               <div className="flex flex-col gap-1">
                 <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -197,16 +168,13 @@ function Welcome() {
               </div>
               <div className="flex flex-col gap-1">
                 <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                  Values
+                  Pillars
                 </p>
                 <p className="text-sm text-foreground">
-                  Creative. Brave. Collaborative. Practical. We build to last.
+                  Spirit. Texture. Signature.
                 </p>
               </div>
             </CardContent>
-            <CardFooter className="text-xs text-muted-foreground">
-              Spirit · Texture · Signature — the three brand pillars below.
-            </CardFooter>
           </Card>
         </section>
 
@@ -216,10 +184,10 @@ function Welcome() {
           </p>
           <Card>
             <CardHeader>
-              <CardTitle>The eight primitives, in context</CardTitle>
+              <CardTitle>The nine primitives, in context</CardTitle>
               <CardDescription>
                 Tap a button to see the toast. Open the dialog to see how forms
-                compose with Label + Input. Hover the link for a tooltip.
+                compose with Label + Input. Toggle theme in the top-right.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap items-center gap-3 px-4">
@@ -267,7 +235,7 @@ function Welcome() {
                 />
                 <TooltipContent>
                   Button · Card · Dialog · Input · Label · Logo · Sonner ·
-                  Tooltip
+                  Theme Toggle · Tooltip
                 </TooltipContent>
               </Tooltip>
             </CardContent>

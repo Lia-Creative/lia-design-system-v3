@@ -1,8 +1,25 @@
 import type { Preview } from '@storybook/nextjs-vite'
+import { ThemeProvider, useTheme } from 'next-themes'
 import React from 'react'
 
 import '../src/app/globals.css'
 import liaTheme from './theme'
+
+/**
+ * Syncs the Storybook toolbar globalType `theme` with next-themes' ThemeProvider.
+ * Only fires when the toolbar value actually changes, so the in-page ThemeToggle
+ * isn't fought back to the toolbar value on every render.
+ */
+function ThemeSync({ theme }: { theme: string }) {
+  const { setTheme } = useTheme()
+  const lastApplied = React.useRef<string | null>(null)
+  React.useEffect(() => {
+    if (lastApplied.current === theme) return
+    lastApplied.current = theme
+    setTheme(theme)
+  }, [theme, setTheme])
+  return null
+}
 
 const preview: Preview = {
   parameters: {
@@ -35,15 +52,19 @@ const preview: Preview = {
   },
   decorators: [
     (Story, context) => {
-      const theme = context.globals.theme ?? 'light'
-      if (typeof document !== 'undefined') {
-        document.documentElement.classList.toggle('dark', theme === 'dark')
-        document.documentElement.style.colorScheme = theme
-      }
+      const theme = (context.globals.theme as string) ?? 'light'
       return (
-        <div className="bg-background text-foreground antialiased">
-          <Story />
-        </div>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <ThemeSync theme={theme} />
+          <div className="bg-background text-foreground antialiased">
+            <Story />
+          </div>
+        </ThemeProvider>
       )
     },
   ],
