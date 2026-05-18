@@ -6,6 +6,7 @@ import {
   SparklesIcon,
   type LucideIcon,
 } from 'lucide-react'
+import { useState, type CSSProperties } from 'react'
 
 import './tokens.css'
 
@@ -60,6 +61,13 @@ const toneClasses: Record<Bet['tone'], string> = {
 }
 
 function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
+  // Random tilt per card, generated once per mount. Each card gets a
+  // value in [-2deg, 2deg]. The CSS variable is always set, but only
+  // the v3 scope reads it — v1 and v2 cards stay flat.
+  const [cardTilts] = useState(() =>
+    bets.map(() => (Math.random() * 4 - 2).toFixed(2)),
+  )
+
   return (
     <div className={`${scopeClass} min-h-svh bg-background text-foreground`}>
       <div className="mx-auto flex max-w-lg flex-col gap-12 px-6 pt-10 pb-16">
@@ -88,12 +96,17 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
             aria-label="Lia prototype bets"
             className="flex flex-col gap-3"
           >
-            {bets.map((bet) => {
+            {bets.map((bet, idx) => {
               const Icon = bet.icon
               return (
                 <Card
                   key={bet.slug}
                   size="sm"
+                  style={
+                    {
+                      '--card-tilt': `${cardTilts[idx]}deg`,
+                    } as CSSProperties
+                  }
                   className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
                 >
                   <CardContent className="flex items-center gap-4">
@@ -159,6 +172,14 @@ function LiaLinks() {
           note: 'Figtree + paper shadow',
           render: () => (
             <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v2" />
+          ),
+        },
+        {
+          id: 'v3',
+          label: 'v3',
+          note: 'tinted desk + scattered placement',
+          render: () => (
+            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v3" />
           ),
         },
       ]}

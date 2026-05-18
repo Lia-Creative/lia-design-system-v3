@@ -20,11 +20,35 @@
   /* DM Sans (system default), Card primitive at its default ring-only state. */
 }
 
-/* v2 — Figtree font + paper-on-surface shadow on bet cards */
-.playground-lia-links--v2 {
+/* Inherited from v2 onward: Figtree font + paper shadow on bet cards.
+   v3 builds on v2's design language; if a later version wants to drop
+   either, remove it from the selector list. */
+.playground-lia-links--v2,
+.playground-lia-links--v3 {
   --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 }
 
-.playground-lia-links--v2 [data-slot='card'] {
+.playground-lia-links--v2 [data-slot='card'],
+.playground-lia-links--v3 [data-slot='card'] {
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* v3 — paper on a tinted desk + scattered placement
+   - Background drops a notch so cards (at --card oklch 0.98) visually
+     sit on a surface instead of blending into it.
+   - Each bet card gets a random rotate in [-2deg, +2deg] via the
+     --card-tilt CSS variable set inline from the story. The rotate
+     property is standalone in modern CSS, so the existing translate
+     hover transform composes cleanly without conflict. */
+.playground-lia-links--v3 {
+  --background: oklch(0.96 0.005 91.4);
+}
+
+.dark .playground-lia-links--v3 {
+  --background: oklch(0.18 0.01 56);
+}
+
+.playground-lia-links--v3 [data-slot='card'] {
+  rotate: var(--card-tilt, 0deg);
+  transform-origin: center center;
 }
