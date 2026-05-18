@@ -1,6 +1,10 @@
 # Lia Design System — Design Source
 
-Figma file: [Lia shadcn studio](https://www.figma.com/design/I6XZUsUEu44R1gQSGLNQXx/Lia-shadcn-studio)
+Figma file: [Lia Design System (shadcn studio)](https://www.figma.com/design/IOEnlvI5WiSDF4zjghA2AN/Lia-Design-System--shadcn-studio-)
+
+File key: `IOEnlvI5WiSDF4zjghA2AN`
+
+> Replaces the original `Lia-shadcn-studio` file (`I6XZUsUEu44R1gQSGLNQXx`) from the April 2026 build. Figma↔code sync targets this file only.
 
 ## `lia-tokens.tokens.json`
 
@@ -8,7 +12,7 @@ Tokens Studio-compatible export of the Lia theme (light + dark). Use this to app
 
 ### Import into Figma (via Tokens Studio plugin)
 
-1. In Figma, open the Lia-shadcn-studio file
+1. In Figma, open the Lia Design System file
 2. Run the **Tokens Studio for Figma** plugin (install from Community if needed)
 3. Tools → Load existing tokens → JSON file → select `design/lia-tokens.tokens.json`
 4. In the Tokens Studio panel, apply the `Lia Light` theme (then `Lia Dark` for the dark mode)
