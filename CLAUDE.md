@@ -57,6 +57,30 @@ src/
 
 > **v2 divergence noted:** v2 split `primitives/compositions/layout/utils` under `src/ui/` with path aliases. v3 follows shadcn's flat `@/components/ui/` because that's what the registries (and shadcn/studio Pro) install into. Don't reintroduce the split.
 
+### Reach for shadcn/studio Pro first
+
+The shadcn/studio Pro registries are wired in `components.json` and the licence lives in `.env`. **Before scratch-building UI, check what's already in the catalogue.**
+
+Resolution order when you need new UI:
+
+1. **Block-level need** (hero, pricing, dashboard, feature grid, testimonials, CTA, footer, etc.) → install from `@ss-blocks`:
+   ```bash
+   pnpm dlx shadcn@latest add @ss-blocks/<name>
+   ```
+   Catalogue lives at https://shadcnstudio.com/blocks. Naming pattern: `<category>-<index>` (e.g. `hero-1`, `pricing-2`, `feature-3`). Block code installs into `src/components/blocks/` (creates the dir).
+
+2. **Primitive-level need** (a single component not yet in the repo) → install from `@ss-components` first, fall back to free shadcn if missing:
+   ```bash
+   pnpm dlx shadcn@latest add @ss-components/<name>
+   pnpm dlx shadcn@latest add <name>            # fallback if not in Pro
+   ```
+
+3. **Compose from existing primitives** if the new thing is mostly layout + a known atom.
+
+4. **Scratch-build a new primitive** only when none of the above fit — and **only after asking** (see next subsection).
+
+`@ss-themes` exists too but we have our own Lia theme — don't install from it without explicit reason.
+
 ### Creating or Modifying Components — **ASK FIRST**
 
 Adapted from v2 verbatim, because this is the rule that prevents drift:
@@ -158,6 +182,21 @@ Per component: at minimum `StoryDefault`. Then variant matrices, sizes, disabled
 - Mappings live in `src/figma/` as `*.figma.tsx` (only create these when explicitly hooking a component to Figma).
 - Config: `figma.config.json` at repo root, with `documentUrlSubstitutions` mapping component slugs to Figma node URLs.
 - File key is currently in the config; **never** hard-code file keys in `.figma.tsx` files — use the substitution placeholders.
+
+### Code → Figma Propagation
+
+There's no single "press a button and Figma updates" path. Match the propagation method to the change:
+
+| Change type | Path | Effort |
+| --- | --- | --- |
+| **Theme tokens** (colour, radius, shadow, font in `globals.css`) | `pnpm tokens:sync` → commit + push → in Figma, Tokens Studio plugin "Pull from GitHub" → variables update → every component using them re-renders | Mostly automatic |
+| **Using a stock shadcn/studio component or block as-is** | Already lives in the shadcn/studio Figma kit — designer drops the matching Figma instance | No propagation needed |
+| **Modifying a stock component** (new variant, prop, layout) | Designer mirrors the change in Figma manually. Add/update a Code Connect mapping in `src/figma/<name>.figma.tsx` so Figma Dev Mode shows the updated code snippet. | Manual visual, automatic dev handoff |
+| **Brand new component** (not in shadcn/studio) | Build in code → create matching Figma component (manually or scaffold via Figma MCP for simple cases) → add Code Connect mapping in `src/figma/<name>.figma.tsx` + a node URL in `figma.config.json`'s `documentUrlSubstitutions` | Manual with optional MCP assist |
+
+The honest reality: **Code → Figma push is hard.** Figma's data model (auto-layout, variants, instances, modes) doesn't 1:1 map to React. MCP variable writes work; MCP collection mutations silently fail; component-level pushes need babysitting. Bias toward customising **tokens** (which auto-flow) and **using stock components** (which are already paired) over scratch-building structural variants.
+
+If a design surface needs pixel-perfect "show me exactly what the code renders" parity in Figma, consider `story.to.design` as an optional add-on — it renders Storybook stories into Figma frames. Not currently installed; ask before adding.
 
 ### MCP Write-Path Reliability (carried from April 24 learnings)
 
