@@ -3,13 +3,6 @@
   "framework": null,
   "buildCommand": "pnpm build:vercel",
   "installCommand": "pnpm install",
-  "outputDirectory": "dist",
-  "nodeVersion": "20.x",
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/storybook",
-      "permanent": false
-    }
-  ]
+  "outputDirectory": "dist/storybook",
+  "nodeVersion": "20.x"
 }
