@@ -1,7 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm build:vercel",
   "installCommand": "pnpm install",
-  "nodeVersion": "20.x"
+  "outputDirectory": "dist",
+  "nodeVersion": "20.x",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/storybook",
+      "permanent": false
+    }
+  ]
 }

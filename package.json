@@ -9,6 +9,7 @@
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "build:vercel": "storybook build --output-dir dist/storybook",
     "tokens:sync": "node scripts/tokens-from-css.mjs"
   },
   "dependencies": {
