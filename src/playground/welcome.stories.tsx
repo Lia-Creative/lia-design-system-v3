@@ -259,7 +259,7 @@ function Welcome() {
 }
 
 const meta = {
-  title: 'Lia Examples/Welcome',
+  title: 'Playground/Welcome',
   component: Welcome,
   parameters: { layout: 'fullscreen' },
 } satisfies Meta<typeof Welcome>
