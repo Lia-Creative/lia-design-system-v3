@@ -60,20 +60,37 @@ const toneClasses: Record<Bet['tone'], string> = {
   secondary: 'bg-secondary text-secondary-foreground',
 }
 
+// Random tilt range. ±0.6° reads as "precisely placed, just slightly off
+// horizontal" — paper that's been put down with intent. Bigger feels
+// scattered; this should look intentional.
+const TILT_RANGE = 0.6
+
+function randomTilt() {
+  return (Math.random() * TILT_RANGE * 2 - TILT_RANGE).toFixed(2)
+}
+
 function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
-  // Random tilt per card, generated once per mount. Each card gets a
-  // value in [-2deg, 2deg]. The CSS variable is always set, but only
-  // the v3 scope reads it — v1 and v2 cards stay flat.
-  const [cardTilts] = useState(() =>
-    bets.map(() => (Math.random() * 4 - 2).toFixed(2)),
-  )
+  // Random tilt per tiltable element, generated once per mount. The
+  // CSS variable --surface-tilt is set on every version's cards/buttons,
+  // but only the v3 scope reads it (rotate: var(--surface-tilt)). v1
+  // and v2 stay flat.
+  const [tilts] = useState(() => ({
+    themeToggle: randomTilt(),
+    bets: bets.map(() => randomTilt()),
+  }))
 
   return (
     <div className={`${scopeClass} min-h-svh bg-background text-foreground`}>
       <div className="mx-auto flex max-w-lg flex-col gap-12 px-6 pt-10 pb-16">
         <header className="flex items-center justify-between">
           <Logo className="h-7 w-auto" />
-          <ThemeToggle />
+          <ThemeToggle
+            style={
+              {
+                '--surface-tilt': `${tilts.themeToggle}deg`,
+              } as CSSProperties
+            }
+          />
         </header>
 
         <section className="flex flex-col gap-4">
@@ -104,7 +121,7 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
                   size="sm"
                   style={
                     {
-                      '--card-tilt': `${cardTilts[idx]}deg`,
+                      '--surface-tilt': `${tilts.bets[idx]}deg`,
                     } as CSSProperties
                   }
                   className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"

@@ -34,21 +34,34 @@
 }
 
 /* v3 — paper on a tinted desk + scattered placement
-   - Background drops a notch so cards (at --card oklch 0.98) visually
-     sit on a surface instead of blending into it.
-   - Each bet card gets a random rotate in [-2deg, +2deg] via the
-     --card-tilt CSS variable set inline from the story. The rotate
-     property is standalone in modern CSS, so the existing translate
-     hover transform composes cleanly without conflict. */
+
+   - Background locked to Tailwind Stone (200 light, 900 dark) for
+     brand-palette consistency. Stone-200 reads as a subtle warm-grey
+     desk under the paper-coloured cards (at system --card oklch 0.98).
+   - Tilt applies to cards, standalone buttons, and the theme toggle —
+     anything that visually sits on the surface as a discrete object.
+     Text and divider lines are untouched. Nested buttons inside cards
+     have their tilt reset to 0 so rotations don't compound visually.
+   - Each tiltable element reads --surface-tilt set inline from the
+     story (range ±0.6°). The standalone `rotate` CSS property composes
+     cleanly with the existing translate hover transform. */
 .playground-lia-links--v3 {
-  --background: oklch(0.96 0.005 91.4);
+  --background: oklch(0.923 0.003 48.717); /* Tailwind Stone-200 */
 }
 
 .dark .playground-lia-links--v3 {
-  --background: oklch(0.18 0.01 56);
+  --background: oklch(0.216 0.006 56.043); /* Tailwind Stone-900 */
 }
 
-.playground-lia-links--v3 [data-slot='card'] {
-  rotate: var(--card-tilt, 0deg);
+.playground-lia-links--v3 [data-slot='card'],
+.playground-lia-links--v3 [data-slot='button'],
+.playground-lia-links--v3 [data-slot='theme-toggle'] {
+  rotate: var(--surface-tilt, 0deg);
   transform-origin: center center;
+}
+
+/* Prevent compound rotation when a button sits inside a card. */
+.playground-lia-links--v3 [data-slot='card'] [data-slot='button'],
+.playground-lia-links--v3 [data-slot='card'] [data-slot='theme-toggle'] {
+  rotate: 0deg;
 }
