@@ -10,6 +10,8 @@ Brief: Linktree-style landing surface for lia.build. Mission statement up top, t
 |------|--------|--------|--------|
 | 2026-05-19 | structure | Prototype scaffolded | live |
 | 2026-05-19 | structure | Composed `index.stories.tsx` from Card, Logo, ThemeToggle. Three clickable link rows via stretched-link pattern. Tone slots driven by `bg-primary/10`, `bg-accent`, `bg-secondary` (no scoped token overrides yet). | live |
+| 2026-05-19 | token-tweak | Swap `--font-sans` to Figtree (Google Fonts) scoped to `.playground-lia-links`. Imported via `@import` in `tokens.css`. | live |
+| 2026-05-19 | structure | Add `shadow-xs` to bet cards (paper-on-surface feel). Hover state retains `shadow-md`. | live |
 
 ## Notes
 

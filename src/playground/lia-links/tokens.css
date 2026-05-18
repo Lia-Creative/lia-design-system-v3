@@ -1,10 +1,9 @@
 /* Lia Links — scoped token overrides */
-/* Nothing overridden yet. Add here if needed, scoped under .playground-lia-links */
+
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap');
 
 .playground-lia-links {
-  /* example:
-     --primary: oklch(0.60 0.18 200);
-   */
+  --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 }
 
 .dark .playground-lia-links {
