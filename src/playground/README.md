@@ -78,8 +78,8 @@ Nothing reaches the rest of the system without explicit approval.
 ## Workflow
 
 1. **Scaffold** — run `/prototype <name>` (or paste the natural-language prompt) to bootstrap the folder.
-2. **Vibe-code** — go nuts. Edit tokens, fork primitives, build new components. The sandbox holds.
-3. **Push to main** — Storybook auto-deploys to `storybook.lia.build` in ~30s. Your scoped changes only show inside your prototype.
+2. **Vibe-code** — go nuts. Edit tokens, fork primitives, build new components. The sandbox holds. Local Storybook HMR is the live preview during iteration; you don't need a deploy to see what you're doing.
+3. **Commit locally as you go, push at checkpoints** — small semantic commits build a useful audit trail, but pushing on every iteration just creates deploy noise. Push when wrapping a coherent iteration, at session end, or when you explicitly want to share the current state via `storybook.lia.build`.
 4. **Review** — run `/design-review` when you want to triage what should propagate.
 5. **Propagate** — approved changes merge into the system + the CHANGES.md ledger records the outcome.
 

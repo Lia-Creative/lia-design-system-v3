@@ -84,9 +84,13 @@ Apply Impeccable's anti-pattern guidance throughout. Specifically refuse to:
    - **For new primitives**: ask the user first. On approval: create the new component in `./components/<name>.tsx`. Never create directly in `src/components/ui/`.
    - **For ledger updates**: append a row to `CHANGES.md` every time you make a change. Don't ask first — just do it. Use the bucket vocabulary from CHANGES.md (`structure`, `token-tweak`, `primitive-fork`, `primitive-new`).
 
-5. **Commit cadence**: small, semantic commits during the session. Push to main as you go — Vercel auto-deploys to `storybook.lia.build` in ~30s. The user can see progress live.
+5. **Commit + push cadence**:
+   - **Commit locally** at small, semantic checkpoints (a meaningful change, a fix, a new version added). Cheap, gives a useful audit trail. Always do this.
+   - **Don't push every commit.** Local Storybook HMR is the live preview during a session — the user sees changes instantly without needing the Vercel deploy. Pushing on every iteration just creates deploy noise on `storybook.lia.build`.
+   - **Push at logical checkpoints only.** Specifically: when the user explicitly says to push / ship / deploy; when wrapping a coherent iteration ("we're done with the font + shadow exploration, want me to push?"); at session end; or before suggesting `/design-review`.
+   - **Confirm before pushing** unless the user has already said push. Even at a natural checkpoint, ask once ("logical stopping point — push now?") rather than pushing reflexively.
 
-6. **At session end** (or when the user says "review"): suggest running `/design-review` to triage what should backport vs stay sandboxed.
+6. **At session end** (or when the user says "review"): push any unpushed commits, then suggest running `/design-review` to triage what should backport vs stay sandboxed.
 
 ## CHANGES.md seed template
 
