@@ -66,6 +66,12 @@ function Prototype() {
 With matching scoped overrides in `tokens.css`:
 
 ```css
+.playground-thing {
+  /* Re-resolve inherited properties so the per-version --font-sans
+     override actually applies. See "Gotcha" below. */
+  font-family: var(--font-sans);
+}
+
 .playground-thing--v1 { /* baseline, untouched */ }
 
 .playground-thing--v2 {
@@ -76,3 +82,9 @@ With matching scoped overrides in `tokens.css`:
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 ```
+
+### Gotcha — inherited properties don't re-resolve from CSS vars
+
+Globals.css applies `font-sans` at `<html>`. The `font-sans` utility resolves to `font-family: var(--font-sans)` at the element where it's declared. That means `<html>`'s `font-family` computes to the resolved DM Sans value, and every descendant inherits the computed value, not the variable reference. A `--font-sans` override on `.playground-<slug>--v2` is **invisible** unless something inside that scope has its own `font-family: var(--font-sans)` declaration to re-trigger the lookup.
+
+The fix, already baked into the `/prototype` scaffold: declare `font-family: var(--font-sans)` on the shared `.playground-<slug>` scope. The same pattern applies to any inherited property whose token you want to scope-override — `color` (text-foreground on body), `background-color` (bg-background on body), etc. Add the equivalent re-declaration if you go to override those tokens.

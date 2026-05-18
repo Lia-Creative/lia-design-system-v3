@@ -64,7 +64,15 @@ Apply Impeccable's anti-pattern guidance throughout. Specifically refuse to:
 
    `tokens.css` should seed with:
    ```css
-   .playground-<slug> { /* shared across all versions */ }
+   .playground-<slug> {
+     /* Re-resolve inherited properties so version-scoped overrides actually
+        take effect. Without this, the resolved value inherited from <html>
+        or <body> wins and the variable override is invisible. */
+     font-family: var(--font-sans);
+     /* If you plan to scope --foreground / --background overrides too, also add:
+        color: var(--foreground);
+        background-color: var(--background); */
+   }
    .playground-<slug>--v1 { /* baseline, untouched after first ship */ }
    ```
 

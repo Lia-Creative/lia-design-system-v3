@@ -4,7 +4,11 @@
 
 /* Shared scope (applies to every version unless overridden below) */
 .playground-lia-links {
-  /* nothing shared yet */
+  /* Re-resolve font-family here so version-scoped --font-sans overrides
+     actually take effect. Without this, the inherited font-family from
+     <html> is the resolved DM Sans value and the variable override is
+     invisible. */
+  font-family: var(--font-sans);
 }
 
 .dark .playground-lia-links {

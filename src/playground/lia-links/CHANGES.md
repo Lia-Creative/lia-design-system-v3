@@ -13,6 +13,7 @@ Brief: Linktree-style landing surface for lia.build. Mission statement up top, t
 | 2026-05-19 | token-tweak | Swap `--font-sans` to Figtree (Google Fonts) scoped to `.playground-lia-links`. Imported via `@import` in `tokens.css`. | live |
 | 2026-05-19 | structure | Add `shadow-xs` to bet cards (paper-on-surface feel). Hover state retains `shadow-md`. | superseded by v2 scoped CSS |
 | 2026-05-19 | structure | Adopt `<VersionTabs>` pattern. v1 = baseline (DM Sans, ring-only Card). v2 = Figtree + paper shadow. JSX identical across versions; deltas live in `tokens.css` under `.playground-lia-links--v<n>`. Moved the shadow-xs from a class in JSX to a scoped CSS rule so v1 stays clean. | live |
+| 2026-05-19 | token-tweak | Fix Figtree not applying in v2: `font-family` is inherited as a resolved value from `<html>` and the v2 `--font-sans` override was invisible. Added `font-family: var(--font-sans)` on the shared `.playground-lia-links` scope so the variable re-resolves at the playground boundary. | live |
 
 ## Notes
 
