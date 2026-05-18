@@ -26,7 +26,7 @@ Read [CLAUDE.md](../../CLAUDE.md) first — the propagation matrix and the "ask 
    | **primitive-edit** | `src/components/ui/<existing>.tsx` | Existing primitive modified (variant added, layout tweaked, behaviour changed) |
    | **primitive-new** | `src/components/ui/<new>.tsx` | New file in `components/ui/` — a brand-new primitive |
    | **story** | `src/components/ui/*.stories.tsx` | Story updates (usually paired with primitive changes) |
-   | **prototype** | `src/examples/**` | Prototype surface work |
+   | **prototype** | `src/playground/**` | Prototype surface work |
    | **config** | `components.json`, `figma.config.json`, `.storybook/**`, `vercel.json`, `package.json`, `scripts/**` | System config |
    | **docs** | `*.md`, `CLAUDE.md`, `README.md` | Documentation |
    | **other** | anything else | Flag for individual review |
