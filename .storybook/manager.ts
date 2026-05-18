@@ -7,4 +7,7 @@ import liaTheme from './theme'
 // the manager UI needs an explicit setConfig call.
 addons.setConfig({
   theme: liaTheme,
+  sidebar: {
+    showRoots: true,
+  },
 })

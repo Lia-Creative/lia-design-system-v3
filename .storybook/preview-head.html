@@ -5,7 +5,26 @@
   document.documentElement.style.colorScheme = 'light';
 </script>
 
+<!--
+  next/font doesn't run in Storybook's Vite environment, so the --font-dm-sans /
+  --font-dm-mono / --font-libre-baskerville CSS vars (set by next/font in the
+  Next.js app) are undefined here. Load the fonts via Google Fonts and define
+  the vars ourselves so globals.css resolves them correctly.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300..500;1,300..500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+  rel="stylesheet"
+/>
+
 <style>
+  :root {
+    --font-dm-sans: 'DM Sans', system-ui, sans-serif;
+    --font-dm-mono: 'DM Mono', ui-monospace, monospace;
+    --font-libre-baskerville: 'Libre Baskerville', Georgia, serif;
+  }
+
   #storybook-root {
     width: 100%;
     display: flex;
