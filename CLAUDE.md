@@ -235,6 +235,18 @@ When writing variables to Figma via MCP (`setValueForMode`, `createVariable`):
 
 ---
 
+## Impeccable (vendored design-language skill)
+
+The repo carries a vendored copy of [Impeccable](https://github.com/pbakaus/impeccable) at `.claude/skills/impeccable/` (Apache 2.0, see `LICENSE` + `NOTICE.md` in that folder). It's a design-language skill that gives Claude better defaults for typography, colour, motion, spatial design, interaction, responsive behaviour, and UX writing — plus 23 commands accessed via `/impeccable <command>`:
+
+`craft`, `teach`, `document`, `extract`, `shape`, `critique`, `audit`, `polish`, `bolder`, `quieter`, `distill`, `harden`, `onboard`, `animate`, `colorize`, `typeset`, `layout`, `delight`, `overdrive`, `clarify`, `adapt`, `optimize`, `live`.
+
+When working in this repo, prefer reaching for these where they fit — e.g. `/impeccable critique` on a Playground prototype, `/impeccable polish` before promoting a primitive at `/design-review`, `/impeccable harden` on edge cases before a prototype ships. Don't override Impeccable's anti-patterns silently — if something contradicts Lia's deliberate choices (e.g. DM Sans being a "common" sans-serif), surface the conflict.
+
+Update notes + provenance live in `.claude/skills/impeccable/VENDORED.md`.
+
+---
+
 ## Deployment
 
 `vercel.json` enforces `framework: null` + `nodeVersion: 20.x` to prevent the v1→v2 deploy crisis (Vite auto-detection + Node 24 caused silent build failures). **Do not remove these settings** without understanding why they exist.
