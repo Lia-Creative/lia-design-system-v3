@@ -2,10 +2,25 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap');
 
+/* Shared scope (applies to every version unless overridden below) */
 .playground-lia-links {
-  --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+  /* nothing shared yet */
 }
 
 .dark .playground-lia-links {
-  /* dark-mode overrides go here */
+  /* dark-mode shared overrides go here */
+}
+
+/* v1 — baseline. Untouched after first ship. */
+.playground-lia-links--v1 {
+  /* DM Sans (system default), Card primitive at its default ring-only state. */
+}
+
+/* v2 — Figtree font + paper-on-surface shadow on bet cards */
+.playground-lia-links--v2 {
+  --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+}
+
+.playground-lia-links--v2 [data-slot='card'] {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }

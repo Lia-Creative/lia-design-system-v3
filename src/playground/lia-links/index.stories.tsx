@@ -9,6 +9,7 @@ import {
 
 import './tokens.css'
 
+import { VersionTabs } from '../_shared/version-tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Logo } from '@/components/ui/logo'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
@@ -58,9 +59,9 @@ const toneClasses: Record<Bet['tone'], string> = {
   secondary: 'bg-secondary text-secondary-foreground',
 }
 
-function LiaLinks() {
+function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
   return (
-    <div className="playground-lia-links min-h-svh bg-background text-foreground">
+    <div className={`${scopeClass} min-h-svh bg-background text-foreground`}>
       <div className="mx-auto flex max-w-lg flex-col gap-12 px-6 pt-10 pb-16">
         <header className="flex items-center justify-between">
           <Logo className="h-7 w-auto" />
@@ -93,7 +94,7 @@ function LiaLinks() {
                 <Card
                   key={bet.slug}
                   size="sm"
-                  className="group/bet relative shadow-xs transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
+                  className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
                 >
                   <CardContent className="flex items-center gap-4">
                     <span
@@ -137,6 +138,31 @@ function LiaLinks() {
         </footer>
       </div>
     </div>
+  )
+}
+
+function LiaLinks() {
+  return (
+    <VersionTabs
+      versions={[
+        {
+          id: 'v1',
+          label: 'v1',
+          note: 'baseline',
+          render: () => (
+            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v1" />
+          ),
+        },
+        {
+          id: 'v2',
+          label: 'v2',
+          note: 'Figtree + paper shadow',
+          render: () => (
+            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v2" />
+          ),
+        },
+      ]}
+    />
   )
 }
 

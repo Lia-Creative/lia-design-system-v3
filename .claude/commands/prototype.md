@@ -47,8 +47,8 @@ Apply Impeccable's anti-pattern guidance throughout. Specifically refuse to:
 
    ```
    src/playground/<slug>/
-   ├── index.stories.tsx     Storybook story. Wraps content in <div className="playground-<slug>">. Imports ./tokens.css.
-   ├── tokens.css            Empty scoped overrides under .playground-<slug>
+   ├── index.stories.tsx     Storybook story. Renders <VersionTabs versions={[v1, …]} />. Imports ./tokens.css.
+   ├── tokens.css            Scoped overrides under .playground-<slug>--v<n>
    ├── components/.gitkeep   Forked + new primitives go here
    └── CHANGES.md            Ledger seeded with the prototype's creation row
    ```
@@ -56,14 +56,22 @@ Apply Impeccable's anti-pattern guidance throughout. Specifically refuse to:
    `index.stories.tsx` should:
    - Use Storybook title `Playground/<Display Name>`
    - Use `parameters: { layout: 'fullscreen' }`
-   - Wrap all content in `<div className="playground-<slug> ...">` so scoped tokens take effect
+   - Extract the page content into a `<Surface scopeClass={…}>` component that wraps everything in `<div className={`${scopeClass} …`}>` so scoped tokens take effect
+   - Wrap the surface in `<VersionTabs versions={[…]} />` (imported from `'../_shared/version-tabs'`). Seed with a single `v1` version labelled `'baseline'`. Future iterations add `v2`, `v3`, … alongside — never overwrite `v1`.
    - Import `./tokens.css` near the top
    - Compose existing primitives from `@/components/ui/` — DO NOT scratch-build UI
    - If the brief implies a block-level pattern (hero, pricing, dashboard, testimonials, footer, feature grid, etc.), **install from `@ss-blocks` before building**: `pnpm dlx shadcn@latest add @ss-blocks/<block-name>`. Use the installed block as the structural base, then compose/swap primitives as needed.
 
+   `tokens.css` should seed with:
+   ```css
+   .playground-<slug> { /* shared across all versions */ }
+   .playground-<slug>--v1 { /* baseline, untouched after first ship */ }
+   ```
+
 4. **Working rules during the session** (state these to the user once, then follow them):
 
-   - **For token tweaks**: edit `./tokens.css` only. Never `src/app/globals.css`. Override under `.playground-<slug>` (and `.dark .playground-<slug>` for dark mode).
+   - **For token tweaks**: edit `./tokens.css` only. Never `src/app/globals.css`. Override under `.playground-<slug>--v<n>` (and `.dark .playground-<slug>--v<n>` for dark mode). The shared `.playground-<slug>` scope is for things that apply across every version; per-version deltas always nest under the version scope.
+   - **For new iterations (v2, v3, …)**: never edit v1 after it's shipped. Add a new version entry to the `versions` array in `index.stories.tsx` with a fresh `id`, `label` (`'v2'`), and `note` describing the delta. Add matching scoped rules under `.playground-<slug>--v<n>` in `tokens.css`. Keep the JSX identical across versions unless the iteration genuinely is structural — that way comparison stays about the design language. The latest version becomes the default tab automatically.
    - **For primitive tweaks**: ask the user first ("can I fork Button into this prototype's components/ to add X?"). On approval: copy `src/components/ui/<name>.tsx` → `./components/<name>.tsx`, modify, swap the import in `index.stories.tsx`. Never edit `src/components/ui/` directly.
    - **For new primitives**: ask the user first. On approval: create the new component in `./components/<name>.tsx`. Never create directly in `src/components/ui/`.
    - **For ledger updates**: append a row to `CHANGES.md` every time you make a change. Don't ask first — just do it. Use the bucket vocabulary from CHANGES.md (`structure`, `token-tweak`, `primitive-fork`, `primitive-new`).

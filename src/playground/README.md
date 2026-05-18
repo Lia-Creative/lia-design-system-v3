@@ -6,13 +6,26 @@ A **true sandbox** for prototyping with the Lia design system. Every change you 
 
 ```
 src/playground/<name>/
-├── index.stories.tsx     The story. Wraps content in <div className="playground-<name>">…</div>
-├── tokens.css            Scoped token overrides (.playground-<name> { --primary: …; })
+├── index.stories.tsx     The story. Renders <VersionTabs versions={[v1, v2, …]} />
+├── tokens.css            Scoped token overrides (.playground-<name>--v<n> { --primary: …; })
 ├── components/           Forked primitives + new components, prototype-local
 └── CHANGES.md            Running ledger of every change
 ```
 
 Story title: `Playground/<Name>` (e.g. `Playground/Welcome`, `Playground/Musician Profile`).
+
+## Versioning — keep iterations side-by-side
+
+Every prototype is wrapped in [`<VersionTabs>`](_shared/version-tabs.tsx). The sticky tab bar at the top of the canvas lets you flip between v1, v2, v3, … so iterations stay comparable instead of overwriting each other.
+
+**Convention:**
+
+- **v1 is the baseline.** Once shipped, don't edit it. Every later iteration adds a new version alongside.
+- **New iterations get added as v2, v3, …** with a short `note` describing the delta ("Figtree + paper shadow", "denser layout", "warmer palette").
+- **Default tab is the latest version** unless `defaultId` overrides it.
+- **Visual deltas live in `tokens.css`** scoped under `.playground-<slug>--v<n>` whenever possible. The JSX should stay identical across versions so the comparison is purely about the design language.
+
+See [`_shared/README.md`](_shared/README.md) for the pattern detail and an example.
 
 ## How sandboxing works
 
