@@ -2,6 +2,7 @@
 
 The Lia design system. Next.js 16 + Tailwind v4 + shadcn/ui (base-nova) + Base UI primitives.
 
+- **Live:** [storybook.lia.build](https://storybook.lia.build) (production), [lia-design-system-v3.vercel.app](https://lia-design-system-v3.vercel.app) (Vercel alias)
 - **Figma:** [Lia Design System (shadcn studio)](https://www.figma.com/design/IOEnlvI5WiSDF4zjghA2AN/Lia-Design-System--shadcn-studio-) — file key `IOEnlvI5WiSDF4zjghA2AN`
 - **Repo:** [Lia-Creative/lia-design-system-v3](https://github.com/Lia-Creative/lia-design-system-v3)
 - **Tokens source of truth:** `src/app/globals.css` (oklch CSS vars). Tokens Studio JSON mirror at `design/lia-tokens.tokens.json` for Figma round-trip.
