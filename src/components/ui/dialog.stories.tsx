@@ -15,15 +15,17 @@ import { Input } from './input'
 import { Label } from './label'
 
 const meta = {
-  title: 'UI/Dialog',
+  title: 'Lia Primitives/Dialog',
   component: Dialog,
   tags: ['autodocs'],
+  parameters: { layout: 'centered' },
 } satisfies Meta<typeof Dialog>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
+export const StoryDefault: Story = {
+  name: 'Default',
   render: () => (
     <Dialog>
       <DialogTrigger render={<Button>Edit profile</Button>} />

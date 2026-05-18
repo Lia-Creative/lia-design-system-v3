@@ -1,0 +1,15 @@
+<!-- Carried from Lia DS v2: force light mode on initial paint so OS dark preference
+     doesn't flash before the theme decorator runs. See CLAUDE.md > Storybook. -->
+<script>
+  document.documentElement.classList.remove('dark');
+  document.documentElement.style.colorScheme = 'light';
+</script>
+
+<style>
+  #storybook-root {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

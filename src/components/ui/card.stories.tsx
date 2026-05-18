@@ -12,15 +12,17 @@ import {
 } from './card'
 
 const meta = {
-  title: 'UI/Card',
+  title: 'Lia Primitives/Card',
   component: Card,
   tags: ['autodocs'],
+  parameters: { layout: 'centered' },
 } satisfies Meta<typeof Card>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
+export const StoryDefault: Story = {
+  name: 'Default',
   render: () => (
     <Card className="w-[360px]">
       <CardHeader>
@@ -40,7 +42,8 @@ export const Default: Story = {
   ),
 }
 
-export const WithAction: Story = {
+export const StoryWithAction: Story = {
+  name: 'With Action',
   render: () => (
     <Card className="w-[360px]">
       <CardHeader>
@@ -56,7 +59,8 @@ export const WithAction: Story = {
   ),
 }
 
-export const Small: Story = {
+export const StorySmall: Story = {
+  name: 'Small',
   render: () => (
     <Card size="sm" className="w-[280px]">
       <CardHeader>

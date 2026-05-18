@@ -4,9 +4,10 @@ import { ArrowRightIcon, PlusIcon } from 'lucide-react'
 import { Button } from './button'
 
 const meta = {
-  title: 'UI/Button',
+  title: 'Lia Primitives/Button',
   component: Button,
   tags: ['autodocs'],
+  parameters: { layout: 'centered' },
   argTypes: {
     variant: {
       control: 'select',
@@ -28,9 +29,10 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const StoryDefault: Story = { name: 'Default' }
 
-export const Variants: Story = {
+export const StoryVariants: Story = {
+  name: 'Variants',
   render: () => (
     <div className="flex flex-wrap items-center gap-3">
       <Button>Default</Button>
@@ -43,7 +45,8 @@ export const Variants: Story = {
   ),
 }
 
-export const Sizes: Story = {
+export const StorySizes: Story = {
+  name: 'Sizes',
   render: () => (
     <div className="flex flex-wrap items-center gap-3">
       <Button size="xs">XS</Button>
@@ -54,7 +57,8 @@ export const Sizes: Story = {
   ),
 }
 
-export const WithIcon: Story = {
+export const StoryWithIcon: Story = {
+  name: 'With Icon',
   render: () => (
     <div className="flex flex-wrap items-center gap-3">
       <Button>
@@ -72,6 +76,7 @@ export const WithIcon: Story = {
   ),
 }
 
-export const Disabled: Story = {
+export const StoryDisabled: Story = {
+  name: 'Disabled',
   args: { disabled: true },
 }

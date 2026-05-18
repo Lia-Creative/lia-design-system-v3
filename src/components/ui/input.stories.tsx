@@ -4,9 +4,10 @@ import { Input } from './input'
 import { Label } from './label'
 
 const meta = {
-  title: 'UI/Input',
+  title: 'Lia Primitives/Input',
   component: Input,
   tags: ['autodocs'],
+  parameters: { layout: 'centered' },
   argTypes: {
     type: {
       control: 'select',
@@ -20,9 +21,10 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const StoryDefault: Story = { name: 'Default' }
 
-export const WithLabel: Story = {
+export const StoryWithLabel: Story = {
+  name: 'With Label',
   render: () => (
     <div className="flex w-[320px] flex-col gap-2">
       <Label htmlFor="email">Email</Label>
@@ -31,20 +33,17 @@ export const WithLabel: Story = {
   ),
 }
 
-export const Invalid: Story = {
+export const StoryInvalid: Story = {
+  name: 'Invalid',
   render: () => (
     <div className="flex w-[320px] flex-col gap-2">
       <Label htmlFor="email-invalid">Email</Label>
-      <Input
-        id="email-invalid"
-        type="email"
-        defaultValue="not-an-email"
-        aria-invalid
-      />
+      <Input id="email-invalid" type="email" defaultValue="not-an-email" aria-invalid />
     </div>
   ),
 }
 
-export const Disabled: Story = {
+export const StoryDisabled: Story = {
+  name: 'Disabled',
   args: { disabled: true, defaultValue: 'cannot edit' },
 }

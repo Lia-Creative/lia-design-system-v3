@@ -9,9 +9,10 @@ import {
 } from './tooltip'
 
 const meta = {
-  title: 'UI/Tooltip',
+  title: 'Lia Primitives/Tooltip',
   component: Tooltip,
   tags: ['autodocs'],
+  parameters: { layout: 'centered' },
   decorators: [
     (Story) => (
       <TooltipProvider>
@@ -24,7 +25,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
+export const StoryDefault: Story = {
+  name: 'Default',
   render: () => (
     <Tooltip>
       <TooltipTrigger render={<Button variant="outline">Hover me</Button>} />
@@ -33,14 +35,13 @@ export const Default: Story = {
   ),
 }
 
-export const Sides: Story = {
+export const StorySides: Story = {
+  name: 'Sides',
   render: () => (
     <div className="flex flex-wrap items-center gap-6">
       {(['top', 'right', 'bottom', 'left'] as const).map((side) => (
         <Tooltip key={side}>
-          <TooltipTrigger
-            render={<Button variant="outline">{side}</Button>}
-          />
+          <TooltipTrigger render={<Button variant="outline">{side}</Button>} />
           <TooltipContent side={side}>From the {side}</TooltipContent>
         </Tooltip>
       ))}

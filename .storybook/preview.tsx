@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/nextjs-vite'
 import React from 'react'
 
 import '../src/app/globals.css'
+import liaTheme from './theme'
 
 const preview: Preview = {
   parameters: {
@@ -10,6 +11,9 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
+    },
+    docs: {
+      theme: liaTheme,
     },
     backgrounds: { disable: true },
     a11y: { test: 'todo' },
@@ -34,9 +38,10 @@ const preview: Preview = {
       const theme = context.globals.theme ?? 'light'
       if (typeof document !== 'undefined') {
         document.documentElement.classList.toggle('dark', theme === 'dark')
+        document.documentElement.style.colorScheme = theme
       }
       return (
-        <div className="min-h-screen bg-background p-8 text-foreground antialiased">
+        <div className="bg-background text-foreground antialiased">
           <Story />
         </div>
       )
