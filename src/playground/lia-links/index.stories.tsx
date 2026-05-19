@@ -3,7 +3,10 @@ import {
   ArrowRightIcon,
   FolderTreeIcon,
   Layers3Icon,
+  MoonIcon,
+  PaletteIcon,
   SparklesIcon,
+  SunIcon,
   type LucideIcon,
 } from 'lucide-react'
 import { useState, type CSSProperties } from 'react'
@@ -11,6 +14,7 @@ import { useState, type CSSProperties } from 'react'
 import './tokens.css'
 
 import { VersionTabs } from '../_shared/version-tabs'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Logo } from '@/components/ui/logo'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
@@ -102,7 +106,53 @@ function mixedTilts(count: number): string[] {
   return out.map((v) => v.toFixed(2))
 }
 
-function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
+// v7 introduces a tri-state mode toggle (light / dark / colour) that's
+// independent of the system .dark theme. Other versions keep using the
+// system ThemeToggle (light / dark only).
+type V7Mode = 'light' | 'dark' | 'colour'
+const V7_MODES: V7Mode[] = ['light', 'dark', 'colour']
+const V7_MODE_ICONS: Record<V7Mode, LucideIcon> = {
+  light: SunIcon,
+  dark: MoonIcon,
+  colour: PaletteIcon,
+}
+
+function ModeToggle({
+  mode,
+  onCycle,
+  style,
+}: {
+  mode: V7Mode
+  onCycle: () => void
+  style?: CSSProperties
+}) {
+  const Icon = V7_MODE_ICONS[mode]
+  return (
+    <Button
+      data-slot="theme-toggle"
+      variant="ghost"
+      size="icon-sm"
+      aria-label={`Mode: ${mode}. Click to cycle through light, dark, colour.`}
+      onClick={onCycle}
+      style={style}
+    >
+      <Icon />
+    </Button>
+  )
+}
+
+type LiaLinksSurfaceProps = {
+  scopeClass: string
+} & (
+  | { mode?: undefined; onCycleMode?: undefined }
+  | { mode: V7Mode; onCycleMode: () => void }
+)
+
+function LiaLinksSurface({
+  scopeClass,
+  mode,
+  onCycleMode,
+}: LiaLinksSurfaceProps) {
   // Random tilt per tiltable element, generated once per mount. The
   // CSS variable --surface-tilt is set on every version's cards/buttons,
   // but only the v3 scope reads it (rotate: var(--surface-tilt)). v1
@@ -140,13 +190,25 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
       <div className="mx-auto flex max-w-lg flex-col gap-12 px-6 pt-10 pb-16">
         <header className="flex items-center justify-between">
           <Logo className="h-7 w-auto" />
-          <ThemeToggle
-            style={
-              {
-                '--surface-tilt': `${tilts.themeToggle}deg`,
-              } as CSSProperties
-            }
-          />
+          {mode !== undefined ? (
+            <ModeToggle
+              mode={mode}
+              onCycle={onCycleMode}
+              style={
+                {
+                  '--surface-tilt': `${tilts.themeToggle}deg`,
+                } as CSSProperties
+              }
+            />
+          ) : (
+            <ThemeToggle
+              style={
+                {
+                  '--surface-tilt': `${tilts.themeToggle}deg`,
+                } as CSSProperties
+              }
+            />
+          )}
         </header>
 
         <section className="flex flex-col gap-4">
@@ -292,12 +354,26 @@ function LiaLinks() {
         {
           id: 'v7',
           label: 'v7',
-          note: 'colour mode',
-          render: () => (
-            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v7" />
-          ),
+          note: 'three modes',
+          render: () => <V7Surface />,
         },
       ]}
+    />
+  )
+}
+
+function V7Surface() {
+  const [mode, setMode] = useState<V7Mode>('light')
+  const cycleMode = () =>
+    setMode(
+      (current) => V7_MODES[(V7_MODES.indexOf(current) + 1) % V7_MODES.length],
+    )
+
+  return (
+    <LiaLinksSurface
+      scopeClass={`playground-lia-links playground-lia-links--v7 playground-lia-links--v7-${mode}`}
+      mode={mode}
+      onCycleMode={cycleMode}
     />
   )
 }
