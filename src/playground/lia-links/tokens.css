@@ -196,18 +196,18 @@
    scissor-cut radius, sticker icons) are inherited from the v5/v6/v7
    `:is(...)` blocks above. Each mode below sets only what differs. */
 
-/* v7-light, v8-light — clean light paper, same colour pair as v6 light */
-:is(.playground-lia-links--v7-light, .playground-lia-links--v8-light) {
+/* v7-light, v8-light, v9-light — clean light paper, same colour pair as v6 light */
+:is(.playground-lia-links--v7-light, .playground-lia-links--v8-light, .playground-lia-links--v9-light) {
   --card: oklch(0.999 0.002 106.5); /* Olive-0 (extrapolated) */
   --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 }
 
-/* v7-dark, v8-dark — properly dark. Card at Olive-800, desk at Olive-
-   900 (v3's dark pair, restored now that the inverted texture is
-   working properly). Light text for AA legibility, higher-alpha dark
-   shadow stack. Applied unconditionally — not relying on the system
-   `.dark` class. */
-:is(.playground-lia-links--v7-dark, .playground-lia-links--v8-dark) {
+/* v7-dark, v8-dark, v9-dark — properly dark. Card at Olive-800, desk
+   at Olive-900 (v3's dark pair, restored now that the inverted texture
+   is working properly). Light text for AA legibility, higher-alpha
+   dark shadow stack. Applied unconditionally — not relying on the
+   system `.dark` class. */
+:is(.playground-lia-links--v7-dark, .playground-lia-links--v8-dark, .playground-lia-links--v9-dark) {
   --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
   --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
   --foreground: oklch(0.95 0.005 100);
@@ -268,7 +268,7 @@
    avatar tints (bg-primary/10, bg-accent, bg-secondary) read either
    muddy or camouflaged. Force a uniform paper-tone avatar so the
    stickers read like cream labels on the coloured cards. */
-:is(.playground-lia-links--v7-colour, .playground-lia-links--v8-colour)
+:is(.playground-lia-links--v7-colour, .playground-lia-links--v8-colour, .playground-lia-links--v9-colour)
   [data-slot='bet-icon'] {
   background-color: oklch(0.97 0.005 100); /* cream paper */
   color: oklch(0.20 0.005 100); /* dark warm ink */
@@ -303,34 +303,57 @@
   --paper-filter: saturate(0) contrast(1.15) invert(1);
 }
 
-/* v9 — paper-on-hover swap. Light mode: card flips to system
-   `--secondary` (Lia's light sky blue). Dark mode: card flips to
-   `--accent` (light yellow). Both surfaces stay light so the system
-   foregrounds (--secondary-foreground, --accent-foreground — both
-   dark) keep text contrast-safe. Avatar bg goes transparent and the
-   icon glyph picks up the new foreground so it remains visible.
+/* v9-colour — Purple-400 desk (same as v7-colour). The v9 difference
+   from v7/v8 lives in the hover swap on v9-light/v9-dark, not in the
+   colour palette. */
+.playground-lia-links--v9-colour {
+  --background: oklch(0.714 0.203 305.504); /* Tailwind Purple-400 */
+  --foreground: oklch(0.10 0.005 100);
+  --muted-foreground: oklch(0.22 0.005 100);
+  --paper-opacity: 0.80;
+}
 
-   v9 has light + dark only (no colour mode), so it uses the system
-   ThemeToggle rather than the v7/v8 ModeToggle. */
-.playground-lia-links--v9 [data-slot='card'] {
+.playground-lia-links--v9-colour [data-slot='card']:nth-child(1) {
+  --card: oklch(0.882 0.059 254.128); /* Tailwind Blue-200 */
+}
+
+.playground-lia-links--v9-colour [data-slot='card']:nth-child(2) {
+  --card: oklch(0.828 0.189 84.429); /* Tailwind Amber-400 */
+}
+
+.playground-lia-links--v9-colour [data-slot='card']:nth-child(3) {
+  --card: oklch(0.22 0.010 100);
+  --foreground: oklch(0.97 0.005 100);
+  --muted-foreground: oklch(0.78 0.005 100);
+  --paper-blend: screen;
+  --paper-opacity: 0.50;
+  --paper-filter: saturate(0) contrast(1.15) invert(1);
+}
+
+/* v9 — paper-on-hover swap (light + dark modes only). Light: card
+   flips to `--secondary` (Lia's light sky blue). Dark: card flips
+   to `--accent` (Lia yellow). Both target surfaces are light, so
+   the system tone-foregrounds (both dark) keep text contrast-safe.
+
+   Icon avatars deliberately stay at their rest tone styling — only
+   the card surface changes. Inline `--card` in v9-colour mode wins
+   over these rules via specificity, so the colour-mode palette is
+   unaffected. */
+:is(.playground-lia-links--v9-light, .playground-lia-links--v9-dark)
+  [data-slot='card'] {
   transition-property: box-shadow, transform, background-color, color;
 }
 
-.playground-lia-links--v9 [data-slot='card']:hover {
+.playground-lia-links--v9-light [data-slot='card']:hover {
   --card: var(--secondary);
   --foreground: var(--secondary-foreground);
   --muted-foreground: var(--secondary-foreground);
 }
 
-.dark .playground-lia-links--v9 [data-slot='card']:hover {
+.playground-lia-links--v9-dark [data-slot='card']:hover {
   --card: var(--accent);
   --foreground: var(--accent-foreground);
   --muted-foreground: var(--accent-foreground);
-}
-
-.playground-lia-links--v9 [data-slot='card']:hover [data-slot='bet-icon'] {
-  background-color: transparent;
-  color: var(--foreground);
 }
 
 /* Theme-toggle hover fix for dark surfaces. The system `--accent` token
@@ -341,7 +364,8 @@
 :is(
   .dark .playground-lia-links,
   .playground-lia-links--v7-dark,
-  .playground-lia-links--v8-dark
+  .playground-lia-links--v8-dark,
+  .playground-lia-links--v9-dark
 )
   [data-slot='theme-toggle']:hover {
   background-color: rgb(255 255 255 / 0.1);

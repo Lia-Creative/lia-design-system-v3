@@ -151,7 +151,7 @@ const LIGHT_PAPER_DEFAULTS = {
   paperFilter: 'saturate(0) contrast(1.15)',
 } as const
 
-const PAPER_PALETTES: Record<'v7' | 'v8', Paper[]> = {
+const PAPER_PALETTES: Record<'v7' | 'v8' | 'v9', Paper[]> = {
   v7: [
     {
       name: 'Purple-400',
@@ -189,6 +189,29 @@ const PAPER_PALETTES: Record<'v7' | 'v8', Paper[]> = {
     {
       name: 'Purple-300',
       bg: 'oklch(0.827 0.119 306.383)',
+      paperOpacity: 0.95,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    OFF_BLACK_PAPER,
+  ],
+  // v9 colour palette mirrors v7 (Purple-400 desk). The v9 difference
+  // is the light/dark hover swap, not the colour-mode palette.
+  v9: [
+    {
+      name: 'Purple-400',
+      bg: 'oklch(0.714 0.203 305.504)',
+      paperOpacity: 0.95,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    {
+      name: 'Blue-200',
+      bg: 'oklch(0.882 0.059 254.128)',
+      paperOpacity: 0.95,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    {
+      name: 'Amber-400',
+      bg: 'oklch(0.828 0.189 84.429)',
       paperOpacity: 0.95,
       ...LIGHT_PAPER_DEFAULTS,
     },
@@ -507,10 +530,8 @@ function LiaLinks() {
         {
           id: 'v9',
           label: 'v9',
-          note: 'card hover swap',
-          render: () => (
-            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v9" />
-          ),
+          note: 'card hover swap (three modes)',
+          render: () => <ColouredSurface version="v9" />,
         },
       ]}
     />
@@ -532,7 +553,7 @@ function shuffleOrder(current: readonly number[]): number[] {
   return [...current]
 }
 
-function ColouredSurface({ version }: { version: 'v7' | 'v8' }) {
+function ColouredSurface({ version }: { version: 'v7' | 'v8' | 'v9' }) {
   const [mode, setMode] = useState<V7Mode>('light')
   const [slotOrder, setSlotOrder] = useState<number[]>([...DEFAULT_SLOT_ORDER])
 
