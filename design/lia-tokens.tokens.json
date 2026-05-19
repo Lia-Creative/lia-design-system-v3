@@ -43,27 +43,27 @@
   },
   "lia-light": {
     "theme/background": {
-      "value": "#f8f8f8",
+      "value": "#f4f4f0",
       "type": "color"
     },
     "theme/foreground": {
-      "value": "#211c18",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/card": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/card-foreground": {
-      "value": "#211c18",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/popover": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/popover-foreground": {
-      "value": "#211c18",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/primary": {
@@ -71,7 +71,7 @@
       "type": "color"
     },
     "theme/primary-foreground": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/secondary": {
@@ -79,15 +79,15 @@
       "type": "color"
     },
     "theme/secondary-foreground": {
-      "value": "#241b14",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/muted": {
-      "value": "#f4f2ea",
+      "value": "#f4f4f0",
       "type": "color"
     },
     "theme/muted-foreground": {
-      "value": "#7f7261",
+      "value": "#7c7c67",
       "type": "color"
     },
     "theme/accent": {
@@ -95,7 +95,7 @@
       "type": "color"
     },
     "theme/accent-foreground": {
-      "value": "#241b14",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/destructive": {
@@ -103,11 +103,11 @@
       "type": "color"
     },
     "theme/border": {
-      "value": "#e7e4dd",
+      "value": "#e8e8e3",
       "type": "color"
     },
     "theme/input": {
-      "value": "#e7e4dd",
+      "value": "#e8e8e3",
       "type": "color"
     },
     "theme/ring": {
@@ -127,19 +127,19 @@
       "type": "color"
     },
     "theme/chart-4": {
-      "value": "#241b14",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/chart-5": {
-      "value": "#7e6e5f",
+      "value": "#7c7c67",
       "type": "color"
     },
     "theme/sidebar": {
-      "value": "#f4f2ea",
+      "value": "#f4f4f0",
       "type": "color"
     },
     "theme/sidebar-foreground": {
-      "value": "#211c18",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/sidebar-primary": {
@@ -147,7 +147,7 @@
       "type": "color"
     },
     "theme/sidebar-primary-foreground": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/sidebar-accent": {
@@ -155,11 +155,11 @@
       "type": "color"
     },
     "theme/sidebar-accent-foreground": {
-      "value": "#241b14",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/sidebar-border": {
-      "value": "#e7e4dd",
+      "value": "#e8e8e3",
       "type": "color"
     },
     "theme/sidebar-ring": {
@@ -313,27 +313,27 @@
   },
   "lia-dark": {
     "theme/background": {
-      "value": "#1e1916",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/foreground": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/card": {
-      "value": "#2b2523",
+      "value": "#2b2b22",
       "type": "color"
     },
     "theme/card-foreground": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/popover": {
-      "value": "#2b2523",
+      "value": "#2b2b22",
       "type": "color"
     },
     "theme/popover-foreground": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/primary": {
@@ -341,7 +341,7 @@
       "type": "color"
     },
     "theme/primary-foreground": {
-      "value": "#1e1916",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/secondary": {
@@ -349,15 +349,15 @@
       "type": "color"
     },
     "theme/secondary-foreground": {
-      "value": "#1e1916",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/muted": {
-      "value": "#2b2523",
+      "value": "#2b2b22",
       "type": "color"
     },
     "theme/muted-foreground": {
-      "value": "#aaa39f",
+      "value": "#abab9c",
       "type": "color"
     },
     "theme/accent": {
@@ -365,7 +365,7 @@
       "type": "color"
     },
     "theme/accent-foreground": {
-      "value": "#1e1916",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/destructive": {
@@ -373,11 +373,11 @@
       "type": "color"
     },
     "theme/border": {
-      "value": "#433f3a",
+      "value": "#474739",
       "type": "color"
     },
     "theme/input": {
-      "value": "#433f3a",
+      "value": "#474739",
       "type": "color"
     },
     "theme/ring": {
@@ -397,19 +397,19 @@
       "type": "color"
     },
     "theme/chart-4": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/chart-5": {
-      "value": "#aaa39f",
+      "value": "#abab9c",
       "type": "color"
     },
     "theme/sidebar": {
-      "value": "#1e1916",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/sidebar-foreground": {
-      "value": "#f8f8f8",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/sidebar-primary": {
@@ -417,7 +417,7 @@
       "type": "color"
     },
     "theme/sidebar-primary-foreground": {
-      "value": "#1e1916",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/sidebar-accent": {
@@ -425,11 +425,11 @@
       "type": "color"
     },
     "theme/sidebar-accent-foreground": {
-      "value": "#1e1916",
+      "value": "#1d1d16",
       "type": "color"
     },
     "theme/sidebar-border": {
-      "value": "#433f3a",
+      "value": "#474739",
       "type": "color"
     },
     "theme/sidebar-ring": {
