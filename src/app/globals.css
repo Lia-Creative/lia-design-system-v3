@@ -192,8 +192,95 @@
   }
   body {
     @apply bg-background text-foreground;
+    position: relative;
+    isolation: isolate;
   }
   html {
     @apply font-sans;
+  }
+
+  /* Paper texture tokens — defaults the body + Card ::before overlays
+     read. Per-surface inline overrides win via specificity. */
+  body {
+    --paper-blend: multiply;
+    --paper-opacity: 0.55;
+    --paper-filter: saturate(0) contrast(1.15);
+  }
+
+  .dark body {
+    --paper-blend: screen;
+    --paper-opacity: 0.7;
+    --paper-filter: saturate(0) contrast(1.15) invert(1);
+  }
+
+  /* Page-wide desk grain. Fixed-positioned so the texture stays put as
+     content scrolls (desks don't scroll). Multiplies onto body's bg in
+     light mode; in dark mode the texture is inverted + screen-blended
+     so the bg stays dark and the fiber spots show as subtle light
+     specks. Pointer-events disabled so it never intercepts clicks. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url('/paper-texture.jpg');
+    background-size: 600px 600px;
+    background-repeat: repeat;
+    filter: var(--paper-filter);
+    mix-blend-mode: var(--paper-blend);
+    opacity: var(--paper-opacity);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Promote body content above the desk grain. Storybook + Next.js
+     pages all render their content as direct children of body. */
+  body > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@layer components {
+  /* Paper-grain treatment for every Card. The Card primitive sets the
+     inline CSS variables (--surface-tilt, --card-radius, --paper-offset)
+     via useState lazy-init so each instance gets its own randomness. */
+  [data-slot='card'] {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--card-radius, 3px);
+    rotate: var(--surface-tilt, 0deg);
+    transform-origin: center center;
+  }
+
+  [data-slot='card']::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/paper-texture.jpg');
+    background-size: 600px 600px;
+    background-repeat: repeat;
+    background-position: var(--paper-offset, 0 0);
+    filter: var(--paper-filter);
+    mix-blend-mode: var(--paper-blend);
+    opacity: var(--paper-opacity);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Card children above the grain. */
+  [data-slot='card'] > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Flat opt-out for Cards where paper feel would be wrong (data viz,
+     dense lists, etc.). Pass `data-paper="flat"` to the Card. */
+  [data-slot='card'][data-paper='flat'] {
+    border-radius: var(--radius-xl);
+    rotate: 0deg;
+  }
+
+  [data-slot='card'][data-paper='flat']::before {
+    display: none;
   }
 }
