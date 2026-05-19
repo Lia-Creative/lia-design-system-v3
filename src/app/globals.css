@@ -284,14 +284,39 @@
     display: none;
   }
 
-  /* Paper feel on Buttons too — scissor-cut radius + subtle tilt. No
-     texture overlay (buttons are too small for the 600px tile to show
-     meaningful grain). The Button primitive sets --surface-tilt and
-     --button-radius via useState. */
+  /* Paper feel on Buttons — scissor-cut radius + subtle tilt + texture
+     overlay at small tile so the noise actually registers at button
+     scale (the body/Card 600px tile would only show a 5% slice on a
+     32px button — invisible). 80px tile shows ~40% of the resized
+     texture per button width, dense enough to read as noise. */
   [data-slot='button'] {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     border-radius: var(--button-radius, 0.5rem);
     rotate: var(--surface-tilt, 0deg);
     transform-origin: center center;
+  }
+
+  [data-slot='button']::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/paper-texture.jpg');
+    background-size: 80px 80px;
+    background-repeat: repeat;
+    background-position: var(--paper-offset, 0 0);
+    filter: var(--paper-filter);
+    mix-blend-mode: var(--paper-blend);
+    opacity: var(--paper-opacity);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Promote button children (text, icons) above the texture overlay. */
+  [data-slot='button'] > * {
+    position: relative;
+    z-index: 1;
   }
 
   /* Opt-out for Buttons that need to be flat (toolbars where all
@@ -299,5 +324,9 @@
   [data-slot='button'][data-paper='flat'] {
     border-radius: var(--radius-lg);
     rotate: 0deg;
+  }
+
+  [data-slot='button'][data-paper='flat']::before {
+    display: none;
   }
 }
