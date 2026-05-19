@@ -118,6 +118,18 @@
   --paper-blend: multiply;
   --paper-opacity: 0.55;
 
+  /* Darker contact layer than v3/v4 — the textured paper needs a more
+     pronounced "underline" at the bottom edge for the lift to read.
+     Second-layer throw stays the same so the shadow doesn't get lofty.
+     Per Dan's scan references (title strips on yellow, scanned papers
+     on blue) the contact line is the load-bearing detail. */
+  --shadow-paper:
+    0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.22),
+    1px 1.5px 2.5px -0.5px oklch(0.20 0.015 107 / 0.08);
+  --shadow-paper-lifted:
+    0.5px 1px 1.5px 0 oklch(0.20 0.015 107 / 0.26),
+    1px 2.5px 4px -1px oklch(0.20 0.015 107 / 0.10);
+
   position: relative;
   isolation: isolate;
 }
@@ -126,6 +138,13 @@
   --background: oklch(0.257 0.014 107.2); /* between Olive-800 and Olive-900 */
   --paper-blend: screen;
   --paper-opacity: 0.3;
+
+  --shadow-paper:
+    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
+    1px 1.5px 2.5px -0.5px rgb(0 0 0 / 0.32);
+  --shadow-paper-lifted:
+    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.72),
+    1px 2.5px 4px -1px rgb(0 0 0 / 0.40);
 }
 
 .playground-lia-links--v5::before {
@@ -213,11 +232,17 @@
   z-index: 0;
 }
 
-/* Promote the card's direct children (CardContent + stretched anchor)
-   above the texture overlay so they render cleanly. The anchor stays
-   the topmost clickable layer. */
-.playground-lia-links--v5 [data-slot='card'] > * {
+/* Promote the card's children above the texture overlay. Targeted so
+   we don't accidentally override Tailwind's `.absolute` on the stretched
+   anchor (which would drop the anchor into normal flow, breaking the
+   card's vertical layout because the flex gap-3 would still apply
+   between CardContent and the 0-height anchor). */
+.playground-lia-links--v5 [data-slot='card'] > [data-slot='card-content'] {
   position: relative;
+  z-index: 1;
+}
+
+.playground-lia-links--v5 [data-slot='card'] > a {
   z-index: 1;
 }
 
@@ -264,8 +289,9 @@
   z-index: 0;
 }
 
-/* Promote the icon glyph above its own texture overlay. */
-.playground-lia-links--v5 [data-slot='bet-icon'] > * {
+/* Promote the icon glyph above its own texture overlay. Targeted at
+   the SVG to avoid the same `position: absolute` override issue. */
+.playground-lia-links--v5 [data-slot='bet-icon'] > svg {
   position: relative;
   z-index: 1;
 }
