@@ -110,28 +110,28 @@
   /* Dark mode shadow scale — pure-black with higher alpha since the
      dark surface absorbs more shadow before it registers. Same scaling
      curve as light mode. */
-  --shadow-2xs: 0.5px 0.5px 1px 0 rgb(0 0 0 / 0.30);
+  --shadow-2xs: 0.5px 0.5px 1px 0 oklch(0 0 0 / 0.30);
   --shadow-xs:
-    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.40),
-    1px 1px 2px -0.5px rgb(0 0 0 / 0.15);
+    0.5px 0.5px 1px 0 oklch(0 0 0 / 0.40),
+    1px 1px 2px -0.5px oklch(0 0 0 / 0.15);
   --shadow-sm:
-    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.45),
-    1px 2px 3px -0.5px rgb(0 0 0 / 0.20);
+    0.5px 1px 1.5px 0 oklch(0 0 0 / 0.45),
+    1px 2px 3px -0.5px oklch(0 0 0 / 0.20);
   --shadow:
-    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.50),
-    1px 2px 4px -1px rgb(0 0 0 / 0.25);
+    0.5px 1px 1.5px 0 oklch(0 0 0 / 0.50),
+    1px 2px 4px -1px oklch(0 0 0 / 0.25);
   --shadow-md:
-    0.5px 1.5px 2px 0 rgb(0 0 0 / 0.55),
-    1.5px 3px 5px -1px rgb(0 0 0 / 0.30);
+    0.5px 1.5px 2px 0 oklch(0 0 0 / 0.55),
+    1.5px 3px 5px -1px oklch(0 0 0 / 0.30);
   --shadow-lg:
-    1px 2px 3px 0 rgb(0 0 0 / 0.55),
-    2px 4px 8px -2px rgb(0 0 0 / 0.35);
+    1px 2px 3px 0 oklch(0 0 0 / 0.55),
+    2px 4px 8px -2px oklch(0 0 0 / 0.35);
   --shadow-xl:
-    1px 3px 4px 0 rgb(0 0 0 / 0.60),
-    2px 6px 12px -3px rgb(0 0 0 / 0.40);
+    1px 3px 4px 0 oklch(0 0 0 / 0.60),
+    2px 6px 12px -3px oklch(0 0 0 / 0.40);
   --shadow-2xl:
-    1px 4px 6px 0 rgb(0 0 0 / 0.65),
-    3px 10px 20px -4px rgb(0 0 0 / 0.50);
+    1px 4px 6px 0 oklch(0 0 0 / 0.65),
+    3px 10px 20px -4px oklch(0 0 0 / 0.50);
 }
 
 @theme inline {
