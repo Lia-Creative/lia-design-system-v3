@@ -135,7 +135,6 @@
   --background: oklch(0.714 0.203 305.504); /* Purple-400 */
   --foreground: oklch(0.10 0.005 100); /* hard near-black for AA */
   --muted-foreground: oklch(0.22 0.005 100);
-  --paper-opacity: 0.80;
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(1) {
@@ -161,7 +160,6 @@
   --background: oklch(0.828 0.189 84.429); /* Amber-400 */
   --foreground: oklch(0.10 0.005 100);
   --muted-foreground: oklch(0.22 0.005 100);
-  --paper-opacity: 0.80;
 }
 
 .playground-lia-links--v8-colour [data-slot='card']:nth-child(1) {
@@ -187,7 +185,6 @@
   --background: oklch(0.714 0.203 305.504); /* Purple-400 */
   --foreground: oklch(0.10 0.005 100);
   --muted-foreground: oklch(0.22 0.005 100);
-  --paper-opacity: 0.80;
 }
 
 .playground-lia-links--v9-colour [data-slot='card']:nth-child(1) {

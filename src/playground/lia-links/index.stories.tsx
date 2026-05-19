@@ -129,7 +129,7 @@ type Paper = {
   bg: string
   foreground: string
   mutedForeground: string
-  paperBlend: 'multiply' | 'screen'
+  paperBlend: 'multiply' | 'screen' | 'overlay'
   paperOpacity: number
   paperFilter: string
 }
@@ -144,11 +144,16 @@ const OFF_BLACK_PAPER: Paper = {
   paperFilter: 'saturate(0) contrast(1.15) invert(1)',
 }
 
+// Colour-mode light papers (Blue-200, Amber-400, Purple-300/400). Multiply
+// preserves the saturated brand colour while higher contrast on the
+// greyscaled texture pushes the grain spots much darker — they read as
+// printed-paper specks rather than tinted UI. Overlay was tried but
+// blew out the highlights and washed the bg toward white.
 const LIGHT_PAPER_DEFAULTS = {
   foreground: 'oklch(0.10 0.005 100)',
   mutedForeground: 'oklch(0.22 0.005 100)',
   paperBlend: 'multiply',
-  paperFilter: 'saturate(0) contrast(1.15)',
+  paperFilter: 'saturate(0) contrast(1.6)',
 } as const
 
 const PAPER_PALETTES: Record<'v7' | 'v8' | 'v9', Paper[]> = {
@@ -156,19 +161,19 @@ const PAPER_PALETTES: Record<'v7' | 'v8' | 'v9', Paper[]> = {
     {
       name: 'Purple-400',
       bg: 'oklch(0.714 0.203 305.504)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Blue-200',
       bg: 'oklch(0.882 0.059 254.128)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Amber-400',
       bg: 'oklch(0.828 0.189 84.429)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     OFF_BLACK_PAPER,
@@ -177,19 +182,19 @@ const PAPER_PALETTES: Record<'v7' | 'v8' | 'v9', Paper[]> = {
     {
       name: 'Amber-400',
       bg: 'oklch(0.828 0.189 84.429)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Blue-200',
       bg: 'oklch(0.882 0.059 254.128)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Purple-300',
       bg: 'oklch(0.827 0.119 306.383)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     OFF_BLACK_PAPER,
@@ -200,19 +205,19 @@ const PAPER_PALETTES: Record<'v7' | 'v8' | 'v9', Paper[]> = {
     {
       name: 'Purple-400',
       bg: 'oklch(0.714 0.203 305.504)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Blue-200',
       bg: 'oklch(0.882 0.059 254.128)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Amber-400',
       bg: 'oklch(0.828 0.189 84.429)',
-      paperOpacity: 0.95,
+      paperOpacity: 1.0,
       ...LIGHT_PAPER_DEFAULTS,
     },
     OFF_BLACK_PAPER,
