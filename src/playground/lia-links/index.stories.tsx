@@ -117,7 +117,7 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
   // ignore the inline var. Range chosen so the variation is visible
   // without making any single corner read as "rounded UI".
   const [radii] = useState(() => ({
-    cards: bets.map(() => jaggedRadius(1, 5)),
+    cards: bets.map(() => jaggedRadius(2, 10)),
     icons: bets.map(() => jaggedRadius(4, 9)),
   }))
 

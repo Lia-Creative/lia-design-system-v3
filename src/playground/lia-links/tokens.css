@@ -94,13 +94,24 @@
   --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
 }
 
-/* v4, v5 — no tinted desk; bg matches card */
-:is(.playground-lia-links--v4, .playground-lia-links--v5) {
+/* v4 — no tinted desk; bg matches card */
+.playground-lia-links--v4 {
   --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 }
 
-.dark :is(.playground-lia-links--v4, .playground-lia-links--v5) {
+.dark .playground-lia-links--v4 {
   --background: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
+}
+
+/* v5 — subtle desk tint, halfway between paper (Olive-50) and v3's
+   full step (Olive-100). Softer than v3 — paper still clearly sits on
+   a surface, but the surface stays out of the way. */
+.playground-lia-links--v5 {
+  --background: oklch(0.977 0.004 106.5); /* between Olive-50 and Olive-100 */
+}
+
+.dark .playground-lia-links--v5 {
+  --background: oklch(0.257 0.014 107.2); /* between Olive-800 and Olive-900 */
 }
 
 /* Tilt — cards, standalone buttons, theme toggle. v4 and v5 also
