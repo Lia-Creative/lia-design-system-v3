@@ -284,63 +284,15 @@
     display: none;
   }
 
-  /* Paper feel on Buttons — scissor-cut radius + subtle tilt + texture
-     overlay at small tile so the noise actually registers at button
-     scale (the body/Card 600px tile would only show a 5% slice on a
-     32px button — invisible). 80px tile shows ~40% of the resized
-     texture per button width, dense enough to read as noise. */
+  /* Paper feel on Buttons — scissor-cut radius + subtle tilt only.
+     Texture overlay was tried and dropped: multiply against dark
+     saturated variants (default, destructive) didn't register; screen
+     + invert ruined the destructive variant's tone. May revisit with
+     a different recipe later. */
   [data-slot='button'] {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
     border-radius: var(--button-radius, 0.5rem);
     rotate: var(--surface-tilt, 0deg);
     transform-origin: center center;
-  }
-
-  [data-slot='button']::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/paper-texture.jpg');
-    background-size: 80px 80px;
-    background-repeat: repeat;
-    background-position: var(--paper-offset, 0 0);
-    filter: var(--paper-filter);
-    mix-blend-mode: var(--paper-blend);
-    opacity: var(--paper-opacity);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Dark/saturated button variants need inverted + screen treatment so
-     the texture's bulk goes dark (= no visible effect on dark bg) and
-     the originally-dark fibers become light spots that screen-blend
-     onto the dark bg as visible specks. Multiplying a mostly-light
-     texture against a dark bg produces ~zero visible variance. */
-  [data-slot='button'][data-variant='default']::before,
-  [data-slot='button'][data-variant='destructive']::before {
-    mix-blend-mode: screen;
-    filter: saturate(0) contrast(1.15) invert(1);
-  }
-
-  /* Outline buttons are light-bg in light mode but dark-bg in dark mode,
-     so flip the treatment in dark mode only. */
-  .dark [data-slot='button'][data-variant='outline']::before {
-    mix-blend-mode: screen;
-    filter: saturate(0) contrast(1.15) invert(1);
-  }
-
-  /* Link and ghost variants have no bg surface to texture onto. */
-  [data-slot='button'][data-variant='link']::before,
-  [data-slot='button'][data-variant='ghost']::before {
-    display: none;
-  }
-
-  /* Promote button children (text, icons) above the texture overlay. */
-  [data-slot='button'] > * {
-    position: relative;
-    z-index: 1;
   }
 
   /* Opt-out for Buttons that need to be flat (toolbars where all
@@ -348,9 +300,5 @@
   [data-slot='button'][data-paper='flat'] {
     border-radius: var(--radius-lg);
     rotate: 0deg;
-  }
-
-  [data-slot='button'][data-paper='flat']::before {
-    display: none;
   }
 }

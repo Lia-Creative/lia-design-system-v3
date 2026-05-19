@@ -73,22 +73,17 @@ function Button({
   const [paper] = React.useState(() => ({
     tilt: singleTilt().toFixed(2),
     radius: jaggedRadius(4, 9),
-    // Random texture origin so each button samples a different slice
-    // of the source image — noise pattern stays unique per instance.
-    offset: `${Math.floor(Math.random() * 200)}px ${Math.floor(Math.random() * 200)}px`,
   }))
 
   const paperStyle = {
     "--surface-tilt": `${paper.tilt}deg`,
     "--button-radius": paper.radius,
-    "--paper-offset": paper.offset,
     ...style,
   } as unknown as React.CSSProperties
 
   return (
     <ButtonPrimitive
       data-slot="button"
-      data-variant={variant}
       style={paperStyle}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
