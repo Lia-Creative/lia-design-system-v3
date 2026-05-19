@@ -114,7 +114,14 @@
    - multiply in light mode (dark specks darken the bg = visible grain)
    - screen in dark mode (light fibers lighten the bg = visible grain) */
 .playground-lia-links--v5 {
-  --background: oklch(0.977 0.004 106.5); /* between Olive-50 and Olive-100 */
+  /* Card and desk live on interpolated Olive steps (not in Tailwind's
+     named palette but on the same scale via linear interpolation):
+     - Card: Olive-25 (halfway between an extrapolated Olive-0 white
+       anchor and Olive-50). Lifts the paper noticeably brighter than
+       the system default so it pops against the desk.
+     - Desk: Olive-75 (exact midpoint of Olive-50 and Olive-100). */
+  --card: oklch(0.994 0.002 106.5); /* Olive-25 (interpolated) */
+  --background: oklch(0.977 0.004 106.5); /* Olive-75 (interpolated) */
   --paper-blend: multiply;
   --paper-opacity: 0.55;
 
@@ -135,7 +142,12 @@
 }
 
 .dark .playground-lia-links--v5 {
-  --background: oklch(0.257 0.014 107.2); /* between Olive-800 and Olive-900 */
+  /* Dark mirror: card 25% lighter from Olive-800 toward Olive-700
+     (interpolated Olive-775), desk 25% darker from Olive-800 toward
+     Olive-900 (interpolated Olive-825). Same "card-lighter-than-desk"
+     relationship at the same proportional position on the dark side. */
+  --card: oklch(0.313 0.018 107.4); /* Olive-775 (interpolated) */
+  --background: oklch(0.272 0.015 107.4); /* Olive-825 (interpolated) */
   --paper-blend: screen;
   --paper-opacity: 0.3;
 
