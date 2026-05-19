@@ -60,13 +60,37 @@ const toneClasses: Record<Bet['tone'], string> = {
   secondary: 'bg-secondary text-secondary-foreground',
 }
 
-// Random tilt range. ±1° reads as "precisely placed, just slightly off
-// horizontal" — paper that's been put down with intent. Bigger feels
-// scattered; this should look intentional.
-const TILT_RANGE = 1
+// Random tilt range. ±0.6° reads as "precisely placed, just slightly off
+// horizontal" — paper that's been put down with intent.
+const TILT_RANGE = 0.6
+// Minimum magnitude — anything below reads as "not tilted at all", so the
+// random generator avoids the zero-neighbourhood.
+const TILT_MIN = 0.15
 
-function randomTilt() {
-  return (Math.random() * TILT_RANGE * 2 - TILT_RANGE).toFixed(2)
+function singleTilt(): number {
+  // Magnitude in [TILT_MIN, TILT_RANGE], sign random.
+  const sign = Math.random() < 0.5 ? -1 : 1
+  const magnitude = TILT_MIN + Math.random() * (TILT_RANGE - TILT_MIN)
+  return sign * magnitude
+}
+
+function mixedTilts(count: number): string[] {
+  // Generate `count` tilts and guarantee a mix of signs — otherwise three
+  // independent samples can easily all land positive (or negative) by
+  // chance, which reads as "they're all tilting the same way".
+  const out: number[] = [singleTilt()]
+  // Force the second entry to be opposite-sign so we always have a mix.
+  const firstSign = Math.sign(out[0])
+  const magnitude = TILT_MIN + Math.random() * (TILT_RANGE - TILT_MIN)
+  out.push(-firstSign * magnitude)
+  // Any remaining entries are free random.
+  for (let i = 2; i < count; i++) out.push(singleTilt())
+  // Shuffle so the guaranteed-opposite isn't always in slot 2.
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[out[i], out[j]] = [out[j], out[i]]
+  }
+  return out.map((v) => v.toFixed(2))
 }
 
 function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
@@ -75,8 +99,8 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
   // but only the v3 scope reads it (rotate: var(--surface-tilt)). v1
   // and v2 stay flat.
   const [tilts] = useState(() => ({
-    themeToggle: randomTilt(),
-    bets: bets.map(() => randomTilt()),
+    themeToggle: singleTilt().toFixed(2),
+    bets: mixedTilts(bets.length),
   }))
 
   return (
