@@ -140,7 +140,7 @@ const OFF_BLACK_PAPER: Paper = {
   foreground: 'oklch(0.97 0.005 100)',
   mutedForeground: 'oklch(0.78 0.005 100)',
   paperBlend: 'screen',
-  paperOpacity: 0.5,
+  paperOpacity: 0.65,
   paperFilter: 'saturate(0) contrast(1.15) invert(1)',
 }
 
@@ -156,19 +156,19 @@ const PAPER_PALETTES: Record<'v7' | 'v8', Paper[]> = {
     {
       name: 'Purple-400',
       bg: 'oklch(0.714 0.203 305.504)',
-      paperOpacity: 0.8,
+      paperOpacity: 0.95,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Blue-200',
       bg: 'oklch(0.882 0.059 254.128)',
-      paperOpacity: 0.55,
+      paperOpacity: 0.95,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Amber-400',
       bg: 'oklch(0.828 0.189 84.429)',
-      paperOpacity: 0.55,
+      paperOpacity: 0.95,
       ...LIGHT_PAPER_DEFAULTS,
     },
     OFF_BLACK_PAPER,
@@ -177,19 +177,19 @@ const PAPER_PALETTES: Record<'v7' | 'v8', Paper[]> = {
     {
       name: 'Amber-400',
       bg: 'oklch(0.828 0.189 84.429)',
-      paperOpacity: 0.8,
+      paperOpacity: 0.95,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Blue-200',
       bg: 'oklch(0.882 0.059 254.128)',
-      paperOpacity: 0.55,
+      paperOpacity: 0.95,
       ...LIGHT_PAPER_DEFAULTS,
     },
     {
       name: 'Purple-300',
       bg: 'oklch(0.827 0.119 306.383)',
-      paperOpacity: 0.55,
+      paperOpacity: 0.95,
       ...LIGHT_PAPER_DEFAULTS,
     },
     OFF_BLACK_PAPER,
@@ -353,11 +353,13 @@ function LiaLinksSurface({
         </header>
 
         <section className="flex flex-col gap-4">
-          <h1 className="text-7xl leading-[0.95] font-semibold tracking-tighter">
+          <h1 className="text-6xl leading-[0.95] font-semibold tracking-tighter">
             Build a more creative world.
           </h1>
           <p className="text-lg leading-snug text-muted-foreground">
-            We empower people to create, through tools, education, and spaces.
+            We empower people to create, through
+            <br />
+            tools, education, and spaces.
           </p>
         </section>
 
@@ -431,7 +433,7 @@ function LiaLinksSurface({
           >
             lia.build
           </a>
-          <span className="italic">Life in adventure.</span>
+          <span className="italic">Create more.</span>
         </footer>
       </div>
     </div>
