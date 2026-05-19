@@ -140,7 +140,7 @@ const OFF_BLACK_PAPER: Paper = {
   foreground: 'oklch(0.97 0.005 100)',
   mutedForeground: 'oklch(0.78 0.005 100)',
   paperBlend: 'screen',
-  paperOpacity: 0.65,
+  paperOpacity: 0.85,
   paperFilter: 'saturate(0) contrast(1.15) invert(1)',
 }
 
@@ -384,9 +384,8 @@ function LiaLinksSurface({
                 <Card
                   key={bet.slug}
                   size="sm"
-                  data-tone={bet.tone}
                   style={cardStyle}
-                  className="group/bet relative transition-[box-shadow,transform,background-color,color] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
+                  className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
                 >
                   <CardContent className="flex items-center gap-4">
                     <span
@@ -504,6 +503,14 @@ function LiaLinks() {
           label: 'v8',
           note: 'colour mode: yellow desk',
           render: () => <ColouredSurface version="v8" />,
+        },
+        {
+          id: 'v9',
+          label: 'v9',
+          note: 'card hover swap',
+          render: () => (
+            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v9" />
+          ),
         },
       ]}
     />

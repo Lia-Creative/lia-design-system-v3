@@ -28,7 +28,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 ) {
   --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 }
@@ -59,7 +60,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 ) {
   --card: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 
@@ -77,7 +79,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 ) {
   --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
 
@@ -116,9 +119,9 @@
    only the (originally-dark-fibered) spots show as subtle lighter
    specks. Without this, screen-blending the mostly-light texture onto
    a dark bg lifts the whole surface and the "black" reads as grey. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8) {
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) {
   --paper-blend: multiply;
-  --paper-opacity: 0.7;
+  --paper-opacity: 0.55;
   --paper-filter: saturate(0) contrast(1.15);
 
   /* Darker contact layer than v3/v4 — the textured paper needs a more
@@ -137,9 +140,9 @@
   isolation: isolate;
 }
 
-.dark :is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8) {
+.dark :is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) {
   --paper-blend: screen;
-  --paper-opacity: 0.7;
+  --paper-opacity: 0.9;
   /* Inverted texture so bulk = dark, fibers = light spots. Screen-blends
      the light spots onto the dark surface as visible specks; the dark
      bulk leaves the surface unchanged. contrast(1.15) (same as light)
@@ -210,7 +213,7 @@
   --foreground: oklch(0.95 0.005 100);
   --muted-foreground: oklch(0.72 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.7;
+  --paper-opacity: 0.9;
   --paper-filter: saturate(0) contrast(1.15) invert(1);
   --shadow-paper:
     0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
@@ -300,73 +303,32 @@
   --paper-filter: saturate(0) contrast(1.15) invert(1);
 }
 
-/* Card hover swap (light + dark modes only) — the card flips to the
-   tone colour of its icon, like swapping in a different coloured
-   piece of paper. Each Card carries `data-tone="primary|accent|
-   secondary"` matching the bet's tone. The rule overrides `--card`
-   plus `--foreground` / `--muted-foreground` so all text inside the
-   card maintains contrast against the new bg.
+/* v9 — paper-on-hover swap. Light mode: card flips to system
+   `--secondary` (Lia's light sky blue). Dark mode: card flips to
+   `--accent` (light yellow). Both surfaces stay light so the system
+   foregrounds (--secondary-foreground, --accent-foreground — both
+   dark) keep text contrast-safe. Avatar bg goes transparent and the
+   icon glyph picks up the new foreground so it remains visible.
 
-   Inline `--card` in colour modes (v7-colour, v8-colour) wins over
-   this rule via CSS specificity (inline > pseudo-class), so colour
-   modes don't pick up the hover swap. v1–v4 are excluded by selector
-   so they stay as baseline snapshots. */
-:is(
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7-light,
-  .playground-lia-links--v7-dark,
-  .playground-lia-links--v8-light,
-  .playground-lia-links--v8-dark
-)
-  [data-slot='card'][data-tone='primary']:hover {
-  --card: var(--primary);
-  --foreground: var(--primary-foreground);
-  --muted-foreground: var(--primary-foreground);
+   v9 has light + dark only (no colour mode), so it uses the system
+   ThemeToggle rather than the v7/v8 ModeToggle. */
+.playground-lia-links--v9 [data-slot='card'] {
+  transition-property: box-shadow, transform, background-color, color;
 }
 
-:is(
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7-light,
-  .playground-lia-links--v7-dark,
-  .playground-lia-links--v8-light,
-  .playground-lia-links--v8-dark
-)
-  [data-slot='card'][data-tone='accent']:hover {
-  --card: var(--accent);
-  --foreground: var(--accent-foreground);
-  --muted-foreground: var(--accent-foreground);
-}
-
-:is(
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7-light,
-  .playground-lia-links--v7-dark,
-  .playground-lia-links--v8-light,
-  .playground-lia-links--v8-dark
-)
-  [data-slot='card'][data-tone='secondary']:hover {
+.playground-lia-links--v9 [data-slot='card']:hover {
   --card: var(--secondary);
   --foreground: var(--secondary-foreground);
   --muted-foreground: var(--secondary-foreground);
 }
 
-/* Avatar fades into the card on hover — bg goes transparent so the
-   card colour shows through, and the icon glyph adopts --foreground
-   (which is now the contrasting tone-foreground per the rules above)
-   so it stays visible against the new card colour. */
-:is(
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7-light,
-  .playground-lia-links--v7-dark,
-  .playground-lia-links--v8-light,
-  .playground-lia-links--v8-dark
-)
-  [data-slot='card']:hover
-  [data-slot='bet-icon'] {
+.dark .playground-lia-links--v9 [data-slot='card']:hover {
+  --card: var(--accent);
+  --foreground: var(--accent-foreground);
+  --muted-foreground: var(--accent-foreground);
+}
+
+.playground-lia-links--v9 [data-slot='card']:hover [data-slot='bet-icon'] {
   background-color: transparent;
   color: var(--foreground);
 }
@@ -393,7 +355,7 @@
    theme:
    - multiply in light mode (dark specks darken the bg = visible grain)
    - screen in dark mode (light fibers lighten the bg = visible grain) */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8)::before {
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -410,7 +372,7 @@
 /* Content sits above the texture overlay. The surface div has one
    direct child (the content wrapper); promoting it to z-index 1
    keeps the cards, header, footer clear of the grain. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8) > * {
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) > * {
   position: relative;
   z-index: 1;
 }
@@ -423,7 +385,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 )
   :is([data-slot='card'], [data-slot='button'], [data-slot='theme-toggle']),
 :is(
@@ -431,7 +394,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 )
   [data-slot='bet-icon'] {
   rotate: var(--surface-tilt, 0deg);
@@ -448,7 +412,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 )
   [data-slot='card']
   :is([data-slot='button'], [data-slot='theme-toggle']) {
@@ -464,7 +429,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 )
   [data-slot='card'] {
   box-shadow: var(--shadow-paper);
@@ -476,7 +442,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 )
   [data-slot='card']:hover {
   box-shadow: var(--shadow-paper-lifted);
@@ -493,12 +460,12 @@
    paper edge — even with the random corners. Each card's
    `--paper-offset` is set inline so cards pull different regions of
    the source image, making each one's grain look distinct. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8) [data-slot='card'] {
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) [data-slot='card'] {
   border-radius: var(--card-radius, 3px);
   isolation: isolate;
 }
 
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8) [data-slot='card']::before {
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) [data-slot='card']::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -518,13 +485,13 @@
    anchor (which would drop the anchor into normal flow, breaking the
    card's vertical layout because the flex gap-3 would still apply
    between CardContent and the 0-height anchor). */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8)
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)
   [data-slot='card'] > [data-slot='card-content'] {
   position: relative;
   z-index: 1;
 }
 
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8)
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)
   [data-slot='card'] > a {
   z-index: 1;
 }
@@ -537,7 +504,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 )
   [data-slot='bet-icon'] {
   box-shadow:
@@ -550,7 +518,8 @@
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
-  .playground-lia-links--v8
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
 )
   [data-slot='bet-icon'] {
   box-shadow:
@@ -564,14 +533,14 @@
    following the same recipe as the desk and cards. `overflow: hidden`
    clips the grain to the (jagged) sticker boundary so it stops at the
    cut edges. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8) [data-slot='bet-icon'] {
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) [data-slot='bet-icon'] {
   border-radius: var(--icon-radius, var(--radius-lg));
   position: relative;
   isolation: isolate;
   overflow: hidden;
 }
 
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8)
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)
   [data-slot='bet-icon']::before {
   content: '';
   position: absolute;
@@ -589,7 +558,7 @@
 
 /* Promote the icon glyph above its own texture overlay. Targeted at
    the SVG to avoid the same `position: absolute` override issue. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8)
+:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)
   [data-slot='bet-icon'] > svg {
   position: relative;
   z-index: 1;
