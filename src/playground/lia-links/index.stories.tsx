@@ -120,6 +120,17 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
     cards: bets.map(() => jaggedRadius(2, 10)),
     icons: bets.map(() => jaggedRadius(4, 9)),
   }))
+  // Random paper-texture origin per card so each card pulls a different
+  // section of the source image. Means each card's grain looks distinct
+  // — like three actual pieces of paper with their own fibres, not three
+  // windows onto one continuous texture. Range covers the full source
+  // image (2048×2048) so cards rarely sample overlapping regions.
+  const [paperOffsets] = useState(() =>
+    bets.map(
+      () =>
+        `${Math.floor(Math.random() * 2000)}px ${Math.floor(Math.random() * 2000)}px`,
+    ),
+  )
 
   return (
     <div className={`${scopeClass} min-h-svh bg-background text-foreground`}>
@@ -165,6 +176,7 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
                     {
                       '--surface-tilt': `${tilts.bets[idx]}deg`,
                       '--card-radius': radii.cards[idx],
+                      '--paper-offset': paperOffsets[idx],
                     } as CSSProperties
                   }
                   className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"

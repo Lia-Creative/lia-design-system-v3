@@ -187,10 +187,38 @@
   border-radius: 3px;
 }
 
-/* v5 — hand-cut scissor radius, read from inline `--card-radius` set
-   in the story. Each card gets its own per-corner random ellipse. */
+/* v5 — hand-cut scissor radius + per-card paper-grain texture. The
+   Card primitive's `overflow: hidden` clips the texture to the card's
+   rounded boundary, so the grain starts and stops cleanly at the
+   paper edge — even with the random corners. Each card's
+   `--paper-offset` is set inline so cards pull different regions of
+   the source image, making each one's grain look distinct. */
 .playground-lia-links--v5 [data-slot='card'] {
   border-radius: var(--card-radius, 3px);
+  isolation: isolate;
+}
+
+.playground-lia-links--v5 [data-slot='card']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('./assets/paper-texture.jpg');
+  background-size: 600px 600px;
+  background-repeat: repeat;
+  background-position: var(--paper-offset, 0 0);
+  filter: saturate(0) contrast(1.15);
+  mix-blend-mode: var(--paper-blend);
+  opacity: var(--paper-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Promote the card's direct children (CardContent + stretched anchor)
+   above the texture overlay so they render cleanly. The anchor stays
+   the topmost clickable layer. */
+.playground-lia-links--v5 [data-slot='card'] > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* v4, v5 — sticker shadow on icon avatars. Even tighter than the
