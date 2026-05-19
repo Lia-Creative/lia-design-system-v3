@@ -28,8 +28,7 @@
   --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 }
 
-.playground-lia-links--v2 [data-slot='card'],
-.playground-lia-links--v3 [data-slot='card'] {
+.playground-lia-links--v2 [data-slot='card'] {
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
@@ -50,11 +49,36 @@
 .playground-lia-links--v3 {
   --background: oklch(0.966 0.005 106.5); /* Tailwind Olive-100 */
   --card: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
+
+  /* Scanned-paper shadow stack. Three layers:
+     - Contact: tight, almost no blur — the darkness right at the edge
+       where paper meets desk (ambient occlusion).
+     - Ambient: short halo — paper lifted by a millimetre.
+     - Far diffuse: very wide, very soft — hint of light spread.
+     Colour is dark olive (matches the desk family, not pure black). */
+  --shadow-paper:
+    0 1px 1px -0.5px oklch(0.20 0.015 107 / 0.10),
+    0 2px 4px -1px oklch(0.20 0.015 107 / 0.06),
+    0 8px 16px -4px oklch(0.20 0.015 107 / 0.04);
+  --shadow-paper-lifted:
+    0 2px 3px -1px oklch(0.20 0.015 107 / 0.12),
+    0 6px 10px -3px oklch(0.20 0.015 107 / 0.08),
+    0 16px 24px -8px oklch(0.20 0.015 107 / 0.05);
 }
 
 .dark .playground-lia-links--v3 {
   --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
   --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
+  /* Dark mode shadows go pure-black with higher alpha so they still
+     read against the already-dark surface. */
+  --shadow-paper:
+    0 1px 1px -0.5px rgb(0 0 0 / 0.40),
+    0 2px 4px -1px rgb(0 0 0 / 0.28),
+    0 8px 16px -4px rgb(0 0 0 / 0.18);
+  --shadow-paper-lifted:
+    0 2px 3px -1px rgb(0 0 0 / 0.45),
+    0 6px 10px -3px rgb(0 0 0 / 0.34),
+    0 16px 24px -8px rgb(0 0 0 / 0.22);
 }
 
 .playground-lia-links--v3 [data-slot='card'],
@@ -68,4 +92,15 @@
 .playground-lia-links--v3 [data-slot='card'] [data-slot='button'],
 .playground-lia-links--v3 [data-slot='card'] [data-slot='theme-toggle'] {
   rotate: 0deg;
+}
+
+/* Paper shadow on bet cards. Replaces the Card primitive's default
+   ring-1 outline by overriding box-shadow entirely — real paper
+   doesn't have a uniform 1px outline, the shadow does the work. */
+.playground-lia-links--v3 [data-slot='card'] {
+  box-shadow: var(--shadow-paper);
+}
+
+.playground-lia-links--v3 [data-slot='card']:hover {
+  box-shadow: var(--shadow-paper-lifted);
 }
