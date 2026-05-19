@@ -9,6 +9,41 @@
    swap, and bet-icon-specific rules (bet-icon isn't a system
    primitive). */
 
+/* Desk-grain texture on the playground scope. body::before lives at
+   z-index: -1 inside body's stacking context; opaque ancestors above
+   the scope (Storybook's preview decorator and VersionTabs' bg shell)
+   hide it. So the scope owns its own ::before, mirroring the body
+   recipe but reading the scope's own --background, --paper-blend,
+   --paper-opacity, --paper-filter. */
+.playground-lia-links {
+  position: relative;
+  isolation: isolate;
+}
+
+.playground-lia-links::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/paper-texture.jpg');
+  background-size: 600px 600px;
+  background-repeat: repeat;
+  filter: var(--paper-filter, saturate(0) contrast(1.15));
+  mix-blend-mode: var(--paper-blend, multiply);
+  opacity: var(--paper-opacity, 0.55);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Dark-mode tweaks for the scope's desk grain — same recipe body uses
+   in dark mode (screen blend on an inverted-luminance texture so the
+   fibre specks read as light flecks on a dark desk instead of dark
+   smudges). */
+.dark .playground-lia-links::before {
+  filter: var(--paper-filter, saturate(0) contrast(1.15) invert(1));
+  mix-blend-mode: var(--paper-blend, screen);
+  opacity: var(--paper-opacity, 0.7);
+}
+
 /* v1 — baseline. System defaults apply: Olive paper, paper shadow,
    scissor cuts via Card primitive's per-instance randomness, body
    desk grain. (Empty block for placeholder.) */

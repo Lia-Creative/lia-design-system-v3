@@ -61,7 +61,7 @@ const preview: Preview = {
           disableTransitionOnChange
         >
           <ThemeSync theme={theme} />
-          <div className="bg-background text-foreground antialiased">
+          <div className="antialiased">
             <Story />
           </div>
         </ThemeProvider>
