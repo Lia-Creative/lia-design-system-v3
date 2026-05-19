@@ -97,9 +97,14 @@
 
 /* Paper shadow on bet cards. Replaces the Card primitive's default
    ring-1 outline by overriding box-shadow entirely — real paper
-   doesn't have a uniform 1px outline, the shadow does the work. */
+   doesn't have a uniform 1px outline, the shadow does the work.
+
+   Radius drops to 3px (from the system's rounded-xl = 10px) so the
+   edges read as guillotine-cut paper rather than rounded UI card.
+   The stretched anchor inherits the radius via rounded-[inherit]. */
 .playground-lia-links--v3 [data-slot='card'] {
   box-shadow: var(--shadow-paper);
+  border-radius: 3px;
 }
 
 .playground-lia-links--v3 [data-slot='card']:hover {
