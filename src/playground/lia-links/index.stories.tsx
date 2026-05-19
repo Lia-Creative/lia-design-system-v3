@@ -354,15 +354,21 @@ function LiaLinks() {
         {
           id: 'v7',
           label: 'v7',
-          note: 'three modes',
-          render: () => <V7Surface />,
+          note: 'colour mode: purple desk',
+          render: () => <ColouredSurface version="v7" />,
+        },
+        {
+          id: 'v8',
+          label: 'v8',
+          note: 'colour mode: yellow desk',
+          render: () => <ColouredSurface version="v8" />,
         },
       ]}
     />
   )
 }
 
-function V7Surface() {
+function ColouredSurface({ version }: { version: 'v7' | 'v8' }) {
   const [mode, setMode] = useState<V7Mode>('light')
   const cycleMode = () =>
     setMode(
@@ -371,7 +377,7 @@ function V7Surface() {
 
   return (
     <LiaLinksSurface
-      scopeClass={`playground-lia-links playground-lia-links--v7 playground-lia-links--v7-${mode}`}
+      scopeClass={`playground-lia-links playground-lia-links--${version} playground-lia-links--${version}-${mode}`}
       mode={mode}
       onCycleMode={cycleMode}
     />
