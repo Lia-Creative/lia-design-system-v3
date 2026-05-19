@@ -40,7 +40,7 @@
   --sidebar-border: oklch(0.93 0.007 106.5); /* Olive-200 */
   --sidebar-ring: oklch(0.50 0.27 263.51);
 
-  --font-sans: var(--font-dm-sans), sans-serif;
+  --font-sans: var(--font-figtree), sans-serif;
   --font-serif: var(--font-libre-baskerville), serif;
   --font-mono: var(--font-dm-mono), monospace;
 
