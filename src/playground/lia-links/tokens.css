@@ -136,10 +136,13 @@
 
 .dark :is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7) {
   --paper-blend: screen;
-  --paper-opacity: 0.25;
+  --paper-opacity: 0.55;
   /* Inverted texture so bulk = dark, fibers = light spots. Screen-blends
-     the light spots only, leaving the rest of the surface dark. */
-  --paper-filter: saturate(0) contrast(1.4) invert(1);
+     the light spots onto the dark surface as visible specks; the dark
+     bulk leaves the surface unchanged. contrast(1.15) (same as light)
+     instead of 1.4 — the extra contrast was clamping the bulk to pure
+     black, which screen-blends to nothing. */
+  --paper-filter: saturate(0) contrast(1.15) invert(1);
 
   --shadow-paper:
     0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
@@ -206,8 +209,8 @@
   --foreground: oklch(0.95 0.005 100);
   --muted-foreground: oklch(0.72 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.25;
-  --paper-filter: saturate(0) contrast(1.4) invert(1);
+  --paper-opacity: 0.55;
+  --paper-filter: saturate(0) contrast(1.15) invert(1);
   --shadow-paper:
     0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
     1px 1.5px 2.5px -0.5px rgb(0 0 0 / 0.32);
@@ -218,11 +221,15 @@
 
 /* v7-colour — Violet-500 desk with three distinct coloured papers.
    Text overrides apply Dan's accessibility rule: hard near-black on the
-   violet desk (passes WCAG AA at ~5.7 contrast vs ~3.7 for white). */
+   violet desk (passes WCAG AA at ~5.7 contrast vs ~3.7 for white).
+   Higher paper opacity (0.70) than the default 0.55 — the saturated
+   mid-luminance violet absorbs more of the multiply effect, so the
+   texture needs a stronger contribution to register visibly. */
 .playground-lia-links--v7-colour {
   --background: oklch(0.606 0.250 292.717); /* Tailwind Violet-500 */
   --foreground: oklch(0.10 0.005 100); /* hard near-black on violet */
   --muted-foreground: oklch(0.22 0.005 100);
+  --paper-opacity: 0.70;
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(1) {
@@ -234,17 +241,18 @@
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(3) {
-  /* Near-black paper — just off from black per Dan's note. Faint
-     olive tint per the Impeccable "no pure black" rule. White text
-     for inversion accessibility. Inverted texture filter + screen
-     blend so the grain reads as faint lighter specks on the black
-     paper without lifting the whole surface to grey. */
-  --card: oklch(0.10 0.005 100);
+  /* Near-black paper — just off from black per Dan's note. Lifted
+     slightly from oklch(0.10) to oklch(0.16) so the surface reads as
+     "near-black paper" rather than "pure black void". Faint olive
+     tint per the Impeccable "no pure black" rule. White text for
+     inversion accessibility. Inverted texture filter + screen blend
+     so the grain reads as faint lighter specks. */
+  --card: oklch(0.16 0.008 100);
   --foreground: oklch(0.97 0.005 100);
   --muted-foreground: oklch(0.78 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.25;
-  --paper-filter: saturate(0) contrast(1.4) invert(1);
+  --paper-opacity: 0.40;
+  --paper-filter: saturate(0) contrast(1.15) invert(1);
 }
 
 /* On the saturated coloured papers in v7-colour, the system icon-avatar
