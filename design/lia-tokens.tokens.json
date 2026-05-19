@@ -83,7 +83,7 @@
       "type": "color"
     },
     "theme/muted": {
-      "value": "#f4f4f0",
+      "value": "#e8e8e3",
       "type": "color"
     },
     "theme/muted-foreground": {
