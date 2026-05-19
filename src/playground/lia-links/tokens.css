@@ -105,13 +105,49 @@
 
 /* v5 — subtle desk tint, halfway between paper (Olive-50) and v3's
    full step (Olive-100). Softer than v3 — paper still clearly sits on
-   a surface, but the surface stays out of the way. */
+   a surface, but the surface stays out of the way.
+
+   Paper-grain texture overlaid on the desk via ::before. Desaturated
+   so it only contributes luminance, then blended with the underlying
+   --background colour. Switch the tint to any Olive step (or another
+   palette) and the grain follows. Blend mode flips per theme:
+   - multiply in light mode (dark specks darken the bg = visible grain)
+   - screen in dark mode (light fibers lighten the bg = visible grain) */
 .playground-lia-links--v5 {
   --background: oklch(0.977 0.004 106.5); /* between Olive-50 and Olive-100 */
+  --paper-blend: multiply;
+  --paper-opacity: 0.55;
+
+  position: relative;
+  isolation: isolate;
 }
 
 .dark .playground-lia-links--v5 {
   --background: oklch(0.257 0.014 107.2); /* between Olive-800 and Olive-900 */
+  --paper-blend: screen;
+  --paper-opacity: 0.3;
+}
+
+.playground-lia-links--v5::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('./assets/paper-texture.jpg');
+  background-size: 600px 600px;
+  background-repeat: repeat;
+  filter: saturate(0) contrast(1.15);
+  mix-blend-mode: var(--paper-blend);
+  opacity: var(--paper-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Content sits above the texture overlay. The surface div has one
+   direct child (the content wrapper); promoting it to z-index 1
+   keeps the cards, header, footer clear of the grain. */
+.playground-lia-links--v5 > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Tilt — cards, standalone buttons, theme toggle. v4 and v5 also
