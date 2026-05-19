@@ -20,14 +20,13 @@
   /* DM Sans (system default), Card primitive at its default ring-only state. */
 }
 
-/* Inherited from v2 onward: Figtree font. v3 and v4 build on v2's
-   design language; if a later version wants to drop it, remove from
-   the selector list. */
+/* Inherited from v2 onward: Figtree font. */
 :is(
   .playground-lia-links--v2,
   .playground-lia-links--v3,
   .playground-lia-links--v4,
-  .playground-lia-links--v5
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
 ) {
   --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 }
@@ -36,34 +35,28 @@
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
-/* v3, v4, v5 — paper on a surface, scattered placement
+/* v3, v4, v5, v6 — paper on a surface, scattered placement.
 
    Shared design language. Per-version deltas:
    - v3: one-step-darker olive desk (Olive-100 light / Olive-900 dark)
    - v4: bg matches card (no tinted desk); icons treated as stickers
      with their own shadow and independent tilt
-   - v5: as v4, plus scissor-cut corners — each card and icon gets a
-     hand-cut-looking border-radius (all four corners independently
-     random, asymmetric H/V via the slash syntax)
+   - v5: as v4, plus scissor-cut corners, paper-grain texture per layer,
+     darker contact shadow. Card Olive-25 / desk Olive-75 (interpolated).
+   - v6: as v5, with the highest paper lift — card Olive-0 (extrapolated
+     near-white) on Olive-50 desk. Dark mirror: Olive-700 on Olive-800.
 
-   Conventions:
-   - Card colour: Olive-50 (light) / Olive-800 (dark). Lia paper-tone.
-   - Shadow: two-layer scanned-paper stack. First layer is tight
-     contact at the edge (ambient occlusion); second is a very short
-     halo. No far-diffuse third layer — paper sits flat, not lofted.
-     Small x-axis offset biases shadow toward lower-right, matching
-     upper-left light source per the cut-paper reference.
-   - Colour of shadow: dark olive (desk family) in light mode, pure
-     black higher-alpha in dark mode.
-   - Radius: v3/v4 hardcoded 3px (guillotine-cut). v5 reads inline
-     `--card-radius` / `--icon-radius` (scissor-cut, randomised).
-   - Tilt: --surface-tilt CSS variable read by cards, buttons, theme
-     toggle, and (v4/v5) bet-icon avatars. Tilts on icons compound
-     on top of the parent card's tilt — by design, icons read as
-     stickers placed at their own slight angle relative to the paper. */
+   v5 rule: every new layer (desk, card, icon, future) gets its own
+   paper-grain ::before with an independent random --paper-offset. */
 
-/* Shared card colour + shadow tokens for v3, v4, v5. */
-:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5) {
+/* Shared card colour + shadow tokens for v3, v4, v5, v6. v5 and v6
+   override --card and --shadow-paper below. */
+:is(
+  .playground-lia-links--v3,
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+) {
   --card: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 
   --shadow-paper:
@@ -74,7 +67,12 @@
     1px 2.5px 4px -1px oklch(0.20 0.015 107 / 0.08);
 }
 
-.dark :is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5) {
+.dark :is(
+  .playground-lia-links--v3,
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+) {
   --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
 
   --shadow-paper:
@@ -103,30 +101,15 @@
   --background: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
 }
 
-/* v5 — subtle desk tint, halfway between paper (Olive-50) and v3's
-   full step (Olive-100). Softer than v3 — paper still clearly sits on
-   a surface, but the surface stays out of the way.
-
-   Paper-grain texture overlaid on the desk via ::before. Desaturated
-   so it only contributes luminance, then blended with the underlying
-   --background colour. Switch the tint to any Olive step (or another
-   palette) and the grain follows. Blend mode flips per theme:
-   - multiply in light mode (dark specks darken the bg = visible grain)
-   - screen in dark mode (light fibers lighten the bg = visible grain) */
-.playground-lia-links--v5 {
-  /* Card and desk live on interpolated Olive steps (not in Tailwind's
-     named palette but on the same scale via linear interpolation):
-     - Card: Olive-25 (halfway between an extrapolated Olive-0 white
-       anchor and Olive-50). Lifts the paper noticeably brighter than
-       the system default so it pops against the desk.
-     - Desk: Olive-75 (exact midpoint of Olive-50 and Olive-100). */
-  --card: oklch(0.994 0.002 106.5); /* Olive-25 (interpolated) */
-  --background: oklch(0.977 0.004 106.5); /* Olive-75 (interpolated) */
+/* v5 + v6 — paper grain texture, scissor cuts, sticker icons, darker
+   contact shadow. The only difference between v5 and v6 is the card
+   and desk colour pair (set in their own blocks below). */
+:is(.playground-lia-links--v5, .playground-lia-links--v6) {
   --paper-blend: multiply;
   --paper-opacity: 0.55;
 
   /* Darker contact layer than v3/v4 — the textured paper needs a more
-     pronounced "underline" at the bottom edge for the lift to read.
+     pronounced "underline" at the contact edge for the lift to read.
      Second-layer throw stays the same so the shadow doesn't get lofty.
      Per Dan's scan references (title strips on yellow, scanned papers
      on blue) the contact line is the load-bearing detail. */
@@ -141,13 +124,7 @@
   isolation: isolate;
 }
 
-.dark .playground-lia-links--v5 {
-  /* Dark mirror: card 25% lighter from Olive-800 toward Olive-700
-     (interpolated Olive-775), desk 25% darker from Olive-800 toward
-     Olive-900 (interpolated Olive-825). Same "card-lighter-than-desk"
-     relationship at the same proportional position on the dark side. */
-  --card: oklch(0.313 0.018 107.4); /* Olive-775 (interpolated) */
-  --background: oklch(0.272 0.015 107.4); /* Olive-825 (interpolated) */
+.dark :is(.playground-lia-links--v5, .playground-lia-links--v6) {
   --paper-blend: screen;
   --paper-opacity: 0.3;
 
@@ -159,7 +136,39 @@
     1px 2.5px 4px -1px rgb(0 0 0 / 0.40);
 }
 
-.playground-lia-links--v5::before {
+/* v5 — card Olive-25 (interpolated) on Olive-75 (interpolated) desk */
+.playground-lia-links--v5 {
+  --card: oklch(0.994 0.002 106.5); /* Olive-25 (interpolated) */
+  --background: oklch(0.977 0.004 106.5); /* Olive-75 (interpolated) */
+}
+
+.dark .playground-lia-links--v5 {
+  --card: oklch(0.313 0.018 107.4); /* Olive-775 (interpolated) */
+  --background: oklch(0.272 0.015 107.4); /* Olive-825 (interpolated) */
+}
+
+/* v6 — card Olive-0 (extrapolated near-white, faint olive tint) on
+   Olive-50 desk. Greatest paper lift in the ladder. Dark mirror:
+   card at Tailwind Olive-700 (the lightest named dark step) on
+   Olive-800 desk. */
+.playground-lia-links--v6 {
+  --card: oklch(0.999 0.002 106.5); /* Olive-0 (extrapolated) */
+  --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
+}
+
+.dark .playground-lia-links--v6 {
+  --card: oklch(0.394 0.023 107.4); /* Tailwind Olive-700 */
+  --background: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
+}
+
+/* v5 + v6 — paper-grain texture overlaid on the desk via ::before.
+   Desaturated so it only contributes luminance, then blended with the
+   underlying --background colour. Switch the tint to any Olive step
+   (or another palette) and the grain follows. Blend mode flips per
+   theme:
+   - multiply in light mode (dark specks darken the bg = visible grain)
+   - screen in dark mode (light fibers lighten the bg = visible grain) */
+:is(.playground-lia-links--v5, .playground-lia-links--v6)::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -176,16 +185,26 @@
 /* Content sits above the texture overlay. The surface div has one
    direct child (the content wrapper); promoting it to z-index 1
    keeps the cards, header, footer clear of the grain. */
-.playground-lia-links--v5 > * {
+:is(.playground-lia-links--v5, .playground-lia-links--v6) > * {
   position: relative;
   z-index: 1;
 }
 
-/* Tilt — cards, standalone buttons, theme toggle. v4 and v5 also
-   include bet-icon avatars (which compound on top of the card tilt). */
-:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5)
+/* Tilt — cards, standalone buttons, theme toggle. v4/v5/v6 also include
+   bet-icon avatars (which compound on top of the card tilt). */
+:is(
+  .playground-lia-links--v3,
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+)
   :is([data-slot='card'], [data-slot='button'], [data-slot='theme-toggle']),
-:is(.playground-lia-links--v4, .playground-lia-links--v5) [data-slot='bet-icon'] {
+:is(
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+)
+  [data-slot='bet-icon'] {
   rotate: var(--surface-tilt, 0deg);
   transform-origin: center center;
 }
@@ -194,7 +213,12 @@
    card stays flat (the card already carries the tilt). Bet-icon
    avatars are deliberately excluded — they tilt on top of the card's
    tilt, like stickers placed at their own angle. */
-:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5)
+:is(
+  .playground-lia-links--v3,
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+)
   [data-slot='card']
   :is([data-slot='button'], [data-slot='theme-toggle']) {
   rotate: 0deg;
@@ -203,12 +227,22 @@
 /* Paper shadow on bet cards. Overriding box-shadow directly also
    removes the Card primitive's default ring-1 outline — the shadow
    alone defines the paper edge. */
-:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5)
+:is(
+  .playground-lia-links--v3,
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+)
   [data-slot='card'] {
   box-shadow: var(--shadow-paper);
 }
 
-:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5)
+:is(
+  .playground-lia-links--v3,
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+)
   [data-slot='card']:hover {
   box-shadow: var(--shadow-paper-lifted);
 }
@@ -218,18 +252,18 @@
   border-radius: 3px;
 }
 
-/* v5 — hand-cut scissor radius + per-card paper-grain texture. The
+/* v5, v6 — hand-cut scissor radius + per-card paper-grain texture. The
    Card primitive's `overflow: hidden` clips the texture to the card's
    rounded boundary, so the grain starts and stops cleanly at the
    paper edge — even with the random corners. Each card's
    `--paper-offset` is set inline so cards pull different regions of
    the source image, making each one's grain look distinct. */
-.playground-lia-links--v5 [data-slot='card'] {
+:is(.playground-lia-links--v5, .playground-lia-links--v6) [data-slot='card'] {
   border-radius: var(--card-radius, 3px);
   isolation: isolate;
 }
 
-.playground-lia-links--v5 [data-slot='card']::before {
+:is(.playground-lia-links--v5, .playground-lia-links--v6) [data-slot='card']::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -249,44 +283,57 @@
    anchor (which would drop the anchor into normal flow, breaking the
    card's vertical layout because the flex gap-3 would still apply
    between CardContent and the 0-height anchor). */
-.playground-lia-links--v5 [data-slot='card'] > [data-slot='card-content'] {
+:is(.playground-lia-links--v5, .playground-lia-links--v6)
+  [data-slot='card'] > [data-slot='card-content'] {
   position: relative;
   z-index: 1;
 }
 
-.playground-lia-links--v5 [data-slot='card'] > a {
+:is(.playground-lia-links--v5, .playground-lia-links--v6)
+  [data-slot='card'] > a {
   z-index: 1;
 }
 
-/* v4, v5 — sticker shadow on icon avatars. Even tighter than the
+/* v4, v5, v6 — sticker shadow on icon avatars. Even tighter than the
    card shadow because the avatar is smaller and sits on top of the
    paper. Read as "small printed/cut sticker affixed to the paper". */
-:is(.playground-lia-links--v4, .playground-lia-links--v5) [data-slot='bet-icon'] {
+:is(
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+)
+  [data-slot='bet-icon'] {
   box-shadow:
     0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.10),
     1px 1px 2px -0.5px oklch(0.20 0.015 107 / 0.05);
 }
 
-.dark :is(.playground-lia-links--v4, .playground-lia-links--v5) [data-slot='bet-icon'] {
+.dark :is(
+  .playground-lia-links--v4,
+  .playground-lia-links--v5,
+  .playground-lia-links--v6
+)
+  [data-slot='bet-icon'] {
   box-shadow:
     0.5px 0.5px 1px 0 rgb(0 0 0 / 0.40),
     1px 1px 2px -0.5px rgb(0 0 0 / 0.24);
 }
 
-/* v5 — hand-cut scissor radius on icons too, from `--icon-radius`.
+/* v5, v6 — hand-cut scissor radius on icons too, from `--icon-radius`.
    Range 4–9px (around the system rounded-lg of 6px) so the variation
-   reads as scissor-cut sticker, not "different shape per card". Plus
-   a per-icon paper-grain overlay following the same recipe as the
-   desk and cards. `overflow: hidden` clips the grain to the (jagged)
-   sticker boundary so it stops at the cut edges. */
-.playground-lia-links--v5 [data-slot='bet-icon'] {
+   reads as scissor-cut sticker. Plus a per-icon paper-grain overlay
+   following the same recipe as the desk and cards. `overflow: hidden`
+   clips the grain to the (jagged) sticker boundary so it stops at the
+   cut edges. */
+:is(.playground-lia-links--v5, .playground-lia-links--v6) [data-slot='bet-icon'] {
   border-radius: var(--icon-radius, var(--radius-lg));
   position: relative;
   isolation: isolate;
   overflow: hidden;
 }
 
-.playground-lia-links--v5 [data-slot='bet-icon']::before {
+:is(.playground-lia-links--v5, .playground-lia-links--v6)
+  [data-slot='bet-icon']::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -303,7 +350,8 @@
 
 /* Promote the icon glyph above its own texture overlay. Targeted at
    the SVG to avoid the same `position: absolute` override issue. */
-.playground-lia-links--v5 [data-slot='bet-icon'] > svg {
+:is(.playground-lia-links--v5, .playground-lia-links--v6)
+  [data-slot='bet-icon'] > svg {
   position: relative;
   z-index: 1;
 }

@@ -281,6 +281,14 @@ function LiaLinks() {
             <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v5" />
           ),
         },
+        {
+          id: 'v6',
+          label: 'v6',
+          note: 'Olive-0 paper on Olive-50 desk',
+          render: () => (
+            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v6" />
+          ),
+        },
       ]}
     />
   )
