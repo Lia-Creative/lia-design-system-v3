@@ -8,7 +8,7 @@ Anything that helps you iterate inside the sandbox but shouldn't ship to consume
 
 ## VersionTabs
 
-`version-tabs.tsx` keeps every iteration of a prototype side-by-side as a tab. Each prototype's `index.stories.tsx` wraps its content in `<VersionTabs versions={[…]} />`.
+`version-tabs.tsx` keeps every iteration of a prototype side-by-side. Each prototype's `index.stories.tsx` wraps its content in `<VersionTabs versions={[…]} />`. The selector renders as a native `<select>` dropdown in the sticky header — the file name kept `VersionTabs` for backward-compat with import sites, but the UI is a dropdown now (the previous horizontal tab strip overflowed once the version count climbed).
 
 ### Convention
 

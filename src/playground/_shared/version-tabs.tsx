@@ -2,8 +2,6 @@
 
 import { useState, type ReactNode } from 'react'
 
-import { cn } from '@/lib/utils'
-
 export type PrototypeVersion = {
   id: string
   label: string
@@ -20,15 +18,19 @@ type VersionTabsProps = {
  * VersionTabs — the playground pattern for keeping iterations side-by-side.
  *
  * Each prototype renders its content inside <VersionTabs versions={[…]} />.
- * The tab strip sits above the canvas, neutral-styled so it doesn't compete
- * with the design under review. Switching tabs swaps the entire surface, so
- * versions can differ in any way — scoped tokens, story copy, JSX structure.
+ * A neutral version selector sits above the canvas. As the version count
+ * grew past a handful the previous horizontal tab strip needed sideways
+ * scrolling; now it's a native <select> dropdown so every version is
+ * reachable in one click without overflow.
+ *
+ * (Name kept as VersionTabs for backward-compat with import sites — the
+ * mental model is still "switch between versions"; the UI just changed.)
  *
  * Convention:
  *   - v1 is always the baseline (untouched after first ship).
  *   - New iterations get added as v2, v3, … with a short `note` explaining
  *     the delta (e.g. "Figtree + paper shadow", "denser layout").
- *   - Default tab is the latest version.
+ *   - Default selection is the latest version.
  */
 export function VersionTabs({ versions, defaultId }: VersionTabsProps) {
   const latestId = versions[versions.length - 1]?.id
@@ -40,41 +42,26 @@ export function VersionTabs({ versions, defaultId }: VersionTabsProps) {
   return (
     <div className="flex min-h-svh flex-col bg-background">
       <div className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-screen-md items-center gap-2 overflow-x-auto px-4 py-2">
-          <span className="shrink-0 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Versions
-          </span>
-          <div className="flex items-center gap-1">
-            {versions.map((v) => {
-              const isActive = v.id === activeId
-              return (
-                <button
-                  key={v.id}
-                  type="button"
-                  onClick={() => setActiveId(v.id)}
-                  aria-pressed={isActive}
-                  className={cn(
-                    'flex shrink-0 items-baseline gap-2 rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',
-                    isActive
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-                  )}
-                >
-                  <span>{v.label}</span>
-                  {v.note && (
-                    <span
-                      className={cn(
-                        'text-xs font-normal',
-                        isActive ? 'opacity-70' : 'opacity-60',
-                      )}
-                    >
-                      {v.note}
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
+        <div className="mx-auto flex w-full max-w-screen-md items-center gap-2 px-4 py-2">
+          <label
+            htmlFor="version-select"
+            className="shrink-0 text-xs font-medium tracking-wide text-muted-foreground uppercase"
+          >
+            Version
+          </label>
+          <select
+            id="version-select"
+            value={activeId}
+            onChange={(e) => setActiveId(e.target.value)}
+            className="rounded-md border border-border bg-background px-2 py-1 text-sm font-medium text-foreground focus:ring-2 focus:ring-ring/40 focus:outline-none"
+          >
+            {versions.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.label}
+                {v.note ? ` — ${v.note}` : ''}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
