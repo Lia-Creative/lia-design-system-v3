@@ -377,11 +377,11 @@
       "type": "color"
     },
     "theme/accent": {
-      "value": "#fffb90",
+      "value": "#474739",
       "type": "color"
     },
     "theme/accent-foreground": {
-      "value": "#1d1d16",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/destructive": {
@@ -437,11 +437,11 @@
       "type": "color"
     },
     "theme/sidebar-accent": {
-      "value": "#fffb90",
+      "value": "#474739",
       "type": "color"
     },
     "theme/sidebar-accent-foreground": {
-      "value": "#1d1d16",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/sidebar-border": {

@@ -87,23 +87,23 @@
   --secondary-foreground: oklch(0.228 0.013 107.4); /* Olive-900 */
   --muted: oklch(0.286 0.016 107.4); /* Olive-800 */
   --muted-foreground: oklch(0.737 0.021 106.9); /* Olive-400 */
-  --accent: oklch(0.97 0.13 106.79);
-  --accent-foreground: oklch(0.228 0.013 107.4); /* Olive-900 */
+  --accent: oklch(0.394 0.023 107.4); /* Olive-700 — dark-mode hover surface */
+  --accent-foreground: oklch(0.988 0.003 106.5); /* Olive-50 — light text on hover surface */
   --destructive: oklch(0.64 0.21 25.33);
   --border: oklch(0.394 0.023 107.4); /* Olive-700 */
   --input: oklch(0.394 0.023 107.4); /* Olive-700 */
   --ring: oklch(0.59 0.22 265.28);
   --chart-1: oklch(0.59 0.22 265.28);
   --chart-2: oklch(0.87 0.05 228.95);
-  --chart-3: oklch(0.97 0.13 106.79);
+  --chart-3: oklch(0.97 0.13 106.79); /* light yellow — chart hue, intentional */
   --chart-4: oklch(0.988 0.003 106.5); /* Olive-50 */
   --chart-5: oklch(0.737 0.021 106.9); /* Olive-400 */
   --sidebar: oklch(0.228 0.013 107.4); /* Olive-900 */
   --sidebar-foreground: oklch(0.988 0.003 106.5); /* Olive-50 */
   --sidebar-primary: oklch(0.59 0.22 265.28);
   --sidebar-primary-foreground: oklch(0.228 0.013 107.4); /* Olive-900 */
-  --sidebar-accent: oklch(0.97 0.13 106.79);
-  --sidebar-accent-foreground: oklch(0.228 0.013 107.4); /* Olive-900 */
+  --sidebar-accent: oklch(0.394 0.023 107.4); /* Olive-700 — dark-mode hover surface */
+  --sidebar-accent-foreground: oklch(0.988 0.003 106.5); /* Olive-50 — light text */
   --sidebar-border: oklch(0.394 0.023 107.4); /* Olive-700 */
   --sidebar-ring: oklch(0.59 0.22 265.28);
 
