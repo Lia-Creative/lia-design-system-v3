@@ -60,10 +60,10 @@ const toneClasses: Record<Bet['tone'], string> = {
   secondary: 'bg-secondary text-secondary-foreground',
 }
 
-// Random tilt range. ±0.6° reads as "precisely placed, just slightly off
+// Random tilt range. ±1° reads as "precisely placed, just slightly off
 // horizontal" — paper that's been put down with intent. Bigger feels
 // scattered; this should look intentional.
-const TILT_RANGE = 0.6
+const TILT_RANGE = 1
 
 function randomTilt() {
   return (Math.random() * TILT_RANGE * 2 - TILT_RANGE).toFixed(2)

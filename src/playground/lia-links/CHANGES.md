@@ -17,7 +17,9 @@ Brief: Linktree-style landing surface for lia.build. Mission statement up top, t
 | 2026-05-19 | structure | Generate a random tilt per bet card on mount (uniform `[-2deg, 2deg]`), inject as inline `--card-tilt` CSS variable. Always set across versions; only v3 reads it. JSX stays effectively identical (just an inline style on each Card). | superseded |
 | 2026-05-19 | token-tweak | v3: drop `--background` to `oklch(0.96 0.005 91.4)` (light) and `oklch(0.18 0.01 56)` (dark) so cards visually sit on a surface — paper on a desk, not paper-coloured paper on paper-coloured paper. Also rotates `[data-slot='card']` by `var(--card-tilt)` for the scattered-placement feel. v3 inherits Figtree + paper shadow from v2 via combined selectors. | superseded |
 | 2026-05-19 | structure | Tilt scope expanded to buttons (incl. theme toggle) — rename `--card-tilt` → `--surface-tilt`. Tilt range tightened from ±2° to ±0.6° (precisely-placed, not scattered). Inline style now set on ThemeToggle + each bet Card. Nested `[data-slot='button']` inside `[data-slot='card']` resets to 0deg so rotations don't compound. | live |
-| 2026-05-19 | token-tweak | v3 background locked to Tailwind Stone: Stone-200 `oklch(0.923 0.003 48.717)` (light), Stone-900 `oklch(0.216 0.006 56.043)` (dark). Replaces the hand-picked hue from the previous v3 token tweak. | live |
+| 2026-05-19 | token-tweak | v3 background locked to Tailwind Stone: Stone-200 `oklch(0.923 0.003 48.717)` (light), Stone-900 `oklch(0.216 0.006 56.043)` (dark). Replaces the hand-picked hue from the previous v3 token tweak. | superseded |
+| 2026-05-19 | structure | Tilt range bumped from ±0.6° to ±1°. ±0.6° was reading as zero — needed more presence to feel like "placed paper". | live |
+| 2026-05-19 | token-tweak | v3 background swapped to Tailwind Olive: Olive-200 `oklch(0.93 0.007 106.5)` (light), Olive-900 `oklch(0.228 0.013 107.4)` (dark). Hue 106 (warm yellow-green) replaces Stone's 48 (warm orange). Lightness near-identical, surface contrast unchanged. | live |
 
 ## Notes
 
