@@ -46,14 +46,32 @@
 
   --radius: 0.375rem;
 
-  --shadow-2xs: 0px 2px 8px 0px oklch(0.23 0.02 55.30 / 0.03);
-  --shadow-xs: 0px 2px 8px 0px oklch(0.23 0.02 55.30 / 0.03);
-  --shadow-sm: 0px 2px 8px 0px oklch(0.23 0.02 55.30 / 0.06), 0px 1px 2px -1px oklch(0.23 0.02 55.30 / 0.06);
-  --shadow: 0px 2px 8px 0px oklch(0.23 0.02 55.30 / 0.06), 0px 1px 2px -1px oklch(0.23 0.02 55.30 / 0.06);
-  --shadow-md: 0px 2px 8px 0px oklch(0.23 0.02 55.30 / 0.06), 0px 2px 4px -1px oklch(0.23 0.02 55.30 / 0.06);
-  --shadow-lg: 0px 2px 8px 0px oklch(0.23 0.02 55.30 / 0.06), 0px 4px 6px -1px oklch(0.23 0.02 55.30 / 0.06);
-  --shadow-xl: 0px 2px 8px 0px oklch(0.23 0.02 55.30 / 0.06), 0px 8px 10px -1px oklch(0.23 0.02 55.30 / 0.06);
-  --shadow-2xl: 0px 2px 8px 0px oklch(0.23 0.02 55.30 / 0.15);
+  /* Paper shadow scale. Contact layer stays tight at every level (paper
+     edge meets surface); ambient/diffuse layer scales from xs to 2xl.
+     Light-source bias toward lower-right (small x-axis offset). Tinted
+     dark-olive in light mode. */
+  --shadow-2xs: 0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.10);
+  --shadow-xs:
+    0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.15),
+    1px 1px 2px -0.5px oklch(0.20 0.015 107 / 0.05);
+  --shadow-sm:
+    0.5px 1px 1.5px 0 oklch(0.20 0.015 107 / 0.18),
+    1px 2px 3px -0.5px oklch(0.20 0.015 107 / 0.08);
+  --shadow:
+    0.5px 1px 1.5px 0 oklch(0.20 0.015 107 / 0.22),
+    1px 2px 4px -1px oklch(0.20 0.015 107 / 0.10);
+  --shadow-md:
+    0.5px 1.5px 2px 0 oklch(0.20 0.015 107 / 0.25),
+    1.5px 3px 5px -1px oklch(0.20 0.015 107 / 0.12);
+  --shadow-lg:
+    1px 2px 3px 0 oklch(0.20 0.015 107 / 0.25),
+    2px 4px 8px -2px oklch(0.20 0.015 107 / 0.14);
+  --shadow-xl:
+    1px 3px 4px 0 oklch(0.20 0.015 107 / 0.28),
+    2px 6px 12px -3px oklch(0.20 0.015 107 / 0.16);
+  --shadow-2xl:
+    1px 4px 6px 0 oklch(0.20 0.015 107 / 0.30),
+    3px 10px 20px -4px oklch(0.20 0.015 107 / 0.20);
 }
 
 .dark {
@@ -89,14 +107,31 @@
   --sidebar-border: oklch(0.394 0.023 107.4); /* Olive-700 */
   --sidebar-ring: oklch(0.59 0.22 265.28);
 
-  --shadow-2xs: 0px 4px 12px 0px oklch(0.15 0.00 49.28 / 0.13);
-  --shadow-xs: 0px 4px 12px 0px oklch(0.15 0.00 49.28 / 0.13);
-  --shadow-sm: 0px 4px 12px 0px oklch(0.15 0.00 49.28 / 0.25), 0px 1px 2px -1px oklch(0.15 0.00 49.28 / 0.25);
-  --shadow: 0px 4px 12px 0px oklch(0.15 0.00 49.28 / 0.25), 0px 1px 2px -1px oklch(0.15 0.00 49.28 / 0.25);
-  --shadow-md: 0px 4px 12px 0px oklch(0.15 0.00 49.28 / 0.25), 0px 2px 4px -1px oklch(0.15 0.00 49.28 / 0.25);
-  --shadow-lg: 0px 4px 12px 0px oklch(0.15 0.00 49.28 / 0.25), 0px 4px 6px -1px oklch(0.15 0.00 49.28 / 0.25);
-  --shadow-xl: 0px 4px 12px 0px oklch(0.15 0.00 49.28 / 0.25), 0px 8px 10px -1px oklch(0.15 0.00 49.28 / 0.25);
-  --shadow-2xl: 0px 4px 12px 0px oklch(0.15 0.00 49.28 / 0.63);
+  /* Dark mode shadow scale — pure-black with higher alpha since the
+     dark surface absorbs more shadow before it registers. Same scaling
+     curve as light mode. */
+  --shadow-2xs: 0.5px 0.5px 1px 0 rgb(0 0 0 / 0.30);
+  --shadow-xs:
+    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.40),
+    1px 1px 2px -0.5px rgb(0 0 0 / 0.15);
+  --shadow-sm:
+    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.45),
+    1px 2px 3px -0.5px rgb(0 0 0 / 0.20);
+  --shadow:
+    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.50),
+    1px 2px 4px -1px rgb(0 0 0 / 0.25);
+  --shadow-md:
+    0.5px 1.5px 2px 0 rgb(0 0 0 / 0.55),
+    1.5px 3px 5px -1px rgb(0 0 0 / 0.30);
+  --shadow-lg:
+    1px 2px 3px 0 rgb(0 0 0 / 0.55),
+    2px 4px 8px -2px rgb(0 0 0 / 0.35);
+  --shadow-xl:
+    1px 3px 4px 0 rgb(0 0 0 / 0.60),
+    2px 6px 12px -3px rgb(0 0 0 / 0.40);
+  --shadow-2xl:
+    1px 4px 6px 0 rgb(0 0 0 / 0.65),
+    3px 10px 20px -4px rgb(0 0 0 / 0.50);
 }
 
 @theme inline {
