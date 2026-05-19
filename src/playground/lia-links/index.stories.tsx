@@ -573,10 +573,16 @@ function ColouredSurface({ version }: { version: 'v7' | 'v8' | 'v9' }) {
     mode === 'colour' ? slotOrder.map((i) => palette[i]) : undefined
 
   // When the in-page mode toggle is set to 'dark', also apply the `.dark`
-  // class so Tailwind's `dark:` variants (e.g. `dark:hover:bg-muted/50`
-  // on ghost buttons) fire inside the scope. Without this the scope's
-  // CSS vars go dark but the Tailwind hover rules still read light-mode
-  // tokens — which is why ghost-button hovers were reading near-white.
+  // class so Tailwind's dark variants on ghost buttons fire inside the
+  // scope. Without this the scope's CSS vars go dark but the Tailwind
+  // hover rules still read light-mode tokens — which is why ghost-button
+  // hovers were reading near-white before this fix.
+  //
+  // NOTE: don't paste literal Tailwind class strings (e.g. dark-prefixed
+  // hover utilities) into comments here — Tailwind v4 scans source files
+  // for class candidates and will generate the CSS for any literal it
+  // finds, even in a JS comment. That regenerated rule then has higher
+  // specificity than `hover:bg-muted` and reintroduces the original bug.
   const scopeClass =
     `playground-lia-links playground-lia-links--${version} playground-lia-links--${version}-${mode}` +
     (mode === 'dark' ? ' dark' : '')
