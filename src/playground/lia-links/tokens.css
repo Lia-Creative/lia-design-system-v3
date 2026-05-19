@@ -35,10 +35,11 @@
 
 /* v3 — paper on a tinted desk + scattered placement
 
-   - Background locked to Tailwind Olive (200 light, 900 dark) for
-     a warm-yellow-green desk tone. Olive-200 is nearly identical in
-     lightness to Stone-200; the difference is hue (106 vs 48) — same
-     surface contrast magnitude, warmer yellow-green tint.
+   - Card and background both move onto Tailwind Olive, one step apart
+     on the scale. Light: card Olive-50, desk Olive-100. Dark: card
+     Olive-800, desk Olive-900. The subtle one-step relationship reads
+     as "paper resting on a slightly-darker desk" without the desk
+     drawing attention to itself.
    - Tilt applies to cards, standalone buttons, and the theme toggle —
      anything that visually sits on the surface as a discrete object.
      Text and divider lines are untouched. Nested buttons inside cards
@@ -47,11 +48,13 @@
      story (range ±0.6°). The standalone `rotate` CSS property composes
      cleanly with the existing translate hover transform. */
 .playground-lia-links--v3 {
-  --background: oklch(0.93 0.007 106.5); /* Tailwind Olive-200 */
+  --background: oklch(0.966 0.005 106.5); /* Tailwind Olive-100 */
+  --card: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 }
 
 .dark .playground-lia-links--v3 {
   --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
+  --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
 }
 
 .playground-lia-links--v3 [data-slot='card'],

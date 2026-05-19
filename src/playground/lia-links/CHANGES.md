@@ -20,7 +20,8 @@ Brief: Linktree-style landing surface for lia.build. Mission statement up top, t
 | 2026-05-19 | token-tweak | v3 background locked to Tailwind Stone: Stone-200 `oklch(0.923 0.003 48.717)` (light), Stone-900 `oklch(0.216 0.006 56.043)` (dark). Replaces the hand-picked hue from the previous v3 token tweak. | superseded |
 | 2026-05-19 | structure | Tilt range bumped from ±0.6° to ±1°. ±0.6° was reading as zero — needed more presence to feel like "placed paper". | superseded |
 | 2026-05-19 | structure | Tilt back to ±0.6°. Earlier visibility issue was sign-clustering (3 independent uniform samples easily all land same-sign), not magnitude. Generator now (a) enforces minimum magnitude 0.15° so no value reads as flat, (b) guarantees mixed signs across the bet set so they don't all lean the same way. Theme toggle uses the same per-element magnitude floor but no sign constraint (only one element). | live |
-| 2026-05-19 | token-tweak | v3 background swapped to Tailwind Olive: Olive-200 `oklch(0.93 0.007 106.5)` (light), Olive-900 `oklch(0.228 0.013 107.4)` (dark). Hue 106 (warm yellow-green) replaces Stone's 48 (warm orange). Lightness near-identical, surface contrast unchanged. | live |
+| 2026-05-19 | token-tweak | v3 background swapped to Tailwind Olive: Olive-200 `oklch(0.93 0.007 106.5)` (light), Olive-900 `oklch(0.228 0.013 107.4)` (dark). Hue 106 (warm yellow-green) replaces Stone's 48 (warm orange). Lightness near-identical, surface contrast unchanged. | superseded |
+| 2026-05-19 | token-tweak | v3 contrast dialled back to one-step-on-Olive: desk = Olive-100 (light) / Olive-900 (dark), card = Olive-50 (light) / Olive-800 (dark). Olive-200 desk on system-default card read as too strong a step — the new pair keeps paper and desk both on Olive with a single named-scale step between them. | live |
 
 ## Notes
 
