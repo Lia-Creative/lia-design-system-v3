@@ -377,18 +377,16 @@ function LiaLinksSurface({
 
         <section className="flex flex-col gap-4">
           <h1 className="text-6xl leading-[0.95] font-semibold tracking-tighter">
-            Build a more creative world.
+            Lia. A creative company.
           </h1>
           <p className="text-lg leading-snug text-muted-foreground">
-            We empower people to create, through
-            <br />
-            tools, education, and spaces.
+            Three friends, making the world a more creative place.
           </p>
         </section>
 
         <section className="flex flex-col gap-4">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Bets in flight
+            Prototypes (WIP)
           </p>
           <nav
             aria-label="Lia prototype bets"
