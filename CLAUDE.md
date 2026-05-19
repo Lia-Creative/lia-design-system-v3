@@ -200,7 +200,7 @@ Every change made during a prototype session gets a row appended to `src/playgro
 
 ### Tokens Studio Round-Trip
 
-- **Figma file:** [Lia Design System (shadcn studio)](https://www.figma.com/design/IOEnlvI5WiSDF4zjghA2AN/Lia-Design-System--shadcn-studio-) — key `IOEnlvI5WiSDF4zjghA2AN`
+- **Figma file:** [Lia Design System (shadcn studio)](https://www.figma.com/design/0b2h7j9vYI2mnW9ARPjour/Lia-Design-System--shadcn-studio-) — key `0b2h7j9vYI2mnW9ARPjour`
 - **Code → Figma:** Edit `globals.css` → `pnpm tokens:sync` → commit → push → Tokens Studio "Pull from GitHub" in Figma
 - **Figma → Code:** Never. Figma reads from code. If you need a new token, edit `globals.css`.
 

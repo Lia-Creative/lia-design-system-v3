@@ -1,8 +1,8 @@
 # Lia Design System — Design Source
 
-Figma file: [Lia Design System (shadcn studio)](https://www.figma.com/design/IOEnlvI5WiSDF4zjghA2AN/Lia-Design-System--shadcn-studio-)
+Figma file: [Lia Design System (shadcn studio)](https://www.figma.com/design/0b2h7j9vYI2mnW9ARPjour/Lia-Design-System--shadcn-studio-)
 
-File key: `IOEnlvI5WiSDF4zjghA2AN`
+File key: `0b2h7j9vYI2mnW9ARPjour`
 
 > Replaces the original `Lia-shadcn-studio` file (`I6XZUsUEu44R1gQSGLNQXx`) from the April 2026 build. Figma↔code sync targets this file only.
 
