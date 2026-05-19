@@ -406,7 +406,7 @@ function LiaLinksSurface({
                   key={bet.slug}
                   size="sm"
                   style={cardStyle}
-                  className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
+                  className="group/bet relative transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
                 >
                   <CardContent className="flex items-center gap-4">
                     <span
@@ -424,7 +424,7 @@ function LiaLinksSurface({
                       <Icon className="size-5" />
                     </span>
                     <div className="flex min-w-0 flex-1 flex-col gap-1">
-                      <p className="text-base leading-tight font-medium text-foreground">
+                      <p className="text-lg leading-tight font-medium text-foreground">
                         {bet.title}
                       </p>
                       <p className="text-sm leading-snug text-muted-foreground">
