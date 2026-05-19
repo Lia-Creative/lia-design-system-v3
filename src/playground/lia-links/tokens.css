@@ -106,10 +106,17 @@
 
 /* v5 + v6 — paper grain texture, scissor cuts, sticker icons, darker
    contact shadow. The only difference between v5 and v6 is the card
-   and desk colour pair (set in their own blocks below). */
+   and desk colour pair (set in their own blocks below).
+
+   `--paper-filter` is exposed as a token so dark surfaces can swap in
+   `invert(1)` — that flips the texture so its bulk becomes dark and
+   only the (originally-dark-fibered) spots show as subtle lighter
+   specks. Without this, screen-blending the mostly-light texture onto
+   a dark bg lifts the whole surface and the "black" reads as grey. */
 :is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7) {
   --paper-blend: multiply;
   --paper-opacity: 0.55;
+  --paper-filter: saturate(0) contrast(1.15);
 
   /* Darker contact layer than v3/v4 — the textured paper needs a more
      pronounced "underline" at the contact edge for the lift to read.
@@ -129,7 +136,10 @@
 
 .dark :is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7) {
   --paper-blend: screen;
-  --paper-opacity: 0.3;
+  --paper-opacity: 0.25;
+  /* Inverted texture so bulk = dark, fibers = light spots. Screen-blends
+     the light spots only, leaving the rest of the surface dark. */
+  --paper-filter: saturate(0) contrast(1.4) invert(1);
 
   --shadow-paper:
     0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
@@ -160,10 +170,12 @@
 }
 
 .dark .playground-lia-links--v6 {
-  /* Properly dark: Olive-900 card on Olive-950 desk. The earlier
-     Olive-800/Olive-900 pair read too light per Dan's feedback. */
+  /* Much darker dark mode. Card stays at Olive-900 (clearly the paper),
+     desk drops below Olive-950 to a custom near-black with faint olive
+     tint. Combined with the inverted texture filter, the desk reads as
+     properly dark instead of being lifted by the screen blend. */
   --card: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
-  --background: oklch(0.153 0.006 107.1); /* Tailwind Olive-950 */
+  --background: oklch(0.10 0.005 107.1); /* custom near-black olive */
 }
 
 /* v7 — three distinct modes, toggleable via the prototype's own state
@@ -181,18 +193,21 @@
   --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 }
 
-/* v7-dark — properly dark. Olive-900 card on Olive-950 desk, with
-   dark-mode visuals applied unconditionally (we're not relying on the
-   system .dark class). Light text + light muted-foreground for AA
-   legibility, screen blend so grain lightens against the dark surface,
-   and the higher-alpha dark shadow stack. */
+/* v7-dark — properly dark. Card at Olive-900, desk at a custom near-
+   black (below Olive-950) so the surface reads as dark even after the
+   texture overlay applies. Inverted texture filter so grain reads as
+   subtle lighter specks on dark, not a screen-blend lifting of the
+   whole surface. Light text for AA legibility, higher-alpha dark
+   shadow stack. Applied unconditionally — not relying on the system
+   `.dark` class. */
 .playground-lia-links--v7-dark {
   --card: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
-  --background: oklch(0.153 0.006 107.1); /* Tailwind Olive-950 */
+  --background: oklch(0.10 0.005 107.1); /* custom near-black olive */
   --foreground: oklch(0.95 0.005 100);
   --muted-foreground: oklch(0.72 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.3;
+  --paper-opacity: 0.25;
+  --paper-filter: saturate(0) contrast(1.4) invert(1);
   --shadow-paper:
     0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
     1px 1.5px 2.5px -0.5px rgb(0 0 0 / 0.32);
@@ -221,11 +236,15 @@
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(3) {
   /* Near-black paper — just off from black per Dan's note. Faint
      olive tint per the Impeccable "no pure black" rule. White text
-     for inversion accessibility. */
+     for inversion accessibility. Inverted texture filter + screen
+     blend so the grain reads as faint lighter specks on the black
+     paper without lifting the whole surface to grey. */
   --card: oklch(0.10 0.005 100);
   --foreground: oklch(0.97 0.005 100);
   --muted-foreground: oklch(0.78 0.005 100);
   --paper-blend: screen;
+  --paper-opacity: 0.25;
+  --paper-filter: saturate(0) contrast(1.4) invert(1);
 }
 
 /* On the saturated coloured papers in v7-colour, the system icon-avatar
@@ -251,7 +270,7 @@
   background-image: url('./assets/paper-texture.jpg');
   background-size: 600px 600px;
   background-repeat: repeat;
-  filter: saturate(0) contrast(1.15);
+  filter: var(--paper-filter, saturate(0) contrast(1.15));
   mix-blend-mode: var(--paper-blend);
   opacity: var(--paper-opacity);
   pointer-events: none;
@@ -352,7 +371,7 @@
   background-size: 600px 600px;
   background-repeat: repeat;
   background-position: var(--paper-offset, 0 0);
-  filter: saturate(0) contrast(1.15);
+  filter: var(--paper-filter, saturate(0) contrast(1.15));
   mix-blend-mode: var(--paper-blend);
   opacity: var(--paper-opacity);
   pointer-events: none;
@@ -424,7 +443,7 @@
   background-size: 600px 600px;
   background-repeat: repeat;
   background-position: var(--paper-offset, 0 0);
-  filter: saturate(0) contrast(1.15);
+  filter: var(--paper-filter, saturate(0) contrast(1.15));
   mix-blend-mode: var(--paper-blend);
   opacity: var(--paper-opacity);
   pointer-events: none;
