@@ -43,7 +43,7 @@
   },
   "lia-light": {
     "theme/background": {
-      "value": "#f4f4f0",
+      "value": "#fbfbf9",
       "type": "color"
     },
     "theme/foreground": {

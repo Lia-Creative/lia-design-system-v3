@@ -8,7 +8,7 @@
    --secondary, --accent, --destructive, --ring, --chart-1..3) keep their
    chromatic values; only the neutral surfaces and foregrounds shifted. */
 :root {
-  --background: oklch(0.966 0.005 106.5); /* Olive-100 — desk */
+  --background: oklch(0.988 0.003 106.5); /* Olive-50 — same as card per shadcn convention */
   --foreground: oklch(0.228 0.013 107.4); /* Olive-900 */
   --card: oklch(0.988 0.003 106.5); /* Olive-50 — paper */
   --card-foreground: oklch(0.228 0.013 107.4); /* Olive-900 */
