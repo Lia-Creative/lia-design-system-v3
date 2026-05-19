@@ -20,11 +20,14 @@
   /* DM Sans (system default), Card primitive at its default ring-only state. */
 }
 
-/* Inherited from v2 onward: Figtree font + paper shadow on bet cards.
-   v3 builds on v2's design language; if a later version wants to drop
-   either, remove it from the selector list. */
-.playground-lia-links--v2,
-.playground-lia-links--v3 {
+/* Inherited from v2 onward: Figtree font. v3 and v4 build on v2's
+   design language; if a later version wants to drop it, remove from
+   the selector list. */
+:is(
+  .playground-lia-links--v2,
+  .playground-lia-links--v3,
+  .playground-lia-links--v4
+) {
   --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -32,81 +35,112 @@
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
-/* v3 — paper on a tinted desk + scattered placement
+/* v3 + v4 — paper on a surface, scattered placement
 
-   - Card and background both move onto Tailwind Olive, one step apart
-     on the scale. Light: card Olive-50, desk Olive-100. Dark: card
-     Olive-800, desk Olive-900. The subtle one-step relationship reads
-     as "paper resting on a slightly-darker desk" without the desk
-     drawing attention to itself.
-   - Tilt applies to cards, standalone buttons, and the theme toggle —
-     anything that visually sits on the surface as a discrete object.
-     Text and divider lines are untouched. Nested buttons inside cards
-     have their tilt reset to 0 so rotations don't compound visually.
-   - Each tiltable element reads --surface-tilt set inline from the
-     story (range ±0.6°). The standalone `rotate` CSS property composes
-     cleanly with the existing translate hover transform. */
-.playground-lia-links--v3 {
-  --background: oklch(0.966 0.005 106.5); /* Tailwind Olive-100 */
+   Shared design language. The only difference between v3 and v4 is
+   --background: v3 has a one-step-darker olive desk, v4 sets bg to
+   match card (no tinted desk, paper floats on same-colour surface).
+
+   Conventions:
+   - Card colour: Olive-50 (light) / Olive-800 (dark). Lia paper-tone.
+   - Shadow: two-layer scanned-paper stack. First layer is tight
+     contact at the edge (ambient occlusion); second is a very short
+     halo. No far-diffuse third layer — paper sits flat, not lofted.
+     Small x-axis offset biases shadow toward lower-right, matching
+     upper-left light source per the cut-paper reference.
+   - Colour of shadow: dark olive (desk family) in light mode, pure
+     black higher-alpha in dark mode.
+   - Radius: 3px — guillotine-cut paper edges, not rounded UI cards.
+   - Tilt: --surface-tilt CSS variable read by cards, buttons, theme
+     toggle, and (v4 only) bet-icon avatars. Tilts on icons compound
+     on top of the parent card's tilt — by design, icons read as
+     stickers placed at their own slight angle relative to the paper. */
+
+/* Shared card colour + shadow tokens for v3 and v4. */
+:is(.playground-lia-links--v3, .playground-lia-links--v4) {
   --card: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 
-  /* Scanned/cut-paper shadow stack. Three layers, all tight:
-     - Contact: at the edge — ambient occlusion where paper meets desk.
-     - Ambient: very short halo — paper lifted by a millimetre.
-     - Far diffuse: barely-there, pulled in — paper sits flat, not lofted.
-     X-axis offsets bias the shadow lower-right (light from upper-left)
-     to match the cut-paper reference. Colour is dark olive (desk family,
-     not pure black). */
   --shadow-paper:
-    0.5px 1px 1px 0 oklch(0.20 0.015 107 / 0.11),
-    1px 2px 3px -0.5px oklch(0.20 0.015 107 / 0.07),
-    2px 4px 6px -2px oklch(0.20 0.015 107 / 0.03);
+    0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.12),
+    1px 1.5px 2.5px -0.5px oklch(0.20 0.015 107 / 0.06);
   --shadow-paper-lifted:
-    0.5px 1px 2px 0 oklch(0.20 0.015 107 / 0.13),
-    1px 3px 5px -1px oklch(0.20 0.015 107 / 0.09),
-    2px 6px 10px -3px oklch(0.20 0.015 107 / 0.04);
+    0.5px 1px 1.5px 0 oklch(0.20 0.015 107 / 0.14),
+    1px 2.5px 4px -1px oklch(0.20 0.015 107 / 0.08);
+}
+
+.dark :is(.playground-lia-links--v3, .playground-lia-links--v4) {
+  --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
+
+  --shadow-paper:
+    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.45),
+    1px 1.5px 2.5px -0.5px rgb(0 0 0 / 0.27);
+  --shadow-paper-lifted:
+    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.52),
+    1px 2.5px 4px -1px rgb(0 0 0 / 0.34);
+}
+
+/* v3 — tinted desk (one Olive step darker than card) */
+.playground-lia-links--v3 {
+  --background: oklch(0.966 0.005 106.5); /* Tailwind Olive-100 */
 }
 
 .dark .playground-lia-links--v3 {
   --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
-  --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
-  /* Dark mode mirrors the light stack but with pure-black higher alpha
-     so the shadow still reads against the already-dark surface. */
-  --shadow-paper:
-    0.5px 1px 1px 0 rgb(0 0 0 / 0.42),
-    1px 2px 3px -0.5px rgb(0 0 0 / 0.28),
-    2px 4px 6px -2px rgb(0 0 0 / 0.15);
-  --shadow-paper-lifted:
-    0.5px 1px 2px 0 rgb(0 0 0 / 0.48),
-    1px 3px 5px -1px rgb(0 0 0 / 0.34),
-    2px 6px 10px -3px rgb(0 0 0 / 0.20);
 }
 
-.playground-lia-links--v3 [data-slot='card'],
-.playground-lia-links--v3 [data-slot='button'],
-.playground-lia-links--v3 [data-slot='theme-toggle'] {
+/* v4 — no tinted desk; bg matches card */
+.playground-lia-links--v4 {
+  --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
+}
+
+.dark .playground-lia-links--v4 {
+  --background: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
+}
+
+/* Tilt — cards, standalone buttons, theme toggle. v4 also includes
+   bet-icon avatars. */
+:is(.playground-lia-links--v3, .playground-lia-links--v4)
+  :is([data-slot='card'], [data-slot='button'], [data-slot='theme-toggle']),
+.playground-lia-links--v4 [data-slot='bet-icon'] {
   rotate: var(--surface-tilt, 0deg);
   transform-origin: center center;
 }
 
-/* Prevent compound rotation when a button sits inside a card. */
-.playground-lia-links--v3 [data-slot='card'] [data-slot='button'],
-.playground-lia-links--v3 [data-slot='card'] [data-slot='theme-toggle'] {
+/* Compound-rotation reset: a button or theme toggle nested inside a
+   card stays flat (the card already carries the tilt). Bet-icon
+   avatars are deliberately excluded — they tilt on top of the card's
+   tilt, like stickers placed at their own angle. */
+:is(.playground-lia-links--v3, .playground-lia-links--v4)
+  [data-slot='card']
+  :is([data-slot='button'], [data-slot='theme-toggle']) {
   rotate: 0deg;
 }
 
-/* Paper shadow on bet cards. Replaces the Card primitive's default
-   ring-1 outline by overriding box-shadow entirely — real paper
-   doesn't have a uniform 1px outline, the shadow does the work.
-
-   Radius drops to 3px (from the system's rounded-xl = 10px) so the
-   edges read as guillotine-cut paper rather than rounded UI card.
-   The stretched anchor inherits the radius via rounded-[inherit]. */
-.playground-lia-links--v3 [data-slot='card'] {
+/* Paper shadow + radius on bet cards. Overriding box-shadow directly
+   also removes the Card primitive's default ring-1 outline — the
+   shadow alone defines the paper edge. */
+:is(.playground-lia-links--v3, .playground-lia-links--v4)
+  [data-slot='card'] {
   box-shadow: var(--shadow-paper);
   border-radius: 3px;
 }
 
-.playground-lia-links--v3 [data-slot='card']:hover {
+:is(.playground-lia-links--v3, .playground-lia-links--v4)
+  [data-slot='card']:hover {
   box-shadow: var(--shadow-paper-lifted);
+}
+
+/* v4 only — sticker shadow on icon avatars. Even tighter than the
+   card shadow because the avatar is smaller and sits on top of the
+   paper. Read as "small printed/cut sticker affixed to the paper". */
+.playground-lia-links--v4 [data-slot='bet-icon'] {
+  box-shadow:
+    0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.10),
+    1px 1px 2px -0.5px oklch(0.20 0.015 107 / 0.05);
+}
+
+.dark .playground-lia-links--v4 [data-slot='bet-icon'] {
+  box-shadow:
+    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.40),
+    1px 1px 2px -0.5px rgb(0 0 0 / 0.24);
 }

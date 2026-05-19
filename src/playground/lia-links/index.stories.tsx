@@ -60,9 +60,9 @@ const toneClasses: Record<Bet['tone'], string> = {
   secondary: 'bg-secondary text-secondary-foreground',
 }
 
-// Random tilt range. ±0.6° reads as "precisely placed, just slightly off
+// Random tilt range. ±0.5° reads as "precisely placed, just slightly off
 // horizontal" — paper that's been put down with intent.
-const TILT_RANGE = 0.6
+const TILT_RANGE = 0.5
 // Minimum magnitude — anything below reads as "not tilted at all", so the
 // random generator avoids the zero-neighbourhood.
 const TILT_MIN = 0.15
@@ -101,6 +101,7 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
   const [tilts] = useState(() => ({
     themeToggle: singleTilt().toFixed(2),
     bets: mixedTilts(bets.length),
+    icons: mixedTilts(bets.length),
   }))
 
   return (
@@ -153,6 +154,12 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
                   <CardContent className="flex items-center gap-4">
                     <span
                       aria-hidden
+                      data-slot="bet-icon"
+                      style={
+                        {
+                          '--surface-tilt': `${tilts.icons[idx]}deg`,
+                        } as CSSProperties
+                      }
                       className={`flex size-11 shrink-0 items-center justify-center rounded-lg ${toneClasses[bet.tone]}`}
                     >
                       <Icon className="size-5" />
@@ -221,6 +228,14 @@ function LiaLinks() {
           note: 'tinted desk + scattered placement',
           render: () => (
             <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v3" />
+          ),
+        },
+        {
+          id: 'v4',
+          label: 'v4',
+          note: 'no tinted desk',
+          render: () => (
+            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v4" />
           ),
         },
       ]}
