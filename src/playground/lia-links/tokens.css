@@ -173,12 +173,12 @@
 }
 
 .dark .playground-lia-links--v6 {
-  /* Much darker dark mode. Card stays at Olive-900 (clearly the paper),
-     desk drops below Olive-950 to a custom near-black with faint olive
-     tint. Combined with the inverted texture filter, the desk reads as
-     properly dark instead of being lifted by the screen blend. */
-  --card: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
-  --background: oklch(0.10 0.005 107.1); /* custom near-black olive */
+  /* Card Olive-800 on Olive-900 desk. Returned to v3's dark pair — but
+     now with the inverted texture working properly, so dark mode reads
+     dark without going pitch-black. The custom near-black desk was a
+     step too far once the texture started rendering correctly. */
+  --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
+  --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
 }
 
 /* v7 — three distinct modes, toggleable via the prototype's own state
@@ -196,16 +196,14 @@
   --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 }
 
-/* v7-dark — properly dark. Card at Olive-900, desk at a custom near-
-   black (below Olive-950) so the surface reads as dark even after the
-   texture overlay applies. Inverted texture filter so grain reads as
-   subtle lighter specks on dark, not a screen-blend lifting of the
-   whole surface. Light text for AA legibility, higher-alpha dark
-   shadow stack. Applied unconditionally — not relying on the system
-   `.dark` class. */
+/* v7-dark — properly dark. Card at Olive-800, desk at Olive-900 (v3's
+   dark pair, restored now that the inverted texture is working
+   properly). Light text for AA legibility, higher-alpha dark shadow
+   stack. Applied unconditionally — not relying on the system `.dark`
+   class. */
 .playground-lia-links--v7-dark {
-  --card: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
-  --background: oklch(0.10 0.005 107.1); /* custom near-black olive */
+  --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
+  --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
   --foreground: oklch(0.95 0.005 100);
   --muted-foreground: oklch(0.72 0.005 100);
   --paper-blend: screen;
@@ -222,12 +220,18 @@
 /* v7-colour — Purple-300 desk with three distinct coloured papers.
    Text overrides apply Dan's accessibility rule: hard near-black on
    the lighter Purple-300 (passes WCAG AA easily, ~11.7 contrast ratio).
-   No paper-opacity override needed — Purple-300 is light and pastel
-   enough that the default 0.55 multiply produces visible grain. */
+
+   **Rule: coloured surfaces lean harder into the texture.** When the
+   surface is a saturated/chromatic colour (not a near-neutral paper),
+   the multiply blend interacts with both chroma and luminance — the
+   grain reads weaker than on a neutral surface at the same opacity.
+   Bumping `--paper-opacity` for any coloured-mode scope keeps the
+   paper feeling like physical paper rather than a tinted UI fill. */
 .playground-lia-links--v7-colour {
   --background: oklch(0.827 0.119 306.383); /* Tailwind Purple-300 */
   --foreground: oklch(0.10 0.005 100); /* hard near-black on purple */
   --muted-foreground: oklch(0.22 0.005 100);
+  --paper-opacity: 0.80;
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(1) {
@@ -239,17 +243,18 @@
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(3) {
-  /* Near-black paper — just off from black per Dan's note. Lifted
-     slightly from oklch(0.10) to oklch(0.16) so the surface reads as
-     "near-black paper" rather than "pure black void". Faint olive
-     tint per the Impeccable "no pure black" rule. White text for
-     inversion accessibility. Inverted texture filter + screen blend
-     so the grain reads as faint lighter specks. */
-  --card: oklch(0.16 0.008 100);
+  /* Black-paper card — actual black paper isn't pure black, it's a
+     deep charcoal with visible fibre texture. Lifted to oklch(0.22)
+     so it reads as "off-black paper" with a clear paper-tone identity
+     rather than a void. Faint olive tint per the Impeccable "no pure
+     black" rule. White text for inversion accessibility. Inverted
+     texture filter + screen blend so the grain reads as visible
+     lighter specks on the dark paper. */
+  --card: oklch(0.22 0.010 100);
   --foreground: oklch(0.97 0.005 100);
   --muted-foreground: oklch(0.78 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.40;
+  --paper-opacity: 0.50;
   --paper-filter: saturate(0) contrast(1.15) invert(1);
 }
 
