@@ -296,7 +296,7 @@ function LiaLinksSurface({
     >
       <div className="mx-auto flex max-w-lg flex-col gap-12 px-6 pt-10 pb-16">
         <header className="flex items-center justify-between">
-          <Logo className="h-14 w-auto" />
+          <Logo className="h-10 w-auto" />
           <div className="flex items-center gap-1">
             {onRemix && (
               <Button
