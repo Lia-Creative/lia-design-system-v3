@@ -75,16 +75,16 @@ function Button({
     radius: jaggedRadius(4, 9),
   }))
 
+  const paperStyle = {
+    "--surface-tilt": `${paper.tilt}deg`,
+    "--button-radius": paper.radius,
+    ...style,
+  } as unknown as React.CSSProperties
+
   return (
     <ButtonPrimitive
       data-slot="button"
-      style={
-        {
-          "--surface-tilt": `${paper.tilt}deg`,
-          "--button-radius": paper.radius,
-          ...style,
-        } as React.CSSProperties
-      }
+      style={paperStyle}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
