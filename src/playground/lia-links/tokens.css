@@ -50,35 +50,36 @@
   --background: oklch(0.966 0.005 106.5); /* Tailwind Olive-100 */
   --card: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 
-  /* Scanned-paper shadow stack. Three layers:
-     - Contact: tight, almost no blur — the darkness right at the edge
-       where paper meets desk (ambient occlusion).
-     - Ambient: short halo — paper lifted by a millimetre.
-     - Far diffuse: very wide, very soft — hint of light spread.
-     Colour is dark olive (matches the desk family, not pure black). */
+  /* Scanned/cut-paper shadow stack. Three layers, all tight:
+     - Contact: at the edge — ambient occlusion where paper meets desk.
+     - Ambient: very short halo — paper lifted by a millimetre.
+     - Far diffuse: barely-there, pulled in — paper sits flat, not lofted.
+     X-axis offsets bias the shadow lower-right (light from upper-left)
+     to match the cut-paper reference. Colour is dark olive (desk family,
+     not pure black). */
   --shadow-paper:
-    0 1px 1px -0.5px oklch(0.20 0.015 107 / 0.10),
-    0 2px 4px -1px oklch(0.20 0.015 107 / 0.06),
-    0 8px 16px -4px oklch(0.20 0.015 107 / 0.04);
+    0.5px 1px 1px 0 oklch(0.20 0.015 107 / 0.11),
+    1px 2px 3px -0.5px oklch(0.20 0.015 107 / 0.07),
+    2px 4px 6px -2px oklch(0.20 0.015 107 / 0.03);
   --shadow-paper-lifted:
-    0 2px 3px -1px oklch(0.20 0.015 107 / 0.12),
-    0 6px 10px -3px oklch(0.20 0.015 107 / 0.08),
-    0 16px 24px -8px oklch(0.20 0.015 107 / 0.05);
+    0.5px 1px 2px 0 oklch(0.20 0.015 107 / 0.13),
+    1px 3px 5px -1px oklch(0.20 0.015 107 / 0.09),
+    2px 6px 10px -3px oklch(0.20 0.015 107 / 0.04);
 }
 
 .dark .playground-lia-links--v3 {
   --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
   --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
-  /* Dark mode shadows go pure-black with higher alpha so they still
-     read against the already-dark surface. */
+  /* Dark mode mirrors the light stack but with pure-black higher alpha
+     so the shadow still reads against the already-dark surface. */
   --shadow-paper:
-    0 1px 1px -0.5px rgb(0 0 0 / 0.40),
-    0 2px 4px -1px rgb(0 0 0 / 0.28),
-    0 8px 16px -4px rgb(0 0 0 / 0.18);
+    0.5px 1px 1px 0 rgb(0 0 0 / 0.42),
+    1px 2px 3px -0.5px rgb(0 0 0 / 0.28),
+    2px 4px 6px -2px rgb(0 0 0 / 0.15);
   --shadow-paper-lifted:
-    0 2px 3px -1px rgb(0 0 0 / 0.45),
-    0 6px 10px -3px rgb(0 0 0 / 0.34),
-    0 16px 24px -8px rgb(0 0 0 / 0.22);
+    0.5px 1px 2px 0 rgb(0 0 0 / 0.48),
+    1px 3px 5px -1px rgb(0 0 0 / 0.34),
+    2px 6px 10px -3px rgb(0 0 0 / 0.20);
 }
 
 .playground-lia-links--v3 [data-slot='card'],
