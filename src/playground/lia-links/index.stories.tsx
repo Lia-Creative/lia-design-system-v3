@@ -120,17 +120,20 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
     cards: bets.map(() => jaggedRadius(2, 10)),
     icons: bets.map(() => jaggedRadius(4, 9)),
   }))
-  // Random paper-texture origin per card so each card pulls a different
-  // section of the source image. Means each card's grain looks distinct
-  // — like three actual pieces of paper with their own fibres, not three
-  // windows onto one continuous texture. Range covers the full source
-  // image (2048×2048) so cards rarely sample overlapping regions.
-  const [paperOffsets] = useState(() =>
-    bets.map(
-      () =>
-        `${Math.floor(Math.random() * 2000)}px ${Math.floor(Math.random() * 2000)}px`,
-    ),
-  )
+  // Random paper-texture origin per layer (cards + icons in v5). Each
+  // physical layer pulls a different section of the source image so its
+  // grain looks distinct — three pieces of paper with their own fibres,
+  // and three stickers with their own grain, rather than every surface
+  // sharing one continuous texture. Range covers the full source image
+  // (2048×2048) so layers rarely sample overlapping regions.
+  const [paperOffsets] = useState(() => {
+    const offset = () =>
+      `${Math.floor(Math.random() * 2000)}px ${Math.floor(Math.random() * 2000)}px`
+    return {
+      cards: bets.map(offset),
+      icons: bets.map(offset),
+    }
+  })
 
   return (
     <div className={`${scopeClass} min-h-svh bg-background text-foreground`}>
@@ -176,7 +179,7 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
                     {
                       '--surface-tilt': `${tilts.bets[idx]}deg`,
                       '--card-radius': radii.cards[idx],
-                      '--paper-offset': paperOffsets[idx],
+                      '--paper-offset': paperOffsets.cards[idx],
                     } as CSSProperties
                   }
                   className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
@@ -189,6 +192,7 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
                         {
                           '--surface-tilt': `${tilts.icons[idx]}deg`,
                           '--icon-radius': radii.icons[idx],
+                          '--paper-offset': paperOffsets.icons[idx],
                         } as CSSProperties
                       }
                       className={`flex size-11 shrink-0 items-center justify-center rounded-lg ${toneClasses[bet.tone]}`}

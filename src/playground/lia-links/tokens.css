@@ -238,7 +238,34 @@
 
 /* v5 — hand-cut scissor radius on icons too, from `--icon-radius`.
    Range 4–9px (around the system rounded-lg of 6px) so the variation
-   reads as scissor-cut sticker, not "different shape per card". */
+   reads as scissor-cut sticker, not "different shape per card". Plus
+   a per-icon paper-grain overlay following the same recipe as the
+   desk and cards. `overflow: hidden` clips the grain to the (jagged)
+   sticker boundary so it stops at the cut edges. */
 .playground-lia-links--v5 [data-slot='bet-icon'] {
   border-radius: var(--icon-radius, var(--radius-lg));
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.playground-lia-links--v5 [data-slot='bet-icon']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('./assets/paper-texture.jpg');
+  background-size: 600px 600px;
+  background-repeat: repeat;
+  background-position: var(--paper-offset, 0 0);
+  filter: saturate(0) contrast(1.15);
+  mix-blend-mode: var(--paper-blend);
+  opacity: var(--paper-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Promote the icon glyph above its own texture overlay. */
+.playground-lia-links--v5 [data-slot='bet-icon'] > * {
+  position: relative;
+  z-index: 1;
 }
