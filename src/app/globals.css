@@ -283,4 +283,21 @@
   [data-slot='card'][data-paper='flat']::before {
     display: none;
   }
+
+  /* Paper feel on Buttons too — scissor-cut radius + subtle tilt. No
+     texture overlay (buttons are too small for the 600px tile to show
+     meaningful grain). The Button primitive sets --surface-tilt and
+     --button-radius via useState. */
+  [data-slot='button'] {
+    border-radius: var(--button-radius, 0.5rem);
+    rotate: var(--surface-tilt, 0deg);
+    transform-origin: center center;
+  }
+
+  /* Opt-out for Buttons that need to be flat (toolbars where all
+     buttons should align, etc.). */
+  [data-slot='button'][data-paper='flat'] {
+    border-radius: var(--radius-lg);
+    rotate: 0deg;
+  }
 }
