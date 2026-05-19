@@ -313,6 +313,30 @@
     z-index: 0;
   }
 
+  /* Dark/saturated button variants need inverted + screen treatment so
+     the texture's bulk goes dark (= no visible effect on dark bg) and
+     the originally-dark fibers become light spots that screen-blend
+     onto the dark bg as visible specks. Multiplying a mostly-light
+     texture against a dark bg produces ~zero visible variance. */
+  [data-slot='button'][data-variant='default']::before,
+  [data-slot='button'][data-variant='destructive']::before {
+    mix-blend-mode: screen;
+    filter: saturate(0) contrast(1.15) invert(1);
+  }
+
+  /* Outline buttons are light-bg in light mode but dark-bg in dark mode,
+     so flip the treatment in dark mode only. */
+  .dark [data-slot='button'][data-variant='outline']::before {
+    mix-blend-mode: screen;
+    filter: saturate(0) contrast(1.15) invert(1);
+  }
+
+  /* Link and ghost variants have no bg surface to texture onto. */
+  [data-slot='button'][data-variant='link']::before,
+  [data-slot='button'][data-variant='ghost']::before {
+    display: none;
+  }
+
   /* Promote button children (text, icons) above the texture overlay. */
   [data-slot='button'] > * {
     position: relative;
