@@ -5,6 +5,8 @@ import {
   Layers3Icon,
   MoonIcon,
   PaletteIcon,
+  RotateCcwIcon,
+  ShuffleIcon,
   SparklesIcon,
   SunIcon,
   type LucideIcon,
@@ -117,6 +119,94 @@ const V7_MODE_ICONS: Record<V7Mode, LucideIcon> = {
   colour: PaletteIcon,
 }
 
+// Paper palettes for colour mode. Each "paper" carries its own card
+// colour + the texture-handling overrides it needs (light papers use
+// multiply blend, the off-black paper uses screen blend with the
+// inverted texture filter so the grain shows). Slot 0 is the desk;
+// slots 1-3 are the cards. Remix shuffles the slot assignment.
+type Paper = {
+  name: string
+  bg: string
+  foreground: string
+  mutedForeground: string
+  paperBlend: 'multiply' | 'screen'
+  paperOpacity: number
+  paperFilter: string
+}
+
+const OFF_BLACK_PAPER: Paper = {
+  name: 'Off-black',
+  bg: 'oklch(0.22 0.010 100)',
+  foreground: 'oklch(0.97 0.005 100)',
+  mutedForeground: 'oklch(0.78 0.005 100)',
+  paperBlend: 'screen',
+  paperOpacity: 0.5,
+  paperFilter: 'saturate(0) contrast(1.15) invert(1)',
+}
+
+const LIGHT_PAPER_DEFAULTS = {
+  foreground: 'oklch(0.10 0.005 100)',
+  mutedForeground: 'oklch(0.22 0.005 100)',
+  paperBlend: 'multiply',
+  paperFilter: 'saturate(0) contrast(1.15)',
+} as const
+
+const PAPER_PALETTES: Record<'v7' | 'v8', Paper[]> = {
+  v7: [
+    {
+      name: 'Purple-400',
+      bg: 'oklch(0.714 0.203 305.504)',
+      paperOpacity: 0.8,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    {
+      name: 'Blue-200',
+      bg: 'oklch(0.882 0.059 254.128)',
+      paperOpacity: 0.55,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    {
+      name: 'Amber-400',
+      bg: 'oklch(0.828 0.189 84.429)',
+      paperOpacity: 0.55,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    OFF_BLACK_PAPER,
+  ],
+  v8: [
+    {
+      name: 'Amber-400',
+      bg: 'oklch(0.828 0.189 84.429)',
+      paperOpacity: 0.8,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    {
+      name: 'Blue-200',
+      bg: 'oklch(0.882 0.059 254.128)',
+      paperOpacity: 0.55,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    {
+      name: 'Purple-300',
+      bg: 'oklch(0.827 0.119 306.383)',
+      paperOpacity: 0.55,
+      ...LIGHT_PAPER_DEFAULTS,
+    },
+    OFF_BLACK_PAPER,
+  ],
+}
+
+function paperStyle(paper: Paper, slot: 'desk' | 'card'): CSSProperties {
+  return {
+    [slot === 'desk' ? '--background' : '--card']: paper.bg,
+    '--foreground': paper.foreground,
+    '--muted-foreground': paper.mutedForeground,
+    '--paper-blend': paper.paperBlend,
+    '--paper-opacity': paper.paperOpacity,
+    '--paper-filter': paper.paperFilter,
+  } as CSSProperties
+}
+
 function ModeToggle({
   mode,
   onCycle,
@@ -143,6 +233,11 @@ function ModeToggle({
 
 type LiaLinksSurfaceProps = {
   scopeClass: string
+  /** Paper palette applied inline when in colour mode. Slot 0 is the
+   *  desk; slots 1-3 are the bet cards in order. */
+  colourPalette?: Paper[]
+  onRemix?: () => void
+  onReset?: () => void
 } & (
   | { mode?: undefined; onCycleMode?: undefined }
   | { mode: V7Mode; onCycleMode: () => void }
@@ -152,13 +247,17 @@ function LiaLinksSurface({
   scopeClass,
   mode,
   onCycleMode,
+  colourPalette,
+  onRemix,
+  onReset,
 }: LiaLinksSurfaceProps) {
   // Random tilt per tiltable element, generated once per mount. The
   // CSS variable --surface-tilt is set on every version's cards/buttons,
   // but only the v3 scope reads it (rotate: var(--surface-tilt)). v1
   // and v2 stay flat.
   const [tilts] = useState(() => ({
-    themeToggle: singleTilt().toFixed(2),
+    // controls[0] = remix, controls[1] = reset, controls[2] = mode toggle
+    controls: mixedTilts(3),
     bets: mixedTilts(bets.length),
     icons: mixedTilts(bets.length),
   }))
@@ -185,36 +284,75 @@ function LiaLinksSurface({
     }
   })
 
+  const deskPaper = colourPalette?.[0]
+  const surfaceStyle: CSSProperties | undefined = deskPaper
+    ? paperStyle(deskPaper, 'desk')
+    : undefined
+
   return (
-    <div className={`${scopeClass} min-h-svh bg-background text-foreground`}>
+    <div
+      className={`${scopeClass} min-h-svh bg-background text-foreground`}
+      style={surfaceStyle}
+    >
       <div className="mx-auto flex max-w-lg flex-col gap-12 px-6 pt-10 pb-16">
         <header className="flex items-center justify-between">
-          <Logo className="h-7 w-auto" />
-          {mode !== undefined ? (
-            <ModeToggle
-              mode={mode}
-              onCycle={onCycleMode}
-              style={
-                {
-                  '--surface-tilt': `${tilts.themeToggle}deg`,
-                } as CSSProperties
-              }
-            />
-          ) : (
-            <ThemeToggle
-              style={
-                {
-                  '--surface-tilt': `${tilts.themeToggle}deg`,
-                } as CSSProperties
-              }
-            />
-          )}
+          <Logo className="h-14 w-auto" />
+          <div className="flex items-center gap-1">
+            {onRemix && (
+              <Button
+                data-slot="theme-toggle"
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Remix paper colours"
+                onClick={onRemix}
+                style={
+                  {
+                    '--surface-tilt': `${tilts.controls[0]}deg`,
+                  } as CSSProperties
+                }
+              >
+                <ShuffleIcon />
+              </Button>
+            )}
+            {onReset && (
+              <Button
+                data-slot="theme-toggle"
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Reset paper order"
+                onClick={onReset}
+                style={
+                  {
+                    '--surface-tilt': `${tilts.controls[1]}deg`,
+                  } as CSSProperties
+                }
+              >
+                <RotateCcwIcon />
+              </Button>
+            )}
+            {mode !== undefined ? (
+              <ModeToggle
+                mode={mode}
+                onCycle={onCycleMode}
+                style={
+                  {
+                    '--surface-tilt': `${tilts.controls[2]}deg`,
+                  } as CSSProperties
+                }
+              />
+            ) : (
+              <ThemeToggle
+                style={
+                  {
+                    '--surface-tilt': `${tilts.controls[2]}deg`,
+                  } as CSSProperties
+                }
+              />
+            )}
+          </div>
         </header>
 
         <section className="flex flex-col gap-4">
-          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            lia.build
-          </p>
           <h1 className="text-4xl leading-[1.05] font-semibold tracking-tight">
             Build a more creative world.
           </h1>
@@ -233,17 +371,18 @@ function LiaLinksSurface({
           >
             {bets.map((bet, idx) => {
               const Icon = bet.icon
+              const cardPaper = colourPalette?.[idx + 1]
+              const cardStyle: CSSProperties = {
+                '--surface-tilt': `${tilts.bets[idx]}deg`,
+                '--card-radius': radii.cards[idx],
+                '--paper-offset': paperOffsets.cards[idx],
+                ...(cardPaper ? paperStyle(cardPaper, 'card') : {}),
+              } as CSSProperties
               return (
                 <Card
                   key={bet.slug}
                   size="sm"
-                  style={
-                    {
-                      '--surface-tilt': `${tilts.bets[idx]}deg`,
-                      '--card-radius': radii.cards[idx],
-                      '--paper-offset': paperOffsets.cards[idx],
-                    } as CSSProperties
-                  }
+                  style={cardStyle}
                   className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
                 >
                   <CardContent className="flex items-center gap-4">
@@ -368,18 +507,45 @@ function LiaLinks() {
   )
 }
 
+const DEFAULT_SLOT_ORDER: readonly number[] = [0, 1, 2, 3]
+
+function shuffleOrder(current: readonly number[]): number[] {
+  // Fisher-Yates, biased to avoid returning the same order back.
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const next = [...current]
+    for (let i = next.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[next[i], next[j]] = [next[j], next[i]]
+    }
+    if (next.some((v, i) => v !== current[i])) return next
+  }
+  return [...current]
+}
+
 function ColouredSurface({ version }: { version: 'v7' | 'v8' }) {
   const [mode, setMode] = useState<V7Mode>('light')
+  const [slotOrder, setSlotOrder] = useState<number[]>([...DEFAULT_SLOT_ORDER])
+
   const cycleMode = () =>
     setMode(
       (current) => V7_MODES[(V7_MODES.indexOf(current) + 1) % V7_MODES.length],
     )
+
+  const remix = () => setSlotOrder((current) => shuffleOrder(current))
+  const reset = () => setSlotOrder([...DEFAULT_SLOT_ORDER])
+
+  const palette = PAPER_PALETTES[version]
+  const colourPalette =
+    mode === 'colour' ? slotOrder.map((i) => palette[i]) : undefined
 
   return (
     <LiaLinksSurface
       scopeClass={`playground-lia-links playground-lia-links--${version} playground-lia-links--${version}-${mode}`}
       mode={mode}
       onCycleMode={cycleMode}
+      colourPalette={colourPalette}
+      onRemix={mode === 'colour' ? remix : undefined}
+      onReset={mode === 'colour' ? reset : undefined}
     />
   )
 }
