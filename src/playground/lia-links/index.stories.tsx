@@ -74,6 +74,15 @@ function singleTilt(): number {
   return sign * magnitude
 }
 
+// Build a hand-cut-looking border-radius. Each corner gets its own
+// horizontal AND vertical radius (slash syntax), so corners are
+// ellipses rather than circles. With independent random values it
+// reads as paper cut with scissors — no two corners alike.
+function jaggedRadius(min: number, max: number): string {
+  const r = () => (min + Math.random() * (max - min)).toFixed(1)
+  return `${r()}px ${r()}px ${r()}px ${r()}px / ${r()}px ${r()}px ${r()}px ${r()}px`
+}
+
 function mixedTilts(count: number): string[] {
   // Generate `count` tilts and guarantee a mix of signs — otherwise three
   // independent samples can easily all land positive (or negative) by
@@ -102,6 +111,14 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
     themeToggle: singleTilt().toFixed(2),
     bets: mixedTilts(bets.length),
     icons: mixedTilts(bets.length),
+  }))
+  // Hand-cut corner radii. Set inline on every card and icon, but only
+  // the v5 scope reads them. v3/v4 hardcode `border-radius: 3px` and
+  // ignore the inline var. Range chosen so the variation is visible
+  // without making any single corner read as "rounded UI".
+  const [radii] = useState(() => ({
+    cards: bets.map(() => jaggedRadius(1, 5)),
+    icons: bets.map(() => jaggedRadius(4, 9)),
   }))
 
   return (
@@ -147,6 +164,7 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
                   style={
                     {
                       '--surface-tilt': `${tilts.bets[idx]}deg`,
+                      '--card-radius': radii.cards[idx],
                     } as CSSProperties
                   }
                   className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
@@ -158,6 +176,7 @@ function LiaLinksSurface({ scopeClass }: { scopeClass: string }) {
                       style={
                         {
                           '--surface-tilt': `${tilts.icons[idx]}deg`,
+                          '--icon-radius': radii.icons[idx],
                         } as CSSProperties
                       }
                       className={`flex size-11 shrink-0 items-center justify-center rounded-lg ${toneClasses[bet.tone]}`}
@@ -236,6 +255,14 @@ function LiaLinks() {
           note: 'no tinted desk',
           render: () => (
             <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v4" />
+          ),
+        },
+        {
+          id: 'v5',
+          label: 'v5',
+          note: 'scissor-cut corners',
+          render: () => (
+            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v5" />
           ),
         },
       ]}

@@ -26,7 +26,8 @@
 :is(
   .playground-lia-links--v2,
   .playground-lia-links--v3,
-  .playground-lia-links--v4
+  .playground-lia-links--v4,
+  .playground-lia-links--v5
 ) {
   --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 }
@@ -35,11 +36,15 @@
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
-/* v3 + v4 — paper on a surface, scattered placement
+/* v3, v4, v5 — paper on a surface, scattered placement
 
-   Shared design language. The only difference between v3 and v4 is
-   --background: v3 has a one-step-darker olive desk, v4 sets bg to
-   match card (no tinted desk, paper floats on same-colour surface).
+   Shared design language. Per-version deltas:
+   - v3: one-step-darker olive desk (Olive-100 light / Olive-900 dark)
+   - v4: bg matches card (no tinted desk); icons treated as stickers
+     with their own shadow and independent tilt
+   - v5: as v4, plus scissor-cut corners — each card and icon gets a
+     hand-cut-looking border-radius (all four corners independently
+     random, asymmetric H/V via the slash syntax)
 
    Conventions:
    - Card colour: Olive-50 (light) / Olive-800 (dark). Lia paper-tone.
@@ -50,14 +55,15 @@
      upper-left light source per the cut-paper reference.
    - Colour of shadow: dark olive (desk family) in light mode, pure
      black higher-alpha in dark mode.
-   - Radius: 3px — guillotine-cut paper edges, not rounded UI cards.
+   - Radius: v3/v4 hardcoded 3px (guillotine-cut). v5 reads inline
+     `--card-radius` / `--icon-radius` (scissor-cut, randomised).
    - Tilt: --surface-tilt CSS variable read by cards, buttons, theme
-     toggle, and (v4 only) bet-icon avatars. Tilts on icons compound
+     toggle, and (v4/v5) bet-icon avatars. Tilts on icons compound
      on top of the parent card's tilt — by design, icons read as
      stickers placed at their own slight angle relative to the paper. */
 
-/* Shared card colour + shadow tokens for v3 and v4. */
-:is(.playground-lia-links--v3, .playground-lia-links--v4) {
+/* Shared card colour + shadow tokens for v3, v4, v5. */
+:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5) {
   --card: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 
   --shadow-paper:
@@ -68,7 +74,7 @@
     1px 2.5px 4px -1px oklch(0.20 0.015 107 / 0.08);
 }
 
-.dark :is(.playground-lia-links--v3, .playground-lia-links--v4) {
+.dark :is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5) {
   --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
 
   --shadow-paper:
@@ -88,20 +94,20 @@
   --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
 }
 
-/* v4 — no tinted desk; bg matches card */
-.playground-lia-links--v4 {
+/* v4, v5 — no tinted desk; bg matches card */
+:is(.playground-lia-links--v4, .playground-lia-links--v5) {
   --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
 }
 
-.dark .playground-lia-links--v4 {
+.dark :is(.playground-lia-links--v4, .playground-lia-links--v5) {
   --background: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
 }
 
-/* Tilt — cards, standalone buttons, theme toggle. v4 also includes
-   bet-icon avatars. */
-:is(.playground-lia-links--v3, .playground-lia-links--v4)
+/* Tilt — cards, standalone buttons, theme toggle. v4 and v5 also
+   include bet-icon avatars (which compound on top of the card tilt). */
+:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5)
   :is([data-slot='card'], [data-slot='button'], [data-slot='theme-toggle']),
-.playground-lia-links--v4 [data-slot='bet-icon'] {
+:is(.playground-lia-links--v4, .playground-lia-links--v5) [data-slot='bet-icon'] {
   rotate: var(--surface-tilt, 0deg);
   transform-origin: center center;
 }
@@ -110,37 +116,54 @@
    card stays flat (the card already carries the tilt). Bet-icon
    avatars are deliberately excluded — they tilt on top of the card's
    tilt, like stickers placed at their own angle. */
-:is(.playground-lia-links--v3, .playground-lia-links--v4)
+:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5)
   [data-slot='card']
   :is([data-slot='button'], [data-slot='theme-toggle']) {
   rotate: 0deg;
 }
 
-/* Paper shadow + radius on bet cards. Overriding box-shadow directly
-   also removes the Card primitive's default ring-1 outline — the
-   shadow alone defines the paper edge. */
-:is(.playground-lia-links--v3, .playground-lia-links--v4)
+/* Paper shadow on bet cards. Overriding box-shadow directly also
+   removes the Card primitive's default ring-1 outline — the shadow
+   alone defines the paper edge. */
+:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5)
   [data-slot='card'] {
   box-shadow: var(--shadow-paper);
-  border-radius: 3px;
 }
 
-:is(.playground-lia-links--v3, .playground-lia-links--v4)
+:is(.playground-lia-links--v3, .playground-lia-links--v4, .playground-lia-links--v5)
   [data-slot='card']:hover {
   box-shadow: var(--shadow-paper-lifted);
 }
 
-/* v4 only — sticker shadow on icon avatars. Even tighter than the
+/* v3, v4 — clean 3px guillotine-cut radius */
+:is(.playground-lia-links--v3, .playground-lia-links--v4) [data-slot='card'] {
+  border-radius: 3px;
+}
+
+/* v5 — hand-cut scissor radius, read from inline `--card-radius` set
+   in the story. Each card gets its own per-corner random ellipse. */
+.playground-lia-links--v5 [data-slot='card'] {
+  border-radius: var(--card-radius, 3px);
+}
+
+/* v4, v5 — sticker shadow on icon avatars. Even tighter than the
    card shadow because the avatar is smaller and sits on top of the
    paper. Read as "small printed/cut sticker affixed to the paper". */
-.playground-lia-links--v4 [data-slot='bet-icon'] {
+:is(.playground-lia-links--v4, .playground-lia-links--v5) [data-slot='bet-icon'] {
   box-shadow:
     0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.10),
     1px 1px 2px -0.5px oklch(0.20 0.015 107 / 0.05);
 }
 
-.dark .playground-lia-links--v4 [data-slot='bet-icon'] {
+.dark :is(.playground-lia-links--v4, .playground-lia-links--v5) [data-slot='bet-icon'] {
   box-shadow:
     0.5px 0.5px 1px 0 rgb(0 0 0 / 0.40),
     1px 1px 2px -0.5px rgb(0 0 0 / 0.24);
+}
+
+/* v5 — hand-cut scissor radius on icons too, from `--icon-radius`.
+   Range 4–9px (around the system rounded-lg of 6px) so the variation
+   reads as scissor-cut sticker, not "different shape per card". */
+.playground-lia-links--v5 [data-slot='bet-icon'] {
+  border-radius: var(--icon-radius, var(--radius-lg));
 }

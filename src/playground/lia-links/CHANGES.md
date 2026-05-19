@@ -30,6 +30,7 @@ Brief: Linktree-style landing surface for lia.build. Mission statement up top, t
 | 2026-05-19 | structure | Restructured tokens.css to hoist shared v3+v4 rules via `:is()` selectors. Keeps the file compact as the version count grows. | live |
 | 2026-05-19 | structure | Add v4 version. Inherits everything from v3 (Figtree, tight paper shadow, 3px radius, tilt) but sets `--background` to match `--card` — no tinted desk. Paper floats on a same-colour surface, separated only by the shadow. | live |
 | 2026-05-19 | structure | v4 bet-icon avatars treated as stickers. Each icon gets `data-slot="bet-icon"` + inline `--surface-tilt` for an independent random tilt (mixed-sign, same generator as the cards). v4-only CSS adds a smaller sticker-shadow on each icon and lets the icon tilt compound on top of the parent card's tilt (excluded from the rotation-reset rule). | live |
+| 2026-05-19 | structure | Add v5 version. Inherits everything from v4 (bg = card, sticker icons, tilt, paper shadow) but swaps the clean 3px radius for hand-cut scissor corners. Each card and icon gets its own four-corner random radius (asymmetric H/V via the slash syntax) generated once per mount: cards 1–5px range, icons 4–9px range. Inline `--card-radius` / `--icon-radius` CSS variables; v3/v4 hardcode `border-radius: 3px` and ignore the inline vars. Reads as paper cut with scissors — no two corners alike. | live |
 
 ## Notes
 
