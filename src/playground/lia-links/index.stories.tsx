@@ -377,10 +377,10 @@ function LiaLinksSurface({
 
         <section className="flex flex-col gap-4">
           <h1 className="text-6xl leading-[0.95] font-semibold tracking-tighter">
-            Lia. A creative company.
+            What if creative work was simpler?
           </h1>
           <p className="text-lg leading-snug text-muted-foreground">
-            Three friends, making the world a more creative place.
+            Solving old problems with new tools.
           </p>
         </section>
 
