@@ -289,6 +289,14 @@ function LiaLinks() {
             <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v6" />
           ),
         },
+        {
+          id: 'v7',
+          label: 'v7',
+          note: 'colour mode',
+          render: () => (
+            <LiaLinksSurface scopeClass="playground-lia-links playground-lia-links--v7" />
+          ),
+        },
       ]}
     />
   )
