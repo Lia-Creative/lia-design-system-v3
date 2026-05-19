@@ -231,7 +231,7 @@
    Bumping `--paper-opacity` for any coloured-mode scope keeps the
    paper feeling like physical paper rather than a tinted UI fill. */
 .playground-lia-links--v7-colour {
-  --background: oklch(0.827 0.119 306.383); /* Tailwind Purple-300 */
+  --background: oklch(0.714 0.203 305.504); /* Tailwind Purple-400 */
   --foreground: oklch(0.10 0.005 100); /* hard near-black on purple */
   --muted-foreground: oklch(0.22 0.005 100);
   --paper-opacity: 0.80;
