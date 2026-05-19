@@ -229,14 +229,11 @@
     mix-blend-mode: var(--paper-blend);
     opacity: var(--paper-opacity);
     pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Promote body content above the desk grain. Storybook + Next.js
-     pages all render their content as direct children of body. */
-  body > * {
-    position: relative;
-    z-index: 1;
+    /* z-index -1 puts the texture behind in-flow content within body's
+       isolated stacking context, so we don't need a separate `body > *`
+       rule (which would break absolute-positioned children like
+       stretched-link anchors). */
+    z-index: -1;
   }
 }
 
@@ -264,13 +261,11 @@
     mix-blend-mode: var(--paper-blend);
     opacity: var(--paper-opacity);
     pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Card children above the grain. */
-  [data-slot='card'] > * {
-    position: relative;
-    z-index: 1;
+    /* z-index -1 inside the Card's isolated stacking context. Content
+       paints above this naturally without needing to touch `position`
+       on each child (which would break absolute-positioned children
+       like the stretched-link anchor pattern). */
+    z-index: -1;
   }
 
   /* Flat opt-out for Cards where paper feel would be wrong (data viz,
@@ -284,20 +279,23 @@
     display: none;
   }
 
-  /* Paper feel on Buttons — scissor-cut radius + subtle tilt only.
-     Texture overlay was tried and dropped: multiply against dark
-     saturated variants (default, destructive) didn't register; screen
-     + invert ruined the destructive variant's tone. May revisit with
-     a different recipe later. */
-  [data-slot='button'] {
+  /* Paper feel on Buttons (and ThemeToggle, which is a Button with
+     data-slot="theme-toggle" replacing data-slot="button") — scissor-
+     cut radius + subtle tilt. Texture overlay was tried and dropped:
+     multiply against dark saturated variants didn't register; invert
+     ruined the destructive variant's tone. May revisit with a
+     different recipe later. */
+  [data-slot='button'],
+  [data-slot='theme-toggle'] {
     border-radius: var(--button-radius, 0.5rem);
     rotate: var(--surface-tilt, 0deg);
     transform-origin: center center;
   }
 
-  /* Opt-out for Buttons that need to be flat (toolbars where all
-     buttons should align, etc.). */
-  [data-slot='button'][data-paper='flat'] {
+  /* Opt-out for Buttons/Toggles that need to be flat (toolbars where
+     all buttons should align, etc.). */
+  [data-slot='button'][data-paper='flat'],
+  [data-slot='theme-toggle'][data-paper='flat'] {
     border-radius: var(--radius-lg);
     rotate: 0deg;
   }

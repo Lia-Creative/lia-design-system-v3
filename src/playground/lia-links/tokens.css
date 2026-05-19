@@ -1,98 +1,25 @@
-/* Lia Links — scoped token overrides */
+/* Lia Links — scoped overrides on top of the system defaults.
 
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap');
+   After the stage 1-5 design-system promotion, the system (globals.css
+   + Card primitive + Button primitive) now provides paper feel by
+   default — Olive neutrals, paper shadow scale, Figtree, Card scissor
+   cuts + tilt + grain, body desk grain, Button scissor + tilt. This
+   file only contains things that DIFFER from the system defaults:
+   per-version palette experiments, colour-mode palettes, v9 hover
+   swap, and bet-icon-specific rules (bet-icon isn't a system
+   primitive). */
 
-/* Shared scope (applies to every version unless overridden below) */
-.playground-lia-links {
-  /* Re-resolve font-family here so version-scoped --font-sans overrides
-     actually take effect. Without this, the inherited font-family from
-     <html> is the resolved DM Sans value and the variable override is
-     invisible. */
-  font-family: var(--font-sans);
-}
+/* v1 — baseline. System defaults apply: Olive paper, paper shadow,
+   scissor cuts via Card primitive's per-instance randomness, body
+   desk grain. (Empty block for placeholder.) */
 
-.dark .playground-lia-links {
-  /* dark-mode shared overrides go here */
-}
-
-/* v1 — baseline. Untouched after first ship. */
-.playground-lia-links--v1 {
-  /* DM Sans (system default), Card primitive at its default ring-only state. */
-}
-
-/* Inherited from v2 onward: Figtree font. */
-:is(
-  .playground-lia-links--v2,
-  .playground-lia-links--v3,
-  .playground-lia-links--v4,
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7,
-  .playground-lia-links--v8,
-  .playground-lia-links--v9
-) {
-  --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
-}
-
+/* v2 — softer single-layer shadow than v5+ paper shadow. */
 .playground-lia-links--v2 [data-slot='card'] {
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
-/* v3, v4, v5, v6 — paper on a surface, scattered placement.
-
-   Shared design language. Per-version deltas:
-   - v3: one-step-darker olive desk (Olive-100 light / Olive-900 dark)
-   - v4: bg matches card (no tinted desk); icons treated as stickers
-     with their own shadow and independent tilt
-   - v5: as v4, plus scissor-cut corners, paper-grain texture per layer,
-     darker contact shadow. Card Olive-25 / desk Olive-75 (interpolated).
-   - v6: as v5, with the highest paper lift — card Olive-0 (extrapolated
-     near-white) on Olive-50 desk. Dark mirror: Olive-700 on Olive-800.
-
-   v5 rule: every new layer (desk, card, icon, future) gets its own
-   paper-grain ::before with an independent random --paper-offset. */
-
-/* Shared card colour + shadow tokens for v3, v4, v5, v6. v5 and v6
-   override --card and --shadow-paper below. */
-:is(
-  .playground-lia-links--v3,
-  .playground-lia-links--v4,
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7,
-  .playground-lia-links--v8,
-  .playground-lia-links--v9
-) {
-  --card: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
-
-  --shadow-paper:
-    0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.12),
-    1px 1.5px 2.5px -0.5px oklch(0.20 0.015 107 / 0.06);
-  --shadow-paper-lifted:
-    0.5px 1px 1.5px 0 oklch(0.20 0.015 107 / 0.14),
-    1px 2.5px 4px -1px oklch(0.20 0.015 107 / 0.08);
-}
-
-.dark :is(
-  .playground-lia-links--v3,
-  .playground-lia-links--v4,
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7,
-  .playground-lia-links--v8,
-  .playground-lia-links--v9
-) {
-  --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
-
-  --shadow-paper:
-    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.45),
-    1px 1.5px 2.5px -0.5px rgb(0 0 0 / 0.27);
-  --shadow-paper-lifted:
-    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.52),
-    1px 2.5px 4px -1px rgb(0 0 0 / 0.34);
-}
-
-/* v3 — tinted desk (one Olive step darker than card) */
+/* v3 — tinted desk (Olive-100 — one Tailwind step darker than the
+   system default Olive-50). */
 .playground-lia-links--v3 {
   --background: oklch(0.966 0.005 106.5); /* Tailwind Olive-100 */
 }
@@ -101,224 +28,139 @@
   --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
 }
 
-/* v4 — no tinted desk; bg matches card */
-.playground-lia-links--v4 {
-  --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
-}
+/* v4 — bg matches card. (System default already has bg = card, so v4
+   is effectively a no-op of the baseline. Kept for the comparison
+   ladder.) */
 
-.dark .playground-lia-links--v4 {
-  --background: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
-}
-
-/* v5 + v6 — paper grain texture, scissor cuts, sticker icons, darker
-   contact shadow. The only difference between v5 and v6 is the card
-   and desk colour pair (set in their own blocks below).
-
-   `--paper-filter` is exposed as a token so dark surfaces can swap in
-   `invert(1)` — that flips the texture so its bulk becomes dark and
-   only the (originally-dark-fibered) spots show as subtle lighter
-   specks. Without this, screen-blending the mostly-light texture onto
-   a dark bg lifts the whole surface and the "black" reads as grey. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) {
-  --paper-blend: multiply;
-  --paper-opacity: 0.55;
-  --paper-filter: saturate(0) contrast(1.15);
-
-  /* Darker contact layer than v3/v4 — the textured paper needs a more
-     pronounced "underline" at the contact edge for the lift to read.
-     Second-layer throw stays the same so the shadow doesn't get lofty.
-     Per Dan's scan references (title strips on yellow, scanned papers
-     on blue) the contact line is the load-bearing detail. */
-  --shadow-paper:
+/* v5+ shared — darker contact shadow on cards than the system shadow-sm.
+   Stage 2's system shadow-sm uses alpha 0.18/0.08; v5+ wants 0.22/0.08
+   for a more pronounced paper underline. */
+:is(
+  .playground-lia-links--v5,
+  .playground-lia-links--v6,
+  .playground-lia-links--v7,
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
+) {
+  --shadow-sm:
     0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.22),
     1px 1.5px 2.5px -0.5px oklch(0.20 0.015 107 / 0.08);
-  --shadow-paper-lifted:
-    0.5px 1px 1.5px 0 oklch(0.20 0.015 107 / 0.26),
-    1px 2.5px 4px -1px oklch(0.20 0.015 107 / 0.10);
-
-  position: relative;
-  isolation: isolate;
 }
 
-.dark :is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) {
-  --paper-blend: screen;
-  --paper-opacity: 0.9;
-  /* Inverted texture so bulk = dark, fibers = light spots. Screen-blends
-     the light spots onto the dark surface as visible specks; the dark
-     bulk leaves the surface unchanged. contrast(1.15) (same as light)
-     instead of 1.4 — the extra contrast was clamping the bulk to pure
-     black, which screen-blends to nothing. */
-  --paper-filter: saturate(0) contrast(1.15) invert(1);
-
-  --shadow-paper:
-    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
-    1px 1.5px 2.5px -0.5px rgb(0 0 0 / 0.32);
-  --shadow-paper-lifted:
-    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.72),
-    1px 2.5px 4px -1px rgb(0 0 0 / 0.40);
-}
-
-/* v5 — card Olive-25 (interpolated) on Olive-75 (interpolated) desk */
+/* v5 — Olive-25 card on Olive-75 desk (interpolated steps). */
 .playground-lia-links--v5 {
-  --card: oklch(0.994 0.002 106.5); /* Olive-25 (interpolated) */
-  --background: oklch(0.977 0.004 106.5); /* Olive-75 (interpolated) */
+  --card: oklch(0.994 0.002 106.5); /* Olive-25 */
+  --background: oklch(0.977 0.004 106.5); /* Olive-75 */
 }
 
 .dark .playground-lia-links--v5 {
-  --card: oklch(0.313 0.018 107.4); /* Olive-775 (interpolated) */
-  --background: oklch(0.272 0.015 107.4); /* Olive-825 (interpolated) */
+  --card: oklch(0.313 0.018 107.4); /* Olive-775 */
+  --background: oklch(0.272 0.015 107.4); /* Olive-825 */
 }
 
-/* v6 — card Olive-0 (extrapolated near-white, faint olive tint) on
-   Olive-50 desk. Greatest paper lift in the ladder. Dark mirror
-   matches v3's dark pair (Olive-800 / Olive-900) — the earlier
-   Olive-700 / Olive-800 read way too light. */
+/* v6 — Olive-0 card (extrapolated, near-white). Desk stays Olive-50
+   from the system default. */
 .playground-lia-links--v6 {
-  --card: oklch(0.999 0.002 106.5); /* Olive-0 (extrapolated) */
-  --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
+  --card: oklch(0.999 0.002 106.5); /* Olive-0 */
 }
 
 .dark .playground-lia-links--v6 {
-  /* Card Olive-800 on Olive-900 desk. Returned to v3's dark pair — but
-     now with the inverted texture working properly, so dark mode reads
-     dark without going pitch-black. The custom near-black desk was a
-     step too far once the texture started rendering correctly. */
-  --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
-  --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
+  --card: oklch(0.286 0.016 107.4); /* Olive-800 */
+  --background: oklch(0.228 0.013 107.4); /* Olive-900 */
 }
 
-/* v7 — three distinct modes, toggleable via the prototype's own state
-   (V7Surface owns it via useState). Independent of the system .dark
-   theme: whichever mode is selected applies its full palette regardless
-   of what the body's .dark class is doing.
-
-   The structural rules (Figtree, shadow tokens, texture overlay, tilt,
-   scissor-cut radius, sticker icons) are inherited from the v5/v6/v7
-   `:is(...)` blocks above. Each mode below sets only what differs. */
-
-/* v7-light, v8-light, v9-light — clean light paper, same colour pair as v6 light */
-:is(.playground-lia-links--v7-light, .playground-lia-links--v8-light, .playground-lia-links--v9-light) {
-  --card: oklch(0.999 0.002 106.5); /* Olive-0 (extrapolated) */
-  --background: oklch(0.988 0.003 106.5); /* Tailwind Olive-50 */
+/* v7-light, v8-light, v9-light — Olive-0 card, same as v6 light. */
+:is(
+  .playground-lia-links--v7-light,
+  .playground-lia-links--v8-light,
+  .playground-lia-links--v9-light
+) {
+  --card: oklch(0.999 0.002 106.5);
 }
 
-/* v7-dark, v8-dark, v9-dark — properly dark. Card at Olive-800, desk
-   at Olive-900 (v3's dark pair, restored now that the inverted texture
-   is working properly). Light text for AA legibility, higher-alpha
-   dark shadow stack. Applied unconditionally — not relying on the
-   system `.dark` class. */
-:is(.playground-lia-links--v7-dark, .playground-lia-links--v8-dark, .playground-lia-links--v9-dark) {
-  --card: oklch(0.286 0.016 107.4); /* Tailwind Olive-800 */
-  --background: oklch(0.228 0.013 107.4); /* Tailwind Olive-900 */
+/* v7-dark, v8-dark, v9-dark — explicit dark with stronger texture
+   opacity (0.9 vs system 0.7) and light foreground for AA legibility. */
+:is(
+  .playground-lia-links--v7-dark,
+  .playground-lia-links--v8-dark,
+  .playground-lia-links--v9-dark
+) {
+  --card: oklch(0.286 0.016 107.4); /* Olive-800 */
+  --background: oklch(0.228 0.013 107.4); /* Olive-900 */
   --foreground: oklch(0.95 0.005 100);
   --muted-foreground: oklch(0.72 0.005 100);
   --paper-blend: screen;
   --paper-opacity: 0.9;
   --paper-filter: saturate(0) contrast(1.15) invert(1);
-  --shadow-paper:
-    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
-    1px 1.5px 2.5px -0.5px rgb(0 0 0 / 0.32);
-  --shadow-paper-lifted:
-    0.5px 1px 1.5px 0 rgb(0 0 0 / 0.72),
-    1px 2.5px 4px -1px rgb(0 0 0 / 0.40);
 }
 
-/* v7-colour — Purple-300 desk with three distinct coloured papers.
-   Text overrides apply Dan's accessibility rule: hard near-black on
-   the lighter Purple-300 (passes WCAG AA easily, ~11.7 contrast ratio).
-
-   **Rule: coloured surfaces lean harder into the texture.** When the
-   surface is a saturated/chromatic colour (not a near-neutral paper),
-   the multiply blend interacts with both chroma and luminance — the
-   grain reads weaker than on a neutral surface at the same opacity.
-   Bumping `--paper-opacity` for any coloured-mode scope keeps the
-   paper feeling like physical paper rather than a tinted UI fill. */
+/* v7-colour — Purple-400 desk + three coloured papers (Blue/Amber/
+   off-black). */
 .playground-lia-links--v7-colour {
-  --background: oklch(0.714 0.203 305.504); /* Tailwind Purple-400 */
-  --foreground: oklch(0.10 0.005 100); /* hard near-black on purple */
+  --background: oklch(0.714 0.203 305.504); /* Purple-400 */
+  --foreground: oklch(0.10 0.005 100); /* hard near-black for AA */
   --muted-foreground: oklch(0.22 0.005 100);
   --paper-opacity: 0.80;
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(1) {
-  --card: oklch(0.882 0.059 254.128); /* Tailwind Blue-200 */
+  --card: oklch(0.882 0.059 254.128); /* Blue-200 */
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(2) {
-  --card: oklch(0.828 0.189 84.429); /* Tailwind Amber-400 */
+  --card: oklch(0.828 0.189 84.429); /* Amber-400 */
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(3) {
-  /* Black-paper card — actual black paper isn't pure black, it's a
-     deep charcoal with visible fibre texture. Lifted to oklch(0.22)
-     so it reads as "off-black paper" with a clear paper-tone identity
-     rather than a void. Faint olive tint per the Impeccable "no pure
-     black" rule. White text for inversion accessibility. Inverted
-     texture filter + screen blend so the grain reads as visible
-     lighter specks on the dark paper. */
-  --card: oklch(0.22 0.010 100);
+  --card: oklch(0.22 0.010 100); /* off-black paper */
   --foreground: oklch(0.97 0.005 100);
   --muted-foreground: oklch(0.78 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.50;
+  --paper-opacity: 0.85;
   --paper-filter: saturate(0) contrast(1.15) invert(1);
 }
 
-/* On the saturated coloured papers in colour modes, the system icon-
-   avatar tints (bg-primary/10, bg-accent, bg-secondary) read either
-   muddy or camouflaged. Force a uniform paper-tone avatar so the
-   stickers read like cream labels on the coloured cards. */
-:is(.playground-lia-links--v7-colour, .playground-lia-links--v8-colour, .playground-lia-links--v9-colour)
-  [data-slot='bet-icon'] {
-  background-color: oklch(0.97 0.005 100); /* cream paper */
-  color: oklch(0.20 0.005 100); /* dark warm ink */
-}
-
-/* v8-colour — Amber-400 (warm yellow) desk. Cards are Blue-200,
-   Purple-300, and the same off-black paper as v7-colour. Same
-   conventions: hard near-black text (AA pass on yellow), elevated
-   paper opacity. */
+/* v8-colour — Amber-400 desk (warm yellow) with Blue/Purple/off-black
+   cards. */
 .playground-lia-links--v8-colour {
-  --background: oklch(0.828 0.189 84.429); /* Tailwind Amber-400 */
-  --foreground: oklch(0.10 0.005 100); /* hard near-black on yellow */
+  --background: oklch(0.828 0.189 84.429); /* Amber-400 */
+  --foreground: oklch(0.10 0.005 100);
   --muted-foreground: oklch(0.22 0.005 100);
   --paper-opacity: 0.80;
 }
 
 .playground-lia-links--v8-colour [data-slot='card']:nth-child(1) {
-  --card: oklch(0.882 0.059 254.128); /* Tailwind Blue-200 */
+  --card: oklch(0.882 0.059 254.128); /* Blue-200 */
 }
 
 .playground-lia-links--v8-colour [data-slot='card']:nth-child(2) {
-  --card: oklch(0.827 0.119 306.383); /* Tailwind Purple-300 */
+  --card: oklch(0.827 0.119 306.383); /* Purple-300 */
 }
 
 .playground-lia-links--v8-colour [data-slot='card']:nth-child(3) {
-  /* Same off-black paper as v7-colour. */
   --card: oklch(0.22 0.010 100);
   --foreground: oklch(0.97 0.005 100);
   --muted-foreground: oklch(0.78 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.50;
+  --paper-opacity: 0.85;
   --paper-filter: saturate(0) contrast(1.15) invert(1);
 }
 
-/* v9-colour — Purple-400 desk (same as v7-colour). The v9 difference
-   from v7/v8 lives in the hover swap on v9-light/v9-dark, not in the
-   colour palette. */
+/* v9-colour — same palette as v7-colour. (v9's differentiator vs v7 is
+   the light/dark hover swap, not the colour palette.) */
 .playground-lia-links--v9-colour {
-  --background: oklch(0.714 0.203 305.504); /* Tailwind Purple-400 */
+  --background: oklch(0.714 0.203 305.504); /* Purple-400 */
   --foreground: oklch(0.10 0.005 100);
   --muted-foreground: oklch(0.22 0.005 100);
   --paper-opacity: 0.80;
 }
 
 .playground-lia-links--v9-colour [data-slot='card']:nth-child(1) {
-  --card: oklch(0.882 0.059 254.128); /* Tailwind Blue-200 */
+  --card: oklch(0.882 0.059 254.128);
 }
 
 .playground-lia-links--v9-colour [data-slot='card']:nth-child(2) {
-  --card: oklch(0.828 0.189 84.429); /* Tailwind Amber-400 */
+  --card: oklch(0.828 0.189 84.429);
 }
 
 .playground-lia-links--v9-colour [data-slot='card']:nth-child(3) {
@@ -326,19 +168,25 @@
   --foreground: oklch(0.97 0.005 100);
   --muted-foreground: oklch(0.78 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.50;
+  --paper-opacity: 0.85;
   --paper-filter: saturate(0) contrast(1.15) invert(1);
 }
 
-/* v9 — paper-on-hover swap (light + dark modes only). Light: card
-   flips to `--secondary` (Lia's light sky blue). Dark: card flips
-   to `--accent` (Lia yellow). Both target surfaces are light, so
-   the system tone-foregrounds (both dark) keep text contrast-safe.
+/* Cream paper-tone avatar in colour modes — system tones (primary,
+   accent, secondary) read muddy/camouflaged on saturated card colours. */
+:is(
+  .playground-lia-links--v7-colour,
+  .playground-lia-links--v8-colour,
+  .playground-lia-links--v9-colour
+)
+  [data-slot='bet-icon'] {
+  background-color: oklch(0.97 0.005 100);
+  color: oklch(0.20 0.005 100);
+}
 
-   Icon avatars deliberately stay at their rest tone styling — only
-   the card surface changes. Inline `--card` in v9-colour mode wins
-   over these rules via specificity, so the colour-mode palette is
-   unaffected. */
+/* v9 — light/dark hover swap. Light: card flips to --secondary (Lia
+   sky blue). Dark: card flips to --accent (Lia yellow). Inline --card
+   in colour mode wins over these via specificity. */
 :is(.playground-lia-links--v9-light, .playground-lia-links--v9-dark)
   [data-slot='card'] {
   transition-property: box-shadow, transform, background-color, color;
@@ -356,80 +204,10 @@
   --muted-foreground: var(--accent-foreground);
 }
 
-/* Theme-toggle hover fix for dark surfaces. The system `--accent` token
-   stays light in dark mode (it doesn't get overridden in `.dark`), so
-   the default ghost-button hover bg becomes a light yellow against the
-   light icon — both invisible together. Scope a subtle white-at-10%
-   hover for dark surfaces so the toggle stays visible. */
-:is(
-  .dark .playground-lia-links,
-  .playground-lia-links--v7-dark,
-  .playground-lia-links--v8-dark,
-  .playground-lia-links--v9-dark
-)
-  [data-slot='theme-toggle']:hover {
-  background-color: rgb(255 255 255 / 0.1);
-  color: oklch(0.95 0.005 100);
-}
-
-/* v5 + v6 — paper-grain texture overlaid on the desk via ::before.
-   Desaturated so it only contributes luminance, then blended with the
-   underlying --background colour. Switch the tint to any Olive step
-   (or another palette) and the grain follows. Blend mode flips per
-   theme:
-   - multiply in light mode (dark specks darken the bg = visible grain)
-   - screen in dark mode (light fibers lighten the bg = visible grain) */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url('./assets/paper-texture.jpg');
-  background-size: 600px 600px;
-  background-repeat: repeat;
-  filter: var(--paper-filter, saturate(0) contrast(1.15));
-  mix-blend-mode: var(--paper-blend);
-  opacity: var(--paper-opacity);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Content sits above the texture overlay. The surface div has one
-   direct child (the content wrapper); promoting it to z-index 1
-   keeps the cards, header, footer clear of the grain. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Tilt — cards, standalone buttons, theme toggle. v4/v5/v6 also include
-   bet-icon avatars (which compound on top of the card tilt). */
-:is(
-  .playground-lia-links--v3,
-  .playground-lia-links--v4,
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7,
-  .playground-lia-links--v8,
-  .playground-lia-links--v9
-)
-  :is([data-slot='card'], [data-slot='button'], [data-slot='theme-toggle']),
-:is(
-  .playground-lia-links--v4,
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7,
-  .playground-lia-links--v8,
-  .playground-lia-links--v9
-)
-  [data-slot='bet-icon'] {
-  rotate: var(--surface-tilt, 0deg);
-  transform-origin: center center;
-}
-
-/* Compound-rotation reset: a button or theme toggle nested inside a
+/* Compound-rotation reset — a button or theme toggle nested inside a
    card stays flat (the card already carries the tilt). Bet-icon
-   avatars are deliberately excluded — they tilt on top of the card's
-   tilt, like stickers placed at their own angle. */
+   avatars are deliberately excluded so they tilt on top of the card's
+   tilt, like stickers at their own angle. */
 :is(
   .playground-lia-links--v3,
   .playground-lia-links--v4,
@@ -444,85 +222,9 @@
   rotate: 0deg;
 }
 
-/* Paper shadow on bet cards. Overriding box-shadow directly also
-   removes the Card primitive's default ring-1 outline — the shadow
-   alone defines the paper edge. */
-:is(
-  .playground-lia-links--v3,
-  .playground-lia-links--v4,
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7,
-  .playground-lia-links--v8,
-  .playground-lia-links--v9
-)
-  [data-slot='card'] {
-  box-shadow: var(--shadow-paper);
-}
-
-:is(
-  .playground-lia-links--v3,
-  .playground-lia-links--v4,
-  .playground-lia-links--v5,
-  .playground-lia-links--v6,
-  .playground-lia-links--v7,
-  .playground-lia-links--v8,
-  .playground-lia-links--v9
-)
-  [data-slot='card']:hover {
-  box-shadow: var(--shadow-paper-lifted);
-}
-
-/* v3, v4 — clean 3px guillotine-cut radius */
-:is(.playground-lia-links--v3, .playground-lia-links--v4) [data-slot='card'] {
-  border-radius: 3px;
-}
-
-/* v5, v6 — hand-cut scissor radius + per-card paper-grain texture. The
-   Card primitive's `overflow: hidden` clips the texture to the card's
-   rounded boundary, so the grain starts and stops cleanly at the
-   paper edge — even with the random corners. Each card's
-   `--paper-offset` is set inline so cards pull different regions of
-   the source image, making each one's grain look distinct. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) [data-slot='card'] {
-  border-radius: var(--card-radius, 3px);
-  isolation: isolate;
-}
-
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) [data-slot='card']::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url('./assets/paper-texture.jpg');
-  background-size: 600px 600px;
-  background-repeat: repeat;
-  background-position: var(--paper-offset, 0 0);
-  filter: var(--paper-filter, saturate(0) contrast(1.15));
-  mix-blend-mode: var(--paper-blend);
-  opacity: var(--paper-opacity);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Promote the card's children above the texture overlay. Targeted so
-   we don't accidentally override Tailwind's `.absolute` on the stretched
-   anchor (which would drop the anchor into normal flow, breaking the
-   card's vertical layout because the flex gap-3 would still apply
-   between CardContent and the 0-height anchor). */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)
-  [data-slot='card'] > [data-slot='card-content'] {
-  position: relative;
-  z-index: 1;
-}
-
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)
-  [data-slot='card'] > a {
-  z-index: 1;
-}
-
-/* v4, v5, v6 — sticker shadow on icon avatars. Even tighter than the
-   card shadow because the avatar is smaller and sits on top of the
-   paper. Read as "small printed/cut sticker affixed to the paper". */
+/* Bet-icon (avatar) is a playground-specific element. The system
+   doesn't know about it. Each avatar gets its own scissor radius,
+   subtle sticker shadow, paper-grain texture, and tilt. */
 :is(
   .playground-lia-links--v4,
   .playground-lia-links--v5,
@@ -532,13 +234,30 @@
   .playground-lia-links--v9
 )
   [data-slot='bet-icon'] {
+  rotate: var(--surface-tilt, 0deg);
+  transform-origin: center center;
   box-shadow:
     0.5px 0.5px 1px 0 oklch(0.20 0.015 107 / 0.10),
     1px 1px 2px -0.5px oklch(0.20 0.015 107 / 0.05);
 }
 
-.dark :is(
-  .playground-lia-links--v4,
+.dark
+  :is(
+    .playground-lia-links--v4,
+    .playground-lia-links--v5,
+    .playground-lia-links--v6,
+    .playground-lia-links--v7,
+    .playground-lia-links--v8,
+    .playground-lia-links--v9
+  )
+  [data-slot='bet-icon'] {
+  box-shadow:
+    0.5px 0.5px 1px 0 oklch(0 0 0 / 0.40),
+    1px 1px 2px -0.5px oklch(0 0 0 / 0.24);
+}
+
+/* v5+ bet-icon — scissor-cut sticker radius + paper-grain texture. */
+:is(
   .playground-lia-links--v5,
   .playground-lia-links--v6,
   .playground-lia-links--v7,
@@ -546,25 +265,19 @@
   .playground-lia-links--v9
 )
   [data-slot='bet-icon'] {
-  box-shadow:
-    0.5px 0.5px 1px 0 rgb(0 0 0 / 0.40),
-    1px 1px 2px -0.5px rgb(0 0 0 / 0.24);
-}
-
-/* v5, v6 — hand-cut scissor radius on icons too, from `--icon-radius`.
-   Range 4–9px (around the system rounded-lg of 6px) so the variation
-   reads as scissor-cut sticker. Plus a per-icon paper-grain overlay
-   following the same recipe as the desk and cards. `overflow: hidden`
-   clips the grain to the (jagged) sticker boundary so it stops at the
-   cut edges. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9) [data-slot='bet-icon'] {
   border-radius: var(--icon-radius, var(--radius-lg));
   position: relative;
   isolation: isolate;
   overflow: hidden;
 }
 
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)
+:is(
+  .playground-lia-links--v5,
+  .playground-lia-links--v6,
+  .playground-lia-links--v7,
+  .playground-lia-links--v8,
+  .playground-lia-links--v9
+)
   [data-slot='bet-icon']::before {
   content: '';
   position: absolute;
@@ -574,16 +287,8 @@
   background-repeat: repeat;
   background-position: var(--paper-offset, 0 0);
   filter: var(--paper-filter, saturate(0) contrast(1.15));
-  mix-blend-mode: var(--paper-blend);
-  opacity: var(--paper-opacity);
+  mix-blend-mode: var(--paper-blend, multiply);
+  opacity: var(--paper-opacity, 0.55);
   pointer-events: none;
-  z-index: 0;
-}
-
-/* Promote the icon glyph above its own texture overlay. Targeted at
-   the SVG to avoid the same `position: absolute` override issue. */
-:is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8, .playground-lia-links--v9)
-  [data-slot='bet-icon'] > svg {
-  position: relative;
-  z-index: 1;
+  z-index: -1;
 }
