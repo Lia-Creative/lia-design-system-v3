@@ -219,17 +219,15 @@
     1px 2.5px 4px -1px rgb(0 0 0 / 0.40);
 }
 
-/* v7-colour — Violet-500 desk with three distinct coloured papers.
-   Text overrides apply Dan's accessibility rule: hard near-black on the
-   violet desk (passes WCAG AA at ~5.7 contrast vs ~3.7 for white).
-   Higher paper opacity (0.70) than the default 0.55 — the saturated
-   mid-luminance violet absorbs more of the multiply effect, so the
-   texture needs a stronger contribution to register visibly. */
+/* v7-colour — Purple-300 desk with three distinct coloured papers.
+   Text overrides apply Dan's accessibility rule: hard near-black on
+   the lighter Purple-300 (passes WCAG AA easily, ~11.7 contrast ratio).
+   No paper-opacity override needed — Purple-300 is light and pastel
+   enough that the default 0.55 multiply produces visible grain. */
 .playground-lia-links--v7-colour {
-  --background: oklch(0.606 0.250 292.717); /* Tailwind Violet-500 */
-  --foreground: oklch(0.10 0.005 100); /* hard near-black on violet */
+  --background: oklch(0.827 0.119 306.383); /* Tailwind Purple-300 */
+  --foreground: oklch(0.10 0.005 100); /* hard near-black on purple */
   --muted-foreground: oklch(0.22 0.005 100);
-  --paper-opacity: 0.70;
 }
 
 .playground-lia-links--v7-colour [data-slot='card']:nth-child(1) {
