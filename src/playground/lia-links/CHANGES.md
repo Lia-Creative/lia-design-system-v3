@@ -59,6 +59,7 @@ Brief: Linktree-style landing surface for lia.build. Mission statement up top, t
 | 2026-05-19 | token-tweak | v7-colour desk bumped from Tailwind **Purple-300** to **Purple-400** (`oklch(0.714 0.203 305.504)`). More saturated, less pastel. Text accessibility holds — near-black on Purple-400 passes WCAG AA at ~8.2 contrast. | live |
 | 2026-05-19 | structure | Colour-mode **Remix** + **Reset** buttons added to the header, shown only when the active mode is `colour`. Remix Fisher-Yates-shuffles a `slotOrder` array (length 4) that maps each of the four palette papers (desk + 3 cards) to a position. Reset returns to `[0, 1, 2, 3]`. Each paper carries its own bg colour, foreground, paper-blend, paper-opacity, and paper-filter — so swapping the off-black paper into the desk slot automatically pulls in screen-blend + inverted-texture-filter + light foreground, etc. Inline styles win over the static `:nth-child` rules in colour mode. Applies to both v7 and v8 via the shared `ColouredSurface` component. | live |
 | 2026-05-19 | structure | Logo size bumped from `h-7` (28px) to `h-14` (56px). "lia.build" eyebrow above the H1 removed. | live |
+| 2026-05-19 | structure | H1 promoted to display-title size — `text-7xl` (72px, 2x the previous 36px). Tightened leading (`leading-[0.95]`) and tracking (`tracking-tighter`) so multi-line wrap reads editorial, not chunky. | live |
 
 ## Notes
 

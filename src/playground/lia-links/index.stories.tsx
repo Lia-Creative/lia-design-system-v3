@@ -353,7 +353,7 @@ function LiaLinksSurface({
         </header>
 
         <section className="flex flex-col gap-4">
-          <h1 className="text-4xl leading-[1.05] font-semibold tracking-tight">
+          <h1 className="text-7xl leading-[0.95] font-semibold tracking-tighter">
             Build a more creative world.
           </h1>
           <p className="text-lg leading-snug text-muted-foreground">
