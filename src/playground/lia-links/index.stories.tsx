@@ -384,8 +384,9 @@ function LiaLinksSurface({
                 <Card
                   key={bet.slug}
                   size="sm"
+                  data-tone={bet.tone}
                   style={cardStyle}
-                  className="group/bet relative transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
+                  className="group/bet relative transition-[box-shadow,transform,background-color,color] hover:-translate-y-px hover:shadow-md focus-within:ring-2 focus-within:ring-ring/40"
                 >
                   <CardContent className="flex items-center gap-4">
                     <span

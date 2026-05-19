@@ -118,7 +118,7 @@
    a dark bg lifts the whole surface and the "black" reads as grey. */
 :is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8) {
   --paper-blend: multiply;
-  --paper-opacity: 0.55;
+  --paper-opacity: 0.7;
   --paper-filter: saturate(0) contrast(1.15);
 
   /* Darker contact layer than v3/v4 — the textured paper needs a more
@@ -139,7 +139,7 @@
 
 .dark :is(.playground-lia-links--v5, .playground-lia-links--v6, .playground-lia-links--v7, .playground-lia-links--v8) {
   --paper-blend: screen;
-  --paper-opacity: 0.55;
+  --paper-opacity: 0.7;
   /* Inverted texture so bulk = dark, fibers = light spots. Screen-blends
      the light spots onto the dark surface as visible specks; the dark
      bulk leaves the surface unchanged. contrast(1.15) (same as light)
@@ -210,7 +210,7 @@
   --foreground: oklch(0.95 0.005 100);
   --muted-foreground: oklch(0.72 0.005 100);
   --paper-blend: screen;
-  --paper-opacity: 0.55;
+  --paper-opacity: 0.7;
   --paper-filter: saturate(0) contrast(1.15) invert(1);
   --shadow-paper:
     0.5px 0.5px 1px 0 rgb(0 0 0 / 0.65),
@@ -298,6 +298,77 @@
   --paper-blend: screen;
   --paper-opacity: 0.50;
   --paper-filter: saturate(0) contrast(1.15) invert(1);
+}
+
+/* Card hover swap (light + dark modes only) — the card flips to the
+   tone colour of its icon, like swapping in a different coloured
+   piece of paper. Each Card carries `data-tone="primary|accent|
+   secondary"` matching the bet's tone. The rule overrides `--card`
+   plus `--foreground` / `--muted-foreground` so all text inside the
+   card maintains contrast against the new bg.
+
+   Inline `--card` in colour modes (v7-colour, v8-colour) wins over
+   this rule via CSS specificity (inline > pseudo-class), so colour
+   modes don't pick up the hover swap. v1–v4 are excluded by selector
+   so they stay as baseline snapshots. */
+:is(
+  .playground-lia-links--v5,
+  .playground-lia-links--v6,
+  .playground-lia-links--v7-light,
+  .playground-lia-links--v7-dark,
+  .playground-lia-links--v8-light,
+  .playground-lia-links--v8-dark
+)
+  [data-slot='card'][data-tone='primary']:hover {
+  --card: var(--primary);
+  --foreground: var(--primary-foreground);
+  --muted-foreground: var(--primary-foreground);
+}
+
+:is(
+  .playground-lia-links--v5,
+  .playground-lia-links--v6,
+  .playground-lia-links--v7-light,
+  .playground-lia-links--v7-dark,
+  .playground-lia-links--v8-light,
+  .playground-lia-links--v8-dark
+)
+  [data-slot='card'][data-tone='accent']:hover {
+  --card: var(--accent);
+  --foreground: var(--accent-foreground);
+  --muted-foreground: var(--accent-foreground);
+}
+
+:is(
+  .playground-lia-links--v5,
+  .playground-lia-links--v6,
+  .playground-lia-links--v7-light,
+  .playground-lia-links--v7-dark,
+  .playground-lia-links--v8-light,
+  .playground-lia-links--v8-dark
+)
+  [data-slot='card'][data-tone='secondary']:hover {
+  --card: var(--secondary);
+  --foreground: var(--secondary-foreground);
+  --muted-foreground: var(--secondary-foreground);
+}
+
+/* Avatar fades into the card on hover — bg goes transparent so the
+   card colour shows through, and the icon glyph adopts --foreground
+   (which is now the contrasting tone-foreground per the rules above)
+   so it stays visible against the new card colour. */
+:is(
+  .playground-lia-links--v5,
+  .playground-lia-links--v6,
+  .playground-lia-links--v7-light,
+  .playground-lia-links--v7-dark,
+  .playground-lia-links--v8-light,
+  .playground-lia-links--v8-dark
+)
+  [data-slot='card']:hover
+  [data-slot='bet-icon'] {
+  background-color: transparent;
+  color: var(--foreground);
 }
 
 /* Theme-toggle hover fix for dark surfaces. The system `--accent` token
