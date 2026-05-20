@@ -1,6 +1,6 @@
 # Lia Design System v3 — AI Development Rules
 
-Stack: Next.js 16 · Tailwind v4 · shadcn/ui (base-nova) · Base UI primitives · next-themes · Storybook 10 · DM Sans / DM Mono / Libre Baskerville.
+Stack: Next.js 16 · Tailwind v4 · shadcn/ui (base-nova) · Base UI primitives · next-themes · Storybook 10 · Figtree / DM Mono / Libre Baskerville.
 
 These rules are adapted from the v2 system's hard-won learnings. Where v3 diverges from v2 by design (shadcn conventions), that's flagged inline. Read first; ask second; write third.
 
@@ -14,32 +14,47 @@ These rules are adapted from the v2 system's hard-won learnings. Where v3 diverg
 
 ## Source of Truth
 
-`src/app/globals.css` is the **only** place design tokens are authored. It defines two layers:
+`src/app/globals.css` is the **only** place design tokens are authored. It defines **three layers**, and the layering is mandatory (see Aliasing Hierarchy):
 
-1. **Semantic CSS vars** — `--background`, `--primary`, `--muted`, `--ring`, etc. — in both `:root` (light) and `.dark` (dark) selectors. These are the names components consume.
-2. **Tailwind theme mapping** — the `@theme inline { ... }` block exposes them to Tailwind utility classes (`bg-primary` resolves to `var(--primary)`).
+1. **Primitives** — named colour ramps (`--olive-50…950`, `--lia-blue-500/600`, `--lia-sky-200/300`, `--lia-yellow-200`, `--lia-red-500/600`) in `:root`. **This is the only place a raw `oklch()` colour literal may appear.** Mirrors the Figma `colors/*` ramps (olive = `colors/olive/*`, brand = `colors/lia-*`).
+2. **Semantic CSS vars** — `--background`, `--primary`, `--muted`, `--ring`, etc. — in `:root` (light) and `.dark` (dark). **Each MUST be `var(--<primitive>)`, never an inline literal.** These are the names components consume.
+3. **Tailwind theme mapping** — the `@theme inline { ... }` block exposes the semantics to utility classes (`bg-primary` resolves to `var(--primary)`).
 
-`design/lia-tokens.tokens.json` is a **mirror** of `globals.css` in Tokens Studio format, used for the Figma round-trip. **It is not the source.** Regenerate it with `pnpm tokens:sync` after editing `globals.css`. Never hand-edit the JSON.
+`design/lia-tokens.tokens.json` is a **mirror** of `globals.css` in Tokens Studio format. **It is not the source.** Regenerate it with `pnpm tokens:sync` after editing `globals.css`. Never hand-edit the JSON. The sync script (`scripts/tokens-from-css.mjs`) resolves the primitive `var()` chain back to literals when mirroring, so semantics-via-primitives stay sync-safe. (Font families are the one exception it can't read from CSS — `--font-sans: var(--font-figtree)` is a Next.js font-loader var — so `SHARED_FONT` is declared in the script; keep it in step with `layout.tsx`.)
 
 > **v2 inversion noted:** v2 ran *JSON → CSS* (Tokens Studio was the source). v3 runs *CSS → JSON* because shadcn's convention is CSS-vars-first. The principle is the same — single source, one-way sync, no manual JSON edits.
 
 ---
 
-## Aliasing Hierarchy
+## Aliasing Hierarchy — **THE RULE**
 
-Brand colour changes follow the same chain as v2:
+**Semantic tokens reference primitive ramps. Always. Everywhere. Code and Figma both.** A semantic token never holds a raw colour; it points at a named primitive. This is a hard invariant — it keeps code and Figma structurally identical and makes theme swaps a one-line change.
 
 ```
-oklch base (in globals.css)  →  semantic CSS var  →  Tailwind theme name  →  component utility class
-  e.g. oklch(0.50 0.27 263.51)    --primary             --color-primary           bg-primary
+primitive ramp            →  semantic CSS var  →  Tailwind theme name  →  component utility
+  --lia-blue-600             --primary             --color-primary          bg-primary
+  (oklch literal lives here) (var(--lia-blue-600)) (var(--primary))         (resolves through)
 ```
 
-When changing the brand colour:
-1. Edit the `--primary` (and `--primary-foreground`, `--ring`, `--sidebar-primary`, `--chart-1`) values in `:root` and `.dark` blocks of `globals.css`.
-2. Run `pnpm tokens:sync` to regenerate the JSON mirror.
-3. Push to GitHub — Tokens Studio in Figma pulls the new values.
+The same chain in Figma:
 
-**Never** hard-code a hex/oklch value in a component file. **Never** alias `--primary` to anything other than a base palette value (no chains of semantic-to-semantic).
+```
+colors/lia-blue/600        →  theme/primary        →  💨 Tailwind          →  component instance
+  (raw hex lives here)        (ALIAS to colors/*)     (alias to theme/*)
+```
+
+Rules, non-negotiable:
+- **Raw colour literals live ONLY in the primitive layer** — `--olive-*` / `--lia-*` in `globals.css`, `colors/*` ramps in Figma. Nowhere else.
+- **Every semantic token is an alias.** Code: `--primary: var(--lia-blue-600)`. Figma: `theme/primary` is a `VARIABLE_ALIAS` to `colors/lia-blue/600`. **Never** inline a literal into a semantic token in either place.
+- **No semantic-to-semantic chains.** A semantic aliases a *primitive*, not another semantic.
+- **Neutrals → `olive` / `colors/olive/*`. Brand → `lia-*` / `colors/lia-*`.** Brand colours are bespoke (not Tailwind); the `colors/lia-*` ramps hold their exact values. The "colourful mode" palette (Purple/Blue/Amber) is stock Tailwind and already available as ramps/utilities — use those directly, don't duplicate.
+
+When changing a colour:
+1. Edit the **primitive** value (`--olive-200`, `--lia-blue-600`, …) in `globals.css`. Every semantic referencing it updates automatically. Only touch a semantic line to **re-point** it at a different primitive.
+2. `pnpm tokens:sync` (resolves the `var()` chain → JSON mirror).
+3. Propagate to Figma: write the new value to the matching `colors/*` ramp variable, then ensure `theme/*` still aliases it (see Figma Integration → MCP push rule).
+
+**Never** hard-code a hex/oklch in a component file. **Never** put a literal in a semantic token.
 
 ---
 
@@ -225,12 +240,22 @@ The honest reality: **Code → Figma push is hard.** Figma's data model (auto-la
 
 If a design surface needs pixel-perfect "show me exactly what the code renders" parity in Figma, consider `story.to.design` as an optional add-on — it renders Storybook stories into Figma frames. Not currently installed; ask before adding.
 
+### MCP push rule — **push aliases, never raw values**
+
+The canonical code→Figma path for theme updates is **direct MCP variable writes** (Tokens Studio "Pull from GitHub" makes a *parallel* collection rather than updating the live alias chain, so it's not the path). When pushing via MCP, mirror the Aliasing Hierarchy exactly:
+
+- **Write raw hex ONLY into the primitive ramps** — `colors/olive/*`, `colors/lia-*`. These are the Figma equivalent of the `--olive-*` / `--lia-*` primitives in `globals.css`.
+- **`theme/*` variables must stay aliases** — each `theme/<name>` (and `theme/<name>-dark`) is a `VARIABLE_ALIAS` pointing at a `colors/*` primitive. **Never** write a raw colour into a `theme/*` variable; that breaks the chain and de-syncs from code. If a push left raw hex in `theme/*`, re-alias it to the matching primitive.
+- **File structure:** `☀️ Mode` (theme/* light+dark, aliases into Themes) → `🚀 Themes` Default mode (theme/* + theme/*-dark, alias into `colors/*`) → `💨 Tailwind` (`colors/*` primitives hold the raw values). Write targets for a code push are the `colors/*` ramp variables; the `theme/*` aliases above them then resolve automatically.
+- **Fonts** live in `🚀 Themes` Default: `font family/font-sans|serif|mono`. Setting a font-family STRING var forces Figma to load every font the bound text uses — `loadFontAsync` the families first or the write throws.
+
 ### MCP Write-Path Reliability (carried from April 24 learnings)
 
 When writing variables to Figma via MCP (`setValueForMode`, `createVariable`):
 - **Parallel single-write calls in batches of ~5** is the only reliable path.
-- **Collection-level mutations** (`addMode`, `renameMode`, `createCollection`) silently fail — do them manually in Figma.
-- **`setValueForMode` writes commit even when the tool reports timeout** — re-read before assuming failure.
+- **Creating variables** inside an existing collection works; **collection-level mutations** (`addMode`, `renameMode`, `createCollection`) silently fail — do them manually in Figma. `loadAllPagesAsync` is unsupported in the MCP sandbox.
+- **`setValueForMode` / `createVariable` commit even when the tool reports timeout or "connection lost"** — always re-read to verify before assuming failure or retrying.
+- **`getLocalVariablesAsync` returns local variables only** — imported/linked library variables show in the Variables panel but aren't enumerable locally (resolve individual ones by ID). Don't conclude a variable is "missing" without accounting for imported libraries.
 - Back up before bulk writes. See personal-vault `_meta/inbox/figma-mcp-variable-writes-learnings-2026-04-24.md` for diagnostics.
 
 ---
@@ -241,7 +266,7 @@ The repo carries a vendored copy of [Impeccable](https://github.com/pbakaus/impe
 
 `craft`, `teach`, `document`, `extract`, `shape`, `critique`, `audit`, `polish`, `bolder`, `quieter`, `distill`, `harden`, `onboard`, `animate`, `colorize`, `typeset`, `layout`, `delight`, `overdrive`, `clarify`, `adapt`, `optimize`, `live`.
 
-When working in this repo, prefer reaching for these where they fit — e.g. `/impeccable critique` on a Playground prototype, `/impeccable polish` before promoting a primitive at `/design-review`, `/impeccable harden` on edge cases before a prototype ships. Don't override Impeccable's anti-patterns silently — if something contradicts Lia's deliberate choices (e.g. DM Sans being a "common" sans-serif), surface the conflict.
+When working in this repo, prefer reaching for these where they fit — e.g. `/impeccable critique` on a Playground prototype, `/impeccable polish` before promoting a primitive at `/design-review`, `/impeccable harden` on edge cases before a prototype ships. Don't override Impeccable's anti-patterns silently — if something contradicts Lia's deliberate choices (e.g. Figtree being a "common" sans-serif), surface the conflict.
 
 Update notes + provenance live in `.claude/skills/impeccable/VENDORED.md`.
 
@@ -256,13 +281,14 @@ Update notes + provenance live in `.claude/skills/impeccable/VENDORED.md`.
 ## What NOT to Do
 
 1. **Never use raw colour values** (`#fff`, `rgb()`, `hsl()`, raw `oklch()`) inside components. Use Tailwind utilities backed by semantic tokens.
-2. **Never edit `design/lia-tokens.tokens.json` by hand** — regenerate via `pnpm tokens:sync`.
-3. **Never use `prefers-color-scheme`** — dark mode is class-based via `next-themes`.
-4. **Never invent new components** without asking. Use the registries first, the primitives second.
-5. **Never hard-code Figma file keys** in `.figma.tsx` mappings — use the substitution placeholders.
-6. **Never commit `.env`** — shadcn/studio Pro credentials live there.
-7. **Never reintroduce the `primitives/compositions/layout` folder split** — shadcn flat structure is intentional.
-8. **Never skip the `data-slot="..."` attribute** when wrapping a Base UI primitive — Storybook autodocs and downstream selector hooks rely on it.
+2. **Never put a raw colour literal in a semantic token** (code or Figma). Literals live only in the primitive layer (`--olive-*`/`--lia-*`, `colors/*`); semantics alias primitives. See Aliasing Hierarchy.
+3. **Never edit `design/lia-tokens.tokens.json` by hand** — regenerate via `pnpm tokens:sync`.
+4. **Never use `prefers-color-scheme`** — dark mode is class-based via `next-themes`.
+5. **Never invent new components** without asking. Use the registries first, the primitives second.
+6. **Never hard-code Figma file keys** in `.figma.tsx` mappings — use the substitution placeholders.
+7. **Never commit `.env`** — shadcn/studio Pro credentials live there.
+8. **Never reintroduce the `primitives/compositions/layout` folder split** — shadcn flat structure is intentional.
+9. **Never skip the `data-slot="..."` attribute** when wrapping a Base UI primitive — Storybook autodocs and downstream selector hooks rely on it.
 
 ---
 

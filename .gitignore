@@ -44,3 +44,6 @@ next-env.d.ts
 *storybook.log
 storybook-static
 /dist
+
+# Figma push state snapshots — point-in-time recovery only, not source (source is globals.css → tokens.json)
+design/themes-default-backup*.json

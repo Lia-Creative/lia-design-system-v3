@@ -35,8 +35,12 @@ const SHARED_RADIUS = {
   'radius/base': '6px',
 }
 
+// Mirrors the next/font imports in src/app/layout.tsx + the --font-* vars in
+// globals.css. These resolve to Next.js font-loader CSS vars (var(--font-figtree))
+// which can't be read from globals.css as literal family names, so they're
+// declared here. Keep in sync with layout.tsx if a font changes.
 const SHARED_FONT = {
-  'font/sans': 'DM Sans',
+  'font/sans': 'Figtree',
   'font/mono': 'DM Mono',
   'font/serif': 'Libre Baskerville',
 }
@@ -89,6 +93,35 @@ function readVar(block, varName) {
   const m = block.match(re)
   if (!m) throw new Error(`Missing --${varName} in block`)
   return m[1].trim()
+}
+
+/**
+ * Build a name→value map of every custom property declared in a block.
+ * Used to resolve the primitive layer (e.g. --olive-50: oklch(...)) so semantic
+ * tokens that reference primitives via var() can be resolved to literals.
+ */
+function buildVarMap(block) {
+  const map = {}
+  const re = /--([\w-]+)\s*:\s*([^;]+);/g
+  let m
+  while ((m = re.exec(block)) !== null) {
+    map[m[1]] = m[2].trim()
+  }
+  return map
+}
+
+/**
+ * Resolve var(--x) references against a primitive map, following chains.
+ * Semantic tokens reference primitives (--primary: var(--lia-blue-600)); this
+ * walks back to the literal (oklch(...)). Plain literals pass through untouched.
+ */
+function resolveValue(value, varMap, depth = 0) {
+  if (depth > 10) throw new Error(`var() resolution too deep for: ${value}`)
+  const m = value.match(/^var\(\s*--([\w-]+)\s*\)$/)
+  if (!m) return value
+  const target = varMap[m[1]]
+  if (target === undefined) throw new Error(`Unresolved var(--${m[1]})`)
+  return resolveValue(target, varMap, depth + 1)
 }
 
 /**
@@ -151,11 +184,11 @@ function parseShadow(value) {
   })
 }
 
-function buildThemeSet(block) {
+function buildThemeSet(block, varMap) {
   const out = {}
   for (const name of COLOR_VARS) {
     out[`theme/${name}`] = {
-      value: oklchToHex(readVar(block, name)),
+      value: oklchToHex(resolveValue(readVar(block, name), varMap)),
       type: 'color',
     }
   }
@@ -173,6 +206,10 @@ function main() {
   const rootBlock = extractBlock(css, ':root')
   const darkBlock = extractBlock(css, '.dark')
 
+  // Primitives live in :root. Both light + dark semantics reference them via
+  // var(), so resolve everything against the :root var map.
+  const varMap = buildVarMap(rootBlock)
+
   const shared = {}
   for (const [k, v] of Object.entries(SHARED_RADIUS)) {
     shared[k] = { value: v, type: 'borderRadius' }
@@ -187,8 +224,8 @@ function main() {
     },
     $themes: [],
     'lia-shared': shared,
-    'lia-light': buildThemeSet(rootBlock),
-    'lia-dark': buildThemeSet(darkBlock),
+    'lia-light': buildThemeSet(rootBlock, varMap),
+    'lia-dark': buildThemeSet(darkBlock, varMap),
   }
 
   const current = readFileSync(JSON_PATH, 'utf8')
