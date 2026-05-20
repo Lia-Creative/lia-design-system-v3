@@ -4,6 +4,8 @@ import { toast } from 'sonner'
 
 import './tokens.css'
 
+import { PrototypeShell, usePrototypeShell } from '../_shared/prototype-shell'
+import { VersionTabs } from '../_shared/version-tabs'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -27,7 +29,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Logo } from '@/components/ui/logo'
 import { Toaster } from '@/components/ui/sonner'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
 import {
   Tooltip,
   TooltipContent,
@@ -36,40 +37,39 @@ import {
 } from '@/components/ui/tooltip'
 
 /**
- * Welcome showcase — single-page composition exercising every primitive.
- * Copy reflects the Lia Creative parent brand position. Source:
+ * Welcome showcase — single-page composition exercising every primitive,
+ * wrapped in PrototypeShell so it gets light / dark / colour modes + remix
+ * for free. Copy reflects the Lia Creative parent brand position. Source:
  * Lia Vault `Company/Strategy/lia-1-pager-v2-2026-05-14.md` +
  * `Company/Strategy/vision-mission-values.md`.
  */
-function Welcome() {
-  return (
-    <TooltipProvider>
-      <Toaster />
-      <div className="playground-welcome mx-auto flex max-w-3xl flex-col gap-12 p-8">
-        <header className="flex items-center justify-between">
-          <Logo className="h-8 w-auto" />
-          <div className="flex items-center gap-2">
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button size="sm" variant="ghost">
-                    Docs
-                  </Button>
-                }
-              />
-              <TooltipContent>Component reference</TooltipContent>
-            </Tooltip>
-            <Button size="sm" variant="outline">
-              Sign in
-            </Button>
-            <Button size="sm">
-              <PlusIcon data-icon="inline-start" />
-              New
-            </Button>
-            <ThemeToggle />
-          </div>
-        </header>
 
+const values = [
+  {
+    title: 'We are creative.',
+    body: 'When reality shifts, so do we. First principles. Ideate always.',
+  },
+  {
+    title: 'We are brave.',
+    body: 'We back ourselves, and we show up unafraid.',
+  },
+  {
+    title: 'We are collaborative.',
+    body: 'We listen and learn. From creators, from customers, from each other.',
+  },
+  {
+    title: 'We are practical.',
+    body: 'We provide solutions through action. Real problems, real products, real people.',
+  },
+]
+
+function WelcomeBody() {
+  const { cardPaperStyle } = usePrototypeShell()
+
+  return (
+    <>
+      <Toaster />
+      <div className="mx-auto flex max-w-3xl flex-col gap-12 px-6 pt-10 pb-16">
         <section className="flex flex-col gap-3">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             Lia Creative
@@ -78,9 +78,9 @@ function Welcome() {
             Build a more creative world.
           </h1>
           <p className="text-lg text-muted-foreground">
-            We empower people to create, through tools, education, and spaces.
-            A creative company building things that solve real problems and
-            feel like gifts.
+            We empower people to create, through tools, education, and spaces. A
+            creative company building things that solve real problems and feel
+            like gifts.
           </p>
           <div className="mt-2 flex gap-2">
             <Button>
@@ -96,45 +96,16 @@ function Welcome() {
             Our values
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>We are creative.</CardTitle>
-                <CardDescription>
-                  When reality shifts, so do we. First principles. Ideate always.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            {values.map((value, idx) => (
+              <Card key={value.title} style={cardPaperStyle(idx)}>
+                <CardHeader>
+                  <CardTitle>{value.title}</CardTitle>
+                  <CardDescription>{value.body}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
 
-            <Card>
-              <CardHeader>
-                <CardTitle>We are brave.</CardTitle>
-                <CardDescription>
-                  We back ourselves, and we show up unafraid.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>We are collaborative.</CardTitle>
-                <CardDescription>
-                  We listen and learn. From creators, from customers, from each
-                  other.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>We are practical.</CardTitle>
-                <CardDescription>
-                  We provide solutions through action. Real problems, real
-                  products, real people.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="sm:col-span-2">
+            <Card className="sm:col-span-2" style={cardPaperStyle(values.length)}>
               <CardHeader>
                 <CardTitle>We build to last.</CardTitle>
                 <CardDescription>
@@ -186,10 +157,11 @@ function Welcome() {
           </p>
           <Card>
             <CardHeader>
-              <CardTitle>The nine primitives, in context</CardTitle>
+              <CardTitle>The primitives, in context</CardTitle>
               <CardDescription>
                 Tap a button to see the toast. Open the dialog to see how forms
-                compose with Label + Input. Toggle theme in the top-right.
+                compose with Label + Input. Cycle light / dark / colour in the
+                top-right — and Remix the papers in colour mode.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap items-center gap-3 px-4">
@@ -236,8 +208,8 @@ function Welcome() {
                   render={<Button variant="outline">Tooltip</Button>}
                 />
                 <TooltipContent>
-                  Button · Card · Dialog · Input · Label · Logo · Sonner ·
-                  Theme Toggle · Tooltip
+                  Button · Card · Dialog · Input · Label · Logo · Sonner · Theme
+                  Toggle · Tooltip
                 </TooltipContent>
               </Tooltip>
             </CardContent>
@@ -256,6 +228,51 @@ function Welcome() {
           <span className="italic">Life in adventure.</span>
         </footer>
       </div>
+    </>
+  )
+}
+
+function Welcome() {
+  return (
+    <TooltipProvider>
+      <VersionTabs
+        versions={[
+        {
+          id: 'v1',
+          label: 'v1',
+          note: 'baseline + shell (light / dark / colour)',
+          render: () => (
+            <PrototypeShell
+              slug="welcome"
+              version="v1"
+              headerActions={
+                <>
+                  <Tooltip>
+                    <TooltipTrigger
+                      render={
+                        <Button size="sm" variant="ghost">
+                          Docs
+                        </Button>
+                      }
+                    />
+                    <TooltipContent>Component reference</TooltipContent>
+                  </Tooltip>
+                  <Button size="sm" variant="outline">
+                    Sign in
+                  </Button>
+                  <Button size="sm">
+                    <PlusIcon data-icon="inline-start" />
+                    New
+                  </Button>
+                </>
+              }
+            >
+              <WelcomeBody />
+            </PrototypeShell>
+          ),
+        },
+        ]}
+      />
     </TooltipProvider>
   )
 }

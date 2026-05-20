@@ -8,6 +8,8 @@ Started: 2026-05-18
 | When | Bucket | Change | Status |
 |------|--------|--------|--------|
 | 2026-05-18 | structure | Prototype created from initial showcase | live |
+| 2026-05-20 | structure | Retrofitted onto shared `<PrototypeShell>` — now has light/dark/colour modes + remix by default. Value cards spread `cardPaperStyle(i)` in colour mode. | live |
+| 2026-05-20 | token-tweak | `tokens.css`: added scope `::before` desk-grain + `--v1-dark` paper-var override (shell pattern, not a Welcome-specific design choice). | live |
 
 ## Buckets
 

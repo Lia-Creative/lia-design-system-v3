@@ -56,25 +56,47 @@ Apply Impeccable's anti-pattern guidance throughout. Specifically refuse to:
    `index.stories.tsx` should:
    - Use Storybook title `Playground/<Display Name>`
    - Use `parameters: { layout: 'fullscreen' }`
-   - Extract the page content into a `<Surface scopeClass={…}>` component that wraps everything in `<div className={`${scopeClass} …`}>` so scoped tokens take effect
-   - Wrap the surface in `<VersionTabs versions={[…]} />` (imported from `'../_shared/version-tabs'`). Seed with a single `v1` version labelled `'baseline'`. Future iterations add `v2`, `v3`, … alongside — never overwrite `v1`.
-   - Import `./tokens.css` near the top
-   - Compose existing primitives from `@/components/ui/` — DO NOT scratch-build UI
+   - **Wrap every version's content in `<PrototypeShell slug="<slug>" version="v<n>">`** (imported from `'../_shared/prototype-shell'`). The shell is the default Lia app frame — it gives the prototype the Lia logo top-left and the tri-state mode toggle (light / dark / colour) + colour-mode Remix top-right, automatically. Don't hand-roll a logo or theme toggle; the shell owns them.
+   - Put the page body in a separate component (e.g. `<FooBody>`) rendered as the shell's children, so it can call `usePrototypeShell()` to read `cardPaperStyle(i)` and spread it onto Card `style` props (colour mode tints cards; light/dark return `{}`).
+   - Pass any extra header buttons via the shell's `headerActions` prop (they render left of the mode controls).
+   - Wrap the whole thing in `<VersionTabs versions={[…]} />` (from `'../_shared/version-tabs'`). Seed with a single `v1`. Future iterations add `v2`, `v3`, … alongside — never overwrite `v1`. Each version's `render` returns `<PrototypeShell … version="vN"><FooBody /></PrototypeShell>`.
+   - Import `./tokens.css` near the top.
+   - Compose existing primitives from `@/components/ui/` — DO NOT scratch-build UI. Paper craft (tilt, scissor corners, grain) is automatic at the Card/Button primitive level — don't re-implement it.
    - If the brief implies a block-level pattern (hero, pricing, dashboard, testimonials, footer, feature grid, etc.), **install from `@ss-blocks` before building**: `pnpm dlx shadcn@latest add @ss-blocks/<block-name>`. Use the installed block as the structural base, then compose/swap primitives as needed.
 
-   `tokens.css` should seed with:
+   `tokens.css` should seed with the scope desk-grain (every shell-based prototype needs this so the desk gets paper texture in colour mode, where the opaque tinted desk covers `body::before`), plus the dark paper-var override:
    ```css
-   .playground-<slug> {
-     /* Re-resolve inherited properties so version-scoped overrides actually
-        take effect. Without this, the resolved value inherited from <html>
-        or <body> wins and the variable override is invisible. */
-     font-family: var(--font-sans);
-     /* If you plan to scope --foreground / --background overrides too, also add:
-        color: var(--foreground);
-        background-color: var(--background); */
+   /* Desk grain owned by the scope (the shell's tinted/opaque desk covers
+      body::before). Mirrors the body recipe, reads the scope's own --paper-*
+      vars — which the shell sets inline per colour-mode paper. */
+   .playground-<slug>::before {
+     content: '';
+     position: absolute;
+     inset: 0;
+     background-image: url('/paper-texture.jpg');
+     background-size: 600px 600px;
+     background-repeat: repeat;
+     filter: var(--paper-filter, saturate(0) contrast(1.15));
+     mix-blend-mode: var(--paper-blend, multiply);
+     opacity: var(--paper-opacity, 0.55);
+     pointer-events: none;
+     z-index: 0;
    }
+   .playground-<slug> > * { position: relative; z-index: 1; }
+
+   /* Dark: invert + screen-blend the grain. The shell adds `dark` to the scope
+      div itself, so target the version scope directly (not a `.dark` ancestor). */
+   .playground-<slug>--v1-dark {
+     --paper-blend: screen;
+     --paper-opacity: 0.7;
+     --paper-filter: saturate(0) contrast(1.15) invert(1);
+   }
+
+   /* Per-version visual deltas go here, scoped under .playground-<slug>--v<n>. */
    .playground-<slug>--v1 { /* baseline, untouched after first ship */ }
    ```
+
+   See `src/playground/welcome/` for a worked reference of this exact shape.
 
 4. **Working rules during the session** (state these to the user once, then follow them):
 
