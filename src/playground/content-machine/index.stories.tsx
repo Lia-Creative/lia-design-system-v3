@@ -169,7 +169,7 @@ function ContentMachineBody() {
                     </CardAction>
                   </CardHeader>
                   <CardContent className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-medium text-foreground">{stage.meta}</span>
+                    <span className="font-medium text-card-foreground">{stage.meta}</span>
                     {stage.tool && (
                       <span className="text-muted-foreground">{stage.tool}</span>
                     )}

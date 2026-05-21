@@ -17,6 +17,7 @@ architecture meeting note.
 | 2026-05-21 | primitive-new | Installed shadcn Badge (Pro registry path errored; used free shadcn fallback) and relocated it into `./components/badge.tsx` so it stays sandboxed until /design-review. Used for stage status (live / building / planned). | live |
 | 2026-05-21 | token-tweak | `tokens.css`: scope `::before` desk-grain + `--v1-dark` paper-var override (shell pattern, not a Content-Machine-specific design choice). | live |
 | 2026-05-21 | structure | v1: calm "next move" header + quiet status strip + seven numbered tool cards (Strategy → Learn) composed from Card/Badge/Button. | live |
+| 2026-05-21 | structure | Fix: card metric line used `text-foreground` → invisible (black-on-black) on the off-black colour-mode paper. Switched to `text-card-foreground`. (Colour-mode paper only overrides `--card-foreground`, not `--foreground`.) | live |
 
 ## Buckets
 
