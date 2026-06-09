@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import { cn } from '@/lib/utils'
+import { cn } from "../../lib/utils"
 
 // Paper feel for every Card by default. The Card primitive owns the
 // randomness (tilt, scissor-cut corners, paper-grain offset) so every

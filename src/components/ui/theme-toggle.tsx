@@ -4,8 +4,8 @@ import { MoonIcon, SunIcon } from "lucide-react"
 import { useTheme } from "next-themes"
 import * as React from "react"
 
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { Button } from "./button"
+import { cn } from "../../lib/utils"
 
 interface ThemeToggleProps
   extends Omit<React.ComponentProps<typeof Button>, "children" | "onClick"> {

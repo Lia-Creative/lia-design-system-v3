@@ -1,9 +1,15 @@
 {
-  "name": "lia-design-system-v3",
-  "version": "0.1.0",
+  "name": "@lia/design-system",
+  "version": "0.2.0",
   "private": true,
   "engines": {
     "node": "20.x"
+  },
+  "exports": {
+    ".": "./src/components/index.ts",
+    "./globals.css": "./src/app/globals.css",
+    "./lib/*": "./src/lib/*",
+    "./components/*": "./src/components/*"
   },
   "scripts": {
     "dev": "next dev",
