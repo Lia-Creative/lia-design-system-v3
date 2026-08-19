@@ -47,3 +47,13 @@ storybook-static
 
 # Figma push state snapshots — point-in-time recovery only, not source (source is globals.css → tokens.json)
 design/themes-default-backup*.json
+
+# Licensed fonts — NEVER commit to this repo. It is PUBLIC.
+# Klim (Martina Plantijn, Söhne) are paid licences; the trial `test-*.woff2`
+# files carry an even narrower one. Redistributing either via a public repo
+# breaches the licence. Canonical copies live in the Lia Vault under
+# brand/fonts/ — load them from there, don't vendor them here.
+*.woff
+*.woff2
+*.otf
+*.ttf
