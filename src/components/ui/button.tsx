@@ -2,12 +2,11 @@
 
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
-import * as React from "react"
 
 import { cn } from "../../lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-[0.8125rem] tracking-[0.005em] font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -23,17 +22,19 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
+        /* v4 sizing — generous, ≥ base shadcn. default 40px / px-5; padding
+           grows with size. (Graduated from the preview scope into the cva.) */
         default:
-          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        icon: "size-8",
+          "h-10 gap-2 px-5 has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
+        xs: "h-7 gap-1 rounded-[min(var(--radius-md),10px)] px-3 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3.5",
+        sm: "h-9 gap-1.5 rounded-[min(var(--radius-md),14px)] px-3.5 in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+        lg: "h-11 gap-2 px-7 text-[0.9375rem] has-data-[icon=inline-end]:pr-6 has-data-[icon=inline-start]:pl-6",
+        icon: "size-10",
         "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+          "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3.5",
         "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
-        "icon-lg": "size-9",
+          "size-9 rounded-[min(var(--radius-md),14px)] in-data-[slot=button-group]:rounded-lg",
+        "icon-lg": "size-11",
       },
     },
     defaultVariants: {
@@ -43,48 +44,19 @@ const buttonVariants = cva(
   }
 )
 
-// Paper-ish randomness for every Button — scissor-cut radius + tilt.
-// Smaller magnitude than Card since buttons are smaller and more
-// interactive (huge tilts would feel unstable to click).
-const BUTTON_TILT_RANGE = 0.5
-const BUTTON_TILT_MIN = 0.1
-
-function singleTilt(): number {
-  const sign = Math.random() < 0.5 ? -1 : 1
-  const magnitude =
-    BUTTON_TILT_MIN + Math.random() * (BUTTON_TILT_RANGE - BUTTON_TILT_MIN)
-  return sign * magnitude
-}
-
-function jaggedRadius(min: number, max: number): string {
-  const r = () => (min + Math.random() * (max - min)).toFixed(1)
-  return `${r()}px ${r()}px ${r()}px ${r()}px / ${r()}px ${r()}px ${r()}px ${r()}px`
-}
+// v4: the v3 paper tilt + scissor-cut auto-radius were removed — buttons are
+// soft & still, with a clean fixed radius (squircle, pill on primary) from the
+// cva + globals.css shape rules.
 
 function Button({
   className,
   variant = "default",
   size = "default",
-  style,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
-  // Per-mount randomness. Smaller radius range than Card (4-9px) since
-  // buttons are tighter shapes and big radii overshoot their own size.
-  const [paper] = React.useState(() => ({
-    tilt: singleTilt().toFixed(2),
-    radius: jaggedRadius(4, 9),
-  }))
-
-  const paperStyle = {
-    "--surface-tilt": `${paper.tilt}deg`,
-    "--button-radius": paper.radius,
-    ...style,
-  } as unknown as React.CSSProperties
-
   return (
     <ButtonPrimitive
       data-slot="button"
-      style={paperStyle}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />

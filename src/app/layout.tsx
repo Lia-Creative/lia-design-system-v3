@@ -1,30 +1,15 @@
 import type { Metadata } from "next";
-import { Figtree, DM_Mono, Libre_Baskerville } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const figtree = Figtree({
-  variable: "--font-figtree",
-  subsets: ["latin"],
-});
-
-const dmMono = DM_Mono({
-  variable: "--font-dm-mono",
-  weight: ["300", "400", "500"],
-  subsets: ["latin"],
-});
-
-const libreBaskerville = Libre_Baskerville({
-  variable: "--font-libre-baskerville",
-  weight: ["400", "700"],
-  subsets: ["latin"],
-});
+// v4 fonts (Martina Plantijn / Söhne / Söhne Mono) are self-hosted via
+// @font-face in globals.css so they load app-wide AND in Storybook.
 
 export const metadata: Metadata = {
   title: "Lia Design System",
-  description: "Modular tools for independent musicians. Design system v3.",
+  description: "v4 — design system for a more creative world.",
 };
 
 export default function RootLayout({
@@ -33,11 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${figtree.variable} ${dmMono.variable} ${libreBaskerville.variable} h-full antialiased`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
         <ThemeProvider
           attribute="class"
